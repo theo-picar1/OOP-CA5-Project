@@ -1,0 +1,9 @@
+module com.example.oopca5project {
+    requires javafx.controls;
+    requires javafx.fxml;
+
+    requires org.controlsfx.controls;
+
+    opens com.example.oopca5project to javafx.fxml;
+    exports com.example.oopca5project;
+}
