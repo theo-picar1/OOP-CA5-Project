@@ -59,6 +59,7 @@ public class MainApp {
         }
     }
 
+    // Question 1
     public static void getAllProducts() {
         try {
             List<Product> products = IProductDao.getAllProducts();
@@ -77,6 +78,17 @@ public class MainApp {
         }
     }
 
+    // Question 2
+    public static void getProductById(){
+
+    }
+
+    // Question 3
+    public static void deleteProductById(){
+
+    }
+
+    // Question 4
     public static void addProduct() {
         try {
             String id, product_description, size, supplier_id;
@@ -107,6 +119,7 @@ public class MainApp {
         }
     }
 
+    // Question 5
     public static void updateProduct() {
         try {
             String id, product_description, size, supplier_id;
@@ -133,5 +146,10 @@ public class MainApp {
         }catch(DaoException e) {
             e.printStackTrace();
         }
+    }
+
+    // Question 6
+    public static void filterProducts() {
+
     }
 }

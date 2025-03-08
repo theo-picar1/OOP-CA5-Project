@@ -33,4 +33,8 @@ public class Methods {
 
         return input;
     }
+
+    public static void getProduct() {
+
+    }
 }
