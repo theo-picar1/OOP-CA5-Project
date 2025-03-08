@@ -1,8 +1,7 @@
-package DAOs;
+package com.example.oopca5project.DAOs;
 
-import DTOs.Product;
-import Exceptions.DaoException;
-import DAOs.MySqlDao;
+import com.example.oopca5project.DTOs.Product;
+import com.example.oopca5project.Exceptions.DaoException;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

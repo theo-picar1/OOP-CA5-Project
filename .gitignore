@@ -2,7 +2,7 @@ target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
-src/main/java/DAOs/MySqlDao.java
+src/main/java/com/example/oopca5project/DAOs/MySqlDao.java
 
 ### IntelliJ IDEA ###
 .idea/

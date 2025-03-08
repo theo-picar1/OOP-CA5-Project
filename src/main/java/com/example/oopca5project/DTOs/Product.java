@@ -1,4 +1,4 @@
-package DTOs;
+package com.example.oopca5project.DTOs;
 
 public class Product {
     private String product_id;
