@@ -20,17 +20,18 @@ public class MainApp {
 
     public static void menu() {
         String[] options = {
-            "Display all products",
-            "Find product by ID",
-            "Delete product by ID",
-            "Add new product",
-            "Update product by ID",
-            "Filter products"
+                "Display all products",
+                "Find product by ID",
+                "Delete product by ID",
+                "Add new product",
+                "Update product by ID",
+                "Filter products",
+                "End application"
         };
 
         Methods.menuOptions(options);
 
-        int choice = Methods.validateRange(1, 6);
+        int choice = Methods.validateRange(1, 7);
 
         switch (choice) {
             case 1:
