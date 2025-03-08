@@ -15,12 +15,12 @@ public class MySqlProductDao extends MySqlDao implements ProductDaoInterface{
     }
 
     @Override
-    public Product getProductById(int id) throws DaoException {
+    public Product getProductById(String id) throws DaoException {
         return null;
     }
 
     @Override
-    public void deleteProductById(int id) throws DaoException {
+    public void deleteProductById(String id) throws DaoException {
 
     }
 
@@ -71,7 +71,7 @@ public class MySqlProductDao extends MySqlDao implements ProductDaoInterface{
     }
 
     @Override
-    public void updateProduct(int id, Product p) throws DaoException {
+    public void updateProduct(String id, Product p) throws DaoException {
 
     }
 
