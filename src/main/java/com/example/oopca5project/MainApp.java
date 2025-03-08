@@ -5,6 +5,7 @@ import com.example.oopca5project.DAOs.MySqlProductDao;
 import com.example.oopca5project.DTOs.Product;
 import com.example.oopca5project.Exceptions.DaoException;
 
+import java.util.List;
 import java.util.Scanner;
 
 public class MainApp {
@@ -35,7 +36,7 @@ public class MainApp {
 
         switch (choice) {
             case 1:
-                System.out.println("Displaying all products...");
+                getAllProducts();
                 break;
             case 2:
                 System.out.println("Finding product by ID...");
@@ -55,6 +56,24 @@ public class MainApp {
             case 7:
                 System.out.println("Ending application. Goodbye!");
                 break;
+        }
+    }
+
+    public static void getAllProducts() {
+        try {
+            List<Product> products = IProductDao.getAllProducts();
+
+            if (products.isEmpty()) {
+                System.out.println("Products table is empty! Please add some data first.");
+            }
+            else {
+                for (Product product : products) {
+                    System.out.println("{" + product.toString() + "}");
+                }
+            }
+        }
+        catch(DaoException e) {
+            e.printStackTrace();
         }
     }
 
