@@ -10,65 +10,80 @@ import java.util.Scanner;
 public class MainApp {
     static ProductDaoInterface IProductDao = new MySqlProductDao();
 
-    static Scanner kb = new Scanner(System.in);
+    static Scanner sc = new Scanner(System.in);
 
-    public static void main(String[] args) throws DaoException {
-        int choice = 0;
-        String id = "", product_description = "", size, suppiler_id;
-        double unit_price = 0;
-        Product p;
+    public static void main(String[] args) {
+        System.out.println("OOP-CA5 PROJECT");
 
-        String[] array = {"1. Get all products", "2. Get product by id", "3. Delete product by id", "4. Add product", "5. Update product", "6. Find product apply filter", "0. Exit"};
-        do {
-            for(String s : array) {
-                System.out.println(s);
-            }
-            choice = kb.nextInt();
-            kb.nextLine();
-            switch (choice) {
-                case 1:
-                    IProductDao.getAllProducts();
-                    break;
-                case 2:
-                    id = kb.next();
-                    IProductDao.getProductById(id);
-                    break;
-                case 3:
-                    id = kb.next();
-                    IProductDao.deleteProductById(id);
-                    break;
-                case 4:
-                    // validation of ID not added yet need Q2 done
-                    System.out.println("Enter product id: (e.g. 'product1', 'product2')");
-                    id = kb.nextLine();
+        menu();
+    }
 
-                    System.out.println("Enter product description: ");
-                    product_description = kb.nextLine();
+    public static void menu() {
+        String[] options = {
+            "Display all products",
+            "Find product by ID",
+            "Delete product by ID",
+            "Add new product",
+            "Update product by ID",
+            "Filter products"
+        };
 
-                    System.out.println("Enter product size: ");
-                    size = kb.nextLine();
+        Methods.menuOptions(options);
 
-                    System.out.println("Enter product unit_price: ");
-                    unit_price = kb.nextDouble();
+        int choice = Methods.validateRange(1, 6);
 
-                    System.out.println("Enter product suppiler_id: ");
-                    suppiler_id = kb.next();
+        switch (choice) {
+            case 1:
+                System.out.println("Displaying all products...");
+                break;
+            case 2:
+                System.out.println("Finding product by ID...");
+                break;
+            case 3:
+                System.out.println("Deleting product by ID...");
+                break;
+            case 4:
+                addProduct();
+                break;
+            case 5:
+                System.out.println("Updating product by ID...");
+                break;
+            case 6:
+                System.out.println("Filtering products...");
+                break;
+            case 7:
+                System.out.println("Ending application. Goodbye!");
+                break;
+        }
+    }
 
-                    p = new Product(id,product_description,size,unit_price,suppiler_id);
-                    IProductDao.addProduct(p);
-                    break;
-                case 5:
-                    p = new Product();
-                    id = kb.next();
-                    IProductDao.updateProduct(id,p);
-                    break;
-                case 6:
-//                  findProductApplyFilter()
-                    break;
-                case 0:
-                    System.out.println("Goodbye!");
-                    break;
-            }
-        }while(choice != 0);
+    public static void addProduct() {
+        try {
+            String id, product_description, size, supplier_id;
+            double unit_price;
+            Product p;
+
+            // validation of ID not added yet need Q2 done
+            System.out.println("Enter product id: (e.g. 'product1', 'product2')");
+            id = sc.nextLine();
+
+            System.out.println("Enter product description: ");
+            product_description = sc.nextLine();
+
+            System.out.println("Enter product size: ");
+            size = sc.nextLine();
+
+            System.out.println("Enter product unit_price: ");
+            unit_price = sc.nextDouble();
+
+            System.out.println("Enter product suppiler_id: ");
+            supplier_id = sc.next();
+
+            p = new Product(id, product_description, size, unit_price, supplier_id);
+            IProductDao.addProduct(p);
+        }
+        catch (DaoException e) {
+            e.printStackTrace();
+        }
     }
 }
