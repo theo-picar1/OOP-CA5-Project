@@ -56,4 +56,13 @@ public class Product {
     public void setSupplierId(String id) {
         supplier_id = id;
     }
+
+    @Override
+    public String toString() {
+        return "ID = " + product_id +
+                ", Description = " + product_description +
+                ", Size = " + size +
+                ", Price € = " + unit_price +
+                ", SupplierID = " + supplier_id;
+    }
 }
