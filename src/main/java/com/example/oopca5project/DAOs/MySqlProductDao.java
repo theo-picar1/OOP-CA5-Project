@@ -5,13 +5,39 @@ import com.example.oopca5project.Exceptions.DaoException;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
-public class MySqlProductDao extends MySqlDao implements ProductDaoInterface{
+public class MySqlProductDao extends MySqlDao implements ProductDaoInterface {
     @Override
     public List<Product> getAllProducts() throws DaoException {
-        return null;
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        List<Product> productList = new ArrayList<>();
+
+        try {
+            connection = this.getConnection();
+            String query = "SELECT * FROM Products";
+            statement = connection.prepareStatement(query);
+            resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                String productId = resultSet.getString("product_id");
+                String description = resultSet.getString("product_description");
+                String size = resultSet.getString("size");
+                double unitPrice = resultSet.getDouble("unit_price");
+                String supplierId = resultSet.getString("supplier_id");
+
+                Product product = new Product(productId, description, size, unitPrice, supplierId);
+                productList.add(product);
+            }
+        } catch (SQLException e) {
+           
+        }
+        return productList;
     }
 
     @Override
