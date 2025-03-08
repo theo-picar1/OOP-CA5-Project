@@ -60,11 +60,13 @@ public class MySqlProductDao extends MySqlDao implements ProductDaoInterface {
 
     @Override
     public void addProduct(Product p) throws DaoException {
+
         // Initializing variables
         Connection connection = null;
         PreparedStatement preparedStatement = null;
 
         try {
+
             // Get connection to database using MySqlDao method
             connection = this.getConnection();
 
@@ -81,7 +83,7 @@ public class MySqlProductDao extends MySqlDao implements ProductDaoInterface {
             preparedStatement.setDouble(4, p.getPrice());
             preparedStatement.setString(5, p.getSupplierId());
 
-            // Getting the value of where the product was added
+            // Getting the value of how many rows were affected
             int rowsInserted = preparedStatement.executeUpdate();
 
             // Checking if the value is bigger than 0 to confirm the product was added
@@ -116,40 +118,72 @@ public class MySqlProductDao extends MySqlDao implements ProductDaoInterface {
 
                 // Throws DaoException
                 throw new DaoException("addProduct() " + e.getMessage());
+
             }
         }
     }
 
     @Override
     public void updateProduct(String id, Product p) throws DaoException {
+
+        // Initializing variables
         Connection connection = null;
         PreparedStatement preparedStatement = null;
 
         try {
+
+            // Get connection to database using MySqlDao method
             connection = this.getConnection();
 
-            // Query will be added in next commit
-            String query = "";
+            // Making query to update product
+            String query = "UPDATE Products SET Product_id = ?, Product_Description = ?, Size = ?, Unit_Price = ?, Supplier_id = ? WHERE Product_id = ?";
 
+            // Making the query into a prepared statement
             preparedStatement = connection.prepareStatement(query);
 
+            // Initializing/Setting '?' in the prepared statement
+            preparedStatement.setString(1, id);
+            preparedStatement.setString(2, p.getDescription());
+            preparedStatement.setString(3, p.getSize());
+            preparedStatement.setDouble(4, p.getPrice());
+            preparedStatement.setString(5, p.getSupplierId());
+            preparedStatement.setString(6, id);
+
+            // Getting the value of how many rows were affected
             int rowsUpdated = preparedStatement.executeUpdate();
 
+            // Checking if the value is bigger than 0 to confirm rows were affected
             if (rowsUpdated == 0) {
                 throw new DaoException("No rows were updated. Product might not exist.");
+            }else {
+                System.out.println("Product updated successfully!");
             }
+
+            // Catch SQLException
         } catch (SQLException e) {
-            throw new DaoException("updateProduct() " + e.getMessage());
+
+            // Throws DaoException
+            throw new DaoException("updateProductResultSet() " + e.getMessage());
+
         } finally {
             try {
+
+                // Closes prepared statement
                 if (preparedStatement != null) {
                     preparedStatement.close();
                 }
+
+                // Frees up connection
                 if (connection != null) {
                     freeConnection(connection);
                 }
+
+                // Catches SQLException
             } catch (SQLException e) {
+
+                // Throws DaoException
                 throw new DaoException("updateProduct() " + e.getMessage());
+
             }
         }
     }
