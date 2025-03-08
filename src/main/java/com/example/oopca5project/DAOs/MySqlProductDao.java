@@ -26,36 +26,86 @@ public class MySqlProductDao extends MySqlDao implements ProductDaoInterface{
 
     @Override
     public void addProduct(Product p) throws DaoException {
+        // Initializing variables
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+
+        try {
+            // Get connection to database using MySqlDao method
+            connection = this.getConnection();
+
+            // Making query to add product
+            String query = "INSERT INTO Products (Product_Id, Product_Description, Size, Unit_Price, Supplier_Id) VALUES (?, ?, ?, ?, ?)";
+
+            // Making the query into a prepared statement
+            preparedStatement = connection.prepareStatement(query);
+
+            // Initializing/Setting '?' in the prepared statement
+            preparedStatement.setString(1, p.getId());
+            preparedStatement.setString(2, p.getDescription());
+            preparedStatement.setString(3, p.getSize());
+            preparedStatement.setDouble(4, p.getPrice());
+            preparedStatement.setString(5, p.getSupplierId());
+
+            // Getting the value of where the product was added
+            int rowsInserted = preparedStatement.executeUpdate();
+
+            // Checking if the value is bigger than 0 to confirm the product was added
+            if (rowsInserted > 0) {
+                System.out.println("Product added successfully!");
+            } else {
+                System.out.println("Product not added!");
+            }
+
+            // Catch SQLException
+        } catch (SQLException e) {
+
+            // Throws DaoException
+            throw new DaoException("addProductResultSet() " + e.getMessage());
+
+        } finally {
+
+            try {
+
+                // Closes prepared statement
+                if (preparedStatement != null) {
+                    preparedStatement.close();
+                }
+
+                // Frees up connection
+                if (connection != null) {
+                    freeConnection(connection);
+                }
+
+                // Catches SQLException
+            } catch (SQLException e) {
+
+                // Throws DaoException
+                throw new DaoException("addProduct() " + e.getMessage());
+            }
+        }
+    }
+
+    @Override
+    public void updateProduct(String id, Product p) throws DaoException {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
 
         try {
             connection = this.getConnection();
 
-            String query = "INSERT INTO Products (ProductId, ProductDescription, Size, UnitPrice, SupplierId) VALUES (?, ?, ?, ?, ?)";
+            // Query will be added in next commit
+            String query = "";
+
             preparedStatement = connection.prepareStatement(query);
 
-            String ProductId = p.getId();
-            String ProductDescription = p.getDescription();
-            String Size = p.getSize();
-            double unitPrice = p.getPrice();
-            String supplierId = p.getSupplierId();
+            int rowsUpdated = preparedStatement.executeUpdate();
 
-            preparedStatement.setString(1, ProductId);
-            preparedStatement.setString(2, ProductDescription);
-            preparedStatement.setString(3, Size);
-            preparedStatement.setDouble(4, unitPrice);
-            preparedStatement.setString(5, supplierId);
-
-            int rowsInserted = preparedStatement.executeUpdate();
-
-            if (rowsInserted > 0) {
-                System.out.println("Product added successfully!");
-            } else {
-                System.out.println("Product not added!");
+            if (rowsUpdated == 0) {
+                throw new DaoException("No rows were updated. Product might not exist.");
             }
         } catch (SQLException e) {
-            throw new DaoException("addProductResultSet() " + e.getMessage());
+            throw new DaoException("updateProduct() " + e.getMessage());
         } finally {
             try {
                 if (preparedStatement != null) {
@@ -65,14 +115,9 @@ public class MySqlProductDao extends MySqlDao implements ProductDaoInterface{
                     freeConnection(connection);
                 }
             } catch (SQLException e) {
-                throw new DaoException("addProduct() " + e.getMessage());
+                throw new DaoException("updateProduct() " + e.getMessage());
             }
         }
-    }
-
-    @Override
-    public void updateProduct(String id, Product p) throws DaoException {
-
     }
 
 //    @Override
