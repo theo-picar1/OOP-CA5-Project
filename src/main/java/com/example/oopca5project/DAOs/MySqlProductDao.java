@@ -35,7 +35,15 @@ public class MySqlProductDao extends MySqlDao implements ProductDaoInterface {
                 productList.add(product);
             }
         } catch (SQLException e) {
-           
+            throw new DaoException("Error retrieving products: " + e.getMessage());
+        } finally {
+            try {
+                if (resultSet != null) resultSet.close();
+                if (statement != null) statement.close();
+                if (connection != null) connection.close();
+            } catch (SQLException e) {
+                throw new DaoException("Error closing resources: " + e.getMessage());
+            }
         }
         return productList;
     }
