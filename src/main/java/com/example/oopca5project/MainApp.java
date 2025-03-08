@@ -30,7 +30,31 @@ public class MainApp {
 
         Methods.menuOptions(options);
 
-        int choice = Methods.validateRange(1, 9);
+        int choice = Methods.validateRange(1, 6);
+
+        switch (choice) {
+            case 1:
+                System.out.println("Displaying all products...");
+                break;
+            case 2:
+                System.out.println("Finding product by ID...");
+                break;
+            case 3:
+                System.out.println("Deleting product by ID...");
+                break;
+            case 4:
+                addProduct();
+                break;
+            case 5:
+                System.out.println("Updating product by ID...");
+                break;
+            case 6:
+                System.out.println("Filtering products...");
+                break;
+            case 7:
+                System.out.println("Ending application. Goodbye!");
+                break;
+        }
     }
 
     public static void addProduct() {
@@ -57,7 +81,8 @@ public class MainApp {
 
             p = new Product(id, product_description, size, unit_price, supplier_id);
             IProductDao.addProduct(p);
-        } catch (DaoException e) {
+        }
+        catch (DaoException e) {
             e.printStackTrace();
         }
     }
