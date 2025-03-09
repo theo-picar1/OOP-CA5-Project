@@ -32,37 +32,34 @@ public class MainApp {
                 "End application"
         };
 
-        int choice;
+        int choice = Methods.validateRange(1, 7);
 
-        do{
-            Methods.menuOptions(options);
+        Methods.menuOptions(options);
 
-            choice = Methods.validateRange(1, 7);
-
-            switch (choice) {
-                case 1:
-                    getAllProducts();
-                    break;
-                case 2:
-                    System.out.println("Finding product by ID...");
-                    break;
-                case 3:
-                    System.out.println("Deleting product by ID...");
-                    break;
-                case 4:
-                    addProduct();
-                    break;
-                case 5:
-                    updateProduct();
-                    break;
-                case 6:
-                    System.out.println("Filtering products...");
-                    break;
-                case 7:
-                    System.out.println("Ending application. Goodbye!");
-                    break;
-            }
-        }while(choice != 7);
+        switch (choice) {
+            case 1:
+                getAllProducts();
+                break;
+            case 2:
+                System.out.println("Finding product by ID...");
+                break;
+            case 3:
+                System.out.println("Deleting product by ID...");
+                break;
+            case 4:
+                addProduct();
+                break;
+            case 5:
+                updateProduct();
+                break;
+            case 6:
+                // Reference: https://stackoverflow.com/questions/66532091/java-8-streams-filter-by-a-property-of-an-object
+                System.out.println("Filtering products...");
+                break;
+            case 7:
+                System.out.println("Ending application. Goodbye!");
+                break;
+        }
     }
 
     // Question 1
@@ -72,25 +69,23 @@ public class MainApp {
 
             if (products.isEmpty()) {
                 System.out.println("Products table is empty! Please add some data first.");
-            }
-            else {
+            } else {
                 for (Product product : products) {
                     System.out.println("{" + product.toString() + "}");
                 }
             }
-        }
-        catch(DaoException e) {
+        } catch (DaoException e) {
             e.printStackTrace();
         }
     }
 
     // Question 2
-    public static void getProductById(){
+    public static void getProductById() {
 
     }
 
     // Question 3
-    public static void deleteProductById(){
+    public static void deleteProductById() {
 
     }
 
@@ -101,8 +96,7 @@ public class MainApp {
             id = sc.nextLine();
 
             IProductDao.addProduct(Methods.getProduct(id));
-        }
-        catch (DaoException e) {
+        } catch (DaoException e) {
             e.printStackTrace();
         }
     }
@@ -114,7 +108,8 @@ public class MainApp {
             id = sc.nextLine();
 
             IProductDao.updateProduct(id, Methods.getProduct(id));
-        }catch(DaoException e) {
+        }
+        catch (DaoException e) {
             e.printStackTrace();
         }
     }
