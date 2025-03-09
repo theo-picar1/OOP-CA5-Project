@@ -90,7 +90,7 @@ public class MySqlProductDao extends MySqlDao implements ProductDaoInterface {
     }
 
     @Override
-    public void deleteProductById(String productId) throws DaoException {
+    public int deleteProductById(String productId) throws DaoException {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         int rowsAffected;
@@ -104,14 +104,6 @@ public class MySqlProductDao extends MySqlDao implements ProductDaoInterface {
             preparedStatement.setString(1, productId);
 
             rowsAffected = preparedStatement.executeUpdate();
-
-            // Checking if the value is bigger than 0 to confirm the product was added
-            if (rowsAffected > 0) {
-                System.out.println("Product deleted successfully!");
-            }
-            else {
-                System.out.println("Product was not deleted!");
-            }
         }
         catch(SQLException e) {
             throw new DaoException("deleteProductById() error! " + e.getMessage());
@@ -128,13 +120,16 @@ public class MySqlProductDao extends MySqlDao implements ProductDaoInterface {
                 throw new DaoException("deleteProductById() error!" + e.getMessage());
             }
         }
+
+        return rowsAffected;
     }
 
     @Override
-    public void addProduct(Product p) throws DaoException {
+    public int addProduct(Product p) throws DaoException {
         // Initializing variables
         Connection connection = null;
         PreparedStatement preparedStatement = null;
+        int rowsAffected;
 
         try {
             // Get connection to database using MySqlDao method
@@ -153,16 +148,7 @@ public class MySqlProductDao extends MySqlDao implements ProductDaoInterface {
             preparedStatement.setString(5, p.getSupplierId());
 
             // Getting the value of how many rows were affected
-            int rowsInserted = preparedStatement.executeUpdate();
-
-            // Checking if the value is bigger than 0 to confirm the product was added
-            if (rowsInserted > 0) {
-                System.out.println("Product added successfully!");
-            } else {
-                System.out.println("Product not added!");
-            }
-
-            // Catch SQLException
+            rowsAffected = preparedStatement.executeUpdate();
         } 
         catch (SQLException e) {
             // Throws DaoException
@@ -187,13 +173,16 @@ public class MySqlProductDao extends MySqlDao implements ProductDaoInterface {
 
             }
         }
+
+        return rowsAffected;
     }
 
     @Override
-    public void updateProduct(String id, Product p) throws DaoException {
+    public int updateProduct(String id, Product p) throws DaoException {
         // Initializing variables
         Connection connection = null;
         PreparedStatement preparedStatement = null;
+        int rowsAffected;
         
         try {
             // Get connection to database using MySqlDao method
@@ -214,24 +203,15 @@ public class MySqlProductDao extends MySqlDao implements ProductDaoInterface {
             preparedStatement.setString(6, id);
 
             // Getting the value of how many rows were affected
-            int rowsUpdated = preparedStatement.executeUpdate();
-
-            // Checking if the value is bigger than 0 to confirm rows were affected
-            if (rowsUpdated == 0) {
-                throw new DaoException("No rows were updated. Product might not exist.");
-            } else {
-                System.out.println("Product updated successfully!");
-            }
-
-            // Catch SQLException
-        } catch (SQLException e) {
-
+            rowsAffected = preparedStatement.executeUpdate();
+        }
+        catch (SQLException e) {
             // Throws DaoException
             throw new DaoException("updateProductResultSet() " + e.getMessage());
 
-        } finally {
+        }
+        finally {
             try {
-
                 // Closes prepared preparedStatement
                 if (preparedStatement != null) {
                     preparedStatement.close();
@@ -243,18 +223,15 @@ public class MySqlProductDao extends MySqlDao implements ProductDaoInterface {
                 }
 
                 // Catches SQLException
-            } catch (SQLException e) {
-
+            }
+            catch (SQLException e) {
                 // Throws DaoException
                 throw new DaoException("updateProduct() " + e.getMessage());
 
             }
         }
-    }
 
-//    @Override
-//    public List<Player> findPlayersApplyFilter(playerAgeComparator) throws DaoException {
-//        return null;
-//    }
+        return rowsAffected;
+    }
 
 }
