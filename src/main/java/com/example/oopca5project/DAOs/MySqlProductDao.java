@@ -14,15 +14,17 @@ public class MySqlProductDao extends MySqlDao implements ProductDaoInterface {
     @Override
     public List<Product> getAllProducts() throws DaoException {
         Connection connection = null;
-        PreparedStatement statement = null;
+        PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         List<Product> productList = new ArrayList<>();
 
         try {
             connection = this.getConnection();
+            
             String query = "SELECT * FROM Products";
-            statement = connection.prepareStatement(query);
-            resultSet = statement.executeQuery();
+            preparedStatement = connection.prepareStatement(query);
+            
+            resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()) {
                 String productId = resultSet.getString("product_id");
@@ -34,12 +36,14 @@ public class MySqlProductDao extends MySqlDao implements ProductDaoInterface {
                 Product product = new Product(productId, description, size, unitPrice, supplierId);
                 productList.add(product);
             }
-        } catch (SQLException e) {
-            throw new DaoException("Error retrieving products: " + e.getMessage());
-        } finally {
+        } 
+        catch (SQLException e) {
+            throw new DaoException("getAllProducts() error! " + e.getMessage());
+        } 
+        finally {
             try {
                 if (resultSet != null) resultSet.close();
-                if (statement != null) statement.close();
+                if (preparedStatement != null) preparedStatement.close();
                 if (connection != null) connection.close();
             } catch (SQLException e) {
                 throw new DaoException("Error closing resources: " + e.getMessage());
@@ -51,17 +55,17 @@ public class MySqlProductDao extends MySqlDao implements ProductDaoInterface {
     @Override
     public Product getProductById(String productId) throws DaoException {
         Connection connection = null;
-        PreparedStatement statement = null;
+        PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         Product product = null;
 
         try {
             connection = this.getConnection();
             String query = "SELECT * FROM Products WHERE product_id = ?";
-            statement = connection.prepareStatement(query);
-            statement.setString(1, productId);
+            preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1, productId);
 
-            resultSet = statement.executeQuery();
+            resultSet = preparedStatement.executeQuery();
 
             if (resultSet.next()) {
                 String description = resultSet.getString("product_description");
@@ -76,7 +80,7 @@ public class MySqlProductDao extends MySqlDao implements ProductDaoInterface {
         } finally {
             try {
                 if (resultSet != null) resultSet.close();
-                if (statement != null) statement.close();
+                if (preparedStatement != null) preparedStatement.close();
                 if (connection != null) connection.close();
             } catch (SQLException e) {
                 throw new DaoException("Error closing resources: " + e.getMessage());
@@ -89,9 +93,9 @@ public class MySqlProductDao extends MySqlDao implements ProductDaoInterface {
     public void deleteProductById(String productId) throws DaoException {
         String query = "DELETE FROM Products WHERE product_id = ?";
         try (Connection connection = this.getConnection();
-             PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setString(1, productId);
-            statement.executeUpdate();
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setString(1, productId);
+            preparedStatement.executeUpdate();
         } catch (SQLException e) {
             throw new DaoException("Error deleting product: " + e.getMessage()); // Fixed error message
         }
@@ -99,23 +103,20 @@ public class MySqlProductDao extends MySqlDao implements ProductDaoInterface {
 
     @Override
     public void addProduct(Product p) throws DaoException {
-
         // Initializing variables
         Connection connection = null;
         PreparedStatement preparedStatement = null;
 
         try {
-
             // Get connection to database using MySqlDao method
             connection = this.getConnection();
 
             // Making query to add product
-            String query = "INSERT INTO Products (Product_Id, Product_Description, Size, Unit_Price, Supplier_Id) VALUES (?, ?, ?, ?, ?)";
-
-            // Making the query into a prepared statement
+            String query = "INSERT INTO Products VALUES (?, ?, ?, ?, ?)";
+            // Making the query into a prepared preparedStatement
             preparedStatement = connection.prepareStatement(query);
 
-            // Initializing/Setting '?' in the prepared statement
+            // Initializing/Setting '?' in the prepared preparedStatement
             preparedStatement.setString(1, p.getId());
             preparedStatement.setString(2, p.getDescription());
             preparedStatement.setString(3, p.getSize());
@@ -133,28 +134,25 @@ public class MySqlProductDao extends MySqlDao implements ProductDaoInterface {
             }
 
             // Catch SQLException
-        } catch (SQLException e) {
-
+        } 
+        catch (SQLException e) {
             // Throws DaoException
             throw new DaoException("addProductResultSet() " + e.getMessage());
 
-        } finally {
-
+        } 
+        finally {
             try {
-
-                // Closes prepared statement
+                // Closes prepared preparedStatement
                 if (preparedStatement != null) {
                     preparedStatement.close();
                 }
-
                 // Frees up connection
                 if (connection != null) {
                     freeConnection(connection);
                 }
-
                 // Catches SQLException
-            } catch (SQLException e) {
-
+            } 
+            catch (SQLException e) {
                 // Throws DaoException
                 throw new DaoException("addProduct() " + e.getMessage());
 
@@ -164,23 +162,21 @@ public class MySqlProductDao extends MySqlDao implements ProductDaoInterface {
 
     @Override
     public void updateProduct(String id, Product p) throws DaoException {
-
         // Initializing variables
         Connection connection = null;
         PreparedStatement preparedStatement = null;
-
+        
         try {
-
             // Get connection to database using MySqlDao method
             connection = this.getConnection();
 
             // Making query to update product
             String query = "UPDATE Products SET Product_id = ?, Product_Description = ?, Size = ?, Unit_Price = ?, Supplier_id = ? WHERE Product_id = ?";
 
-            // Making the query into a prepared statement
+            // Making the query into a prepared preparedStatement
             preparedStatement = connection.prepareStatement(query);
 
-            // Initializing/Setting '?' in the prepared statement
+            // Initializing/Setting '?' in the prepared preparedStatement
             preparedStatement.setString(1, id);
             preparedStatement.setString(2, p.getDescription());
             preparedStatement.setString(3, p.getSize());
@@ -194,7 +190,7 @@ public class MySqlProductDao extends MySqlDao implements ProductDaoInterface {
             // Checking if the value is bigger than 0 to confirm rows were affected
             if (rowsUpdated == 0) {
                 throw new DaoException("No rows were updated. Product might not exist.");
-            }else {
+            } else {
                 System.out.println("Product updated successfully!");
             }
 
@@ -207,7 +203,7 @@ public class MySqlProductDao extends MySqlDao implements ProductDaoInterface {
         } finally {
             try {
 
-                // Closes prepared statement
+                // Closes prepared preparedStatement
                 if (preparedStatement != null) {
                     preparedStatement.close();
                 }
