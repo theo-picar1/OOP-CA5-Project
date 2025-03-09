@@ -49,13 +49,52 @@ public class MySqlProductDao extends MySqlDao implements ProductDaoInterface {
     }
 
     @Override
-    public Product getProductById(String id) throws DaoException {
-        return null;
+    public Product getProductById(String productId) throws DaoException {
+        Connection connection = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        Product product = null;
+
+        try {
+            connection = this.getConnection();
+            String query = "SELECT * FROM Products WHERE product_id = ?";
+            statement = connection.prepareStatement(query);
+            statement.setString(1, productId);
+
+            resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                String description = resultSet.getString("product_description");
+                String size = resultSet.getString("size");
+                double unitPrice = resultSet.getDouble("unit_price");
+                String supplierId = resultSet.getString("supplier_id");
+
+                product = new Product(productId, description, size, unitPrice, supplierId);
+            }
+        } catch (SQLException e) {
+            throw new DaoException("Error retrieving product: " + e.getMessage());
+        } finally {
+            try {
+                if (resultSet != null) resultSet.close();
+                if (statement != null) statement.close();
+                if (connection != null) connection.close();
+            } catch (SQLException e) {
+                throw new DaoException("Error closing resources: " + e.getMessage());
+            }
+        }
+        return product;
     }
 
     @Override
-    public void deleteProductById(String id) throws DaoException {
-
+    public void deleteProductById(String productId) throws DaoException {
+        String query = "DELETE FROM Products WHERE product_id = ?";
+        try (Connection connection = this.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, productId);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            throw new DaoException("Error deleting product: " + e.getMessage()); // Fixed error message
+        }
     }
 
     @Override
