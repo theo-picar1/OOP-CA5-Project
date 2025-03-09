@@ -86,8 +86,15 @@ public class MySqlProductDao extends MySqlDao implements ProductDaoInterface {
     }
 
     @Override
-    public void deleteProductById(String id) throws DaoException {
-
+    public void deleteProductById(String productId) throws DaoException {
+        String query = "DELETE FROM Products WHERE product_id = ?";
+        try (Connection connection = this.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, productId);
+            statement.executeUpdate();
+        } catch (SQLException e) {
+            throw new DaoException("Error deleting product: " + e.getMessage()); // Fixed error message
+        }
     }
 
     @Override
