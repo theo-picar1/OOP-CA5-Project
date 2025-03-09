@@ -8,11 +8,9 @@ public class Methods {
     static Scanner sc = new Scanner(System.in);
 
     public static void menuOptions(String[] options) {
-        System.out.println();
         for(int i = 1; i <= options.length; i++) {
             System.out.println(i + ". " + options[i-1]);
         }
-        System.out.println();
     }
 
     public static int validateRange(int min, int max) {

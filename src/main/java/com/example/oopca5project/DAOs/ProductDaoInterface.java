@@ -21,22 +21,17 @@ public interface ProductDaoInterface {
 //  Feature 3 – Delete an Entity by key
 //              e.g. deleteProductById(id) – remove specified Product from database
 
-    void deleteProductById(String id) throws DaoException;
+    int deleteProductById(String id) throws DaoException;
 
 //  Feature 4 – Insert a Product (gather data, instantiate a Product object, pass
 //              into DAO method for insertion in DB)
 //              e.g. Product insertProduct(Product p)
 //              return new Product (Product DTO) that includes the assigned auto-id.
 
-    void addProduct(Product p) throws DaoException;
+    int addProduct(Product p) throws DaoException;
 
 //  Feature 5 – Update an existing Product by ID using supplied Product object
 //              e.g. updateProduct(int id, Product p) – executes specified updates
 
-    void updateProduct(String id, Product p) throws DaoException;
-
-//  Feature 6 – Get list of entities matching a filter (based on DTO object)
-//              e.g. List<Product> findProductApplyFilter( ProductAgeComparator)
-
-    //List<Product> findPlayersApplyFilter(ProductPriceComparator) throws DaoException;
+    int updateProduct(String id, Product p) throws DaoException;
 }
