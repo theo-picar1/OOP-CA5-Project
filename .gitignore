@@ -16,3 +16,4 @@ src/main/java/com/example/oopca5project/DAOs/MySqlDao.java
 .DS_Store
 .idea/encodings.xml
 pom.xml
+*.docx
