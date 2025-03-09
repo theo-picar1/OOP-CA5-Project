@@ -65,6 +65,7 @@ public class MainApp {
         try {
             List<Product> products = IProductDao.getAllProducts();
 
+            System.out.println("Retrieving all products...");
             if (products.isEmpty()) {
                 System.out.println("Products table is empty! Please add some data first.");
             } else {
@@ -72,7 +73,11 @@ public class MainApp {
                     System.out.println("{" + product.toString() + "}");
                 }
             }
-        } catch (DaoException e) {
+
+            System.out.println();
+            menu();
+        }
+        catch (DaoException e) {
             e.printStackTrace();
         }
     }
@@ -83,7 +88,9 @@ public class MainApp {
             System.out.println("Please enter the id of the product you wish to delete:");
             String id = sc.next();
 
+            System.out.println("Finding product with given id...");
             Product product = IProductDao.getProductById(id);
+
             if(product != null) {
                 System.out.println("Product found!\n{" + product.toString() + "}");
             }
@@ -105,7 +112,15 @@ public class MainApp {
             System.out.println("Please enter the id of the product you wish to delete:");
             String id = sc.next();
 
-            IProductDao.deleteProductById(id);
+            System.out.println("Deleting product with given id...");
+            int rowsAffected = IProductDao.deleteProductById(id);
+
+            if(rowsAffected > 0) {
+                System.out.println("Successfully deleted product with id " +id);
+            }
+            else {
+                System.out.println("An error occurred. Please check if your id exists in the database!");
+            }
         }
         catch(DaoException e) {
             e.printStackTrace();
@@ -119,10 +134,22 @@ public class MainApp {
     public static void addProduct() {
         try {
             System.out.println("Enter product id (e.g. 'product1', 'product2'): ");
-            String id = sc.nextLine();
+            String id = sc.next();
 
-            IProductDao.addProduct(Methods.getProduct(id));
-        } catch (DaoException e) {
+            int rowsAffected = IProductDao.addProduct(Methods.getProduct(id));
+
+            System.out.println("Adding product...");
+            if(rowsAffected > 0) {
+                System.out.println("Product has been successfully added!");
+            }
+            else {
+                System.out.println("An error occurred. Product could not be added!");
+            }
+
+            System.out.println();
+            menu();
+        }
+        catch (DaoException e) {
             e.printStackTrace();
         }
     }
@@ -131,9 +158,20 @@ public class MainApp {
     public static void updateProduct() {
         try {
             System.out.println("Enter product id you wish to update (e.g. 'product1', 'product2'): ");
-            String id = sc.nextLine();
+            String id = sc.next();
 
-            IProductDao.updateProduct(id, Methods.getProduct(id));
+            int rowsAffected = IProductDao.updateProduct(id, Methods.getProduct(id));
+
+            System.out.println("Updating product with given id...");
+            if (rowsAffected > 0) {
+                System.out.println("Product with id " +id+ " has been successfully added");
+            }
+            else {
+                System.out.println("Error in updating product. Check if your product id exists in the database!");
+            }
+
+            System.out.println();
+            menu();
         }
         catch (DaoException e) {
             e.printStackTrace();
@@ -143,17 +181,17 @@ public class MainApp {
     // Question 6
     public static void filterProducts() {
         try {
-            // Initially get all products first
+            // Initially get all products first so we can have something to filter
             List<Product> products = IProductDao.getAllProducts();
 
             if (products.isEmpty()) {
                 System.out.println("Products table is empty! Please add some data first.");
             }
             else {
-                // Reference: https://stackoverflow.com/questions/66532091/java-8-streams-filter-by-a-property-of-an-object
                 System.out.println("Please enter a price (e.g. 10.00) to filter products below that price");
                 double price = sc.nextDouble();
 
+                // Reference: https://stackoverflow.com/questions/66532091/java-8-streams-filter-by-a-property-of-an-object
                 List<Product> productsBelowCertainPrice = products.stream()
                         .filter(p -> p.getPrice() < price)
                         .collect(Collectors.toList());
@@ -170,7 +208,6 @@ public class MainApp {
 
             System.out.println();
             menu();
-
         }
         catch (DaoException e) {
             e.printStackTrace();
