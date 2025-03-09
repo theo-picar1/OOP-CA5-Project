@@ -7,6 +7,7 @@ import com.example.oopca5project.Exceptions.DaoException;
 
 import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 public class MainApp {
     static ProductDaoInterface IProductDao = new MySqlProductDao();
@@ -51,8 +52,7 @@ public class MainApp {
                 updateProduct();
                 break;
             case 6:
-                // Reference: https://stackoverflow.com/questions/66532091/java-8-streams-filter-by-a-property-of-an-object
-                System.out.println("Filtering products...");
+                filterProducts();
                 break;
             case 7:
                 System.out.println("Ending application. Goodbye!");
@@ -142,6 +142,38 @@ public class MainApp {
 
     // Question 6
     public static void filterProducts() {
+        try {
+            // Initially get all products first
+            List<Product> products = IProductDao.getAllProducts();
 
+            if (products.isEmpty()) {
+                System.out.println("Products table is empty! Please add some data first.");
+            }
+            else {
+                // Reference: https://stackoverflow.com/questions/66532091/java-8-streams-filter-by-a-property-of-an-object
+                System.out.println("Please enter a price (e.g. 10.00) to filter products below that price");
+                double price = sc.nextDouble();
+
+                List<Product> productsBelowCertainPrice = products.stream()
+                        .filter(p -> p.getPrice() < price)
+                        .collect(Collectors.toList());
+
+                if(productsBelowCertainPrice.isEmpty()) {
+                    System.out.println("No product found that is below given price!");
+                }
+                else {
+                    for(Product product : productsBelowCertainPrice) {
+                        System.out.println("{" + product.toString() + "}");
+                    }
+                }
+            }
+
+            System.out.println();
+            menu();
+
+        }
+        catch (DaoException e) {
+            e.printStackTrace();
+        }
     }
 }
