@@ -13,8 +13,6 @@ public class MainApp {
 
     static Scanner sc = new Scanner(System.in);
 
-    static String id;
-
     public static void main(String[] args) {
         System.out.println("OOP-CA5 PROJECT");
 
@@ -32,16 +30,16 @@ public class MainApp {
                 "End application"
         };
 
-        int choice = Methods.validateRange(1, 7);
-
         Methods.menuOptions(options);
+
+        int choice = Methods.validateRange(1, 7);
 
         switch (choice) {
             case 1:
                 getAllProducts();
                 break;
             case 2:
-                System.out.println("Finding product by ID...");
+                getProductById();
                 break;
             case 3:
                 System.out.println("Deleting product by ID...");
@@ -81,7 +79,24 @@ public class MainApp {
 
     // Question 2
     public static void getProductById() {
+        try {
+            System.out.println("Please enter the id of the product you wish to delete:");
+            String id = sc.next();
 
+            Product product = IProductDao.getProductById(id);
+            if(product != null) {
+                System.out.println("Product found!\n{" + product.toString() + "}");
+            }
+            else {
+                System.out.println("No product found with given id!");
+            }
+        }
+        catch(DaoException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println();
+        menu();
     }
 
     // Question 3
@@ -93,7 +108,7 @@ public class MainApp {
     public static void addProduct() {
         try {
             System.out.println("Enter product id (e.g. 'product1', 'product2'): ");
-            id = sc.nextLine();
+            String id = sc.nextLine();
 
             IProductDao.addProduct(Methods.getProduct(id));
         } catch (DaoException e) {
@@ -105,7 +120,7 @@ public class MainApp {
     public static void updateProduct() {
         try {
             System.out.println("Enter product id you wish to update (e.g. 'product1', 'product2'): ");
-            id = sc.nextLine();
+            String id = sc.nextLine();
 
             IProductDao.updateProduct(id, Methods.getProduct(id));
         }
