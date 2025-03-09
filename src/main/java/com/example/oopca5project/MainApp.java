@@ -42,7 +42,7 @@ public class MainApp {
                 getProductById();
                 break;
             case 3:
-                System.out.println("Deleting product by ID...");
+                deleteProductById();
                 break;
             case 4:
                 addProduct();
@@ -101,7 +101,18 @@ public class MainApp {
 
     // Question 3
     public static void deleteProductById() {
+        try {
+            System.out.println("Please enter the id of the product you wish to delete:");
+            String id = sc.next();
 
+            IProductDao.deleteProductById(id);
+        }
+        catch(DaoException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println();
+        menu();
     }
 
     // Question 4
