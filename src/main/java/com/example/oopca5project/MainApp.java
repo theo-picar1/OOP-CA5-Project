@@ -178,7 +178,7 @@ public class MainApp {
 
             System.out.println("Updating product with given id...");
             if (rowsAffected > 0) {
-                System.out.println("Product with id " +id+ " has been successfully added");
+                System.out.println("Product with id " +id+ " has been successfully updated");
             }
             else {
                 System.out.println("Error in updating product. Check if your product id exists in the database!");
@@ -230,24 +230,34 @@ public class MainApp {
 
     // Question 7
     public static void ProductsListToJsonString(List<Product> list) {
+        // Creates JSONArray
         JSONArray jsonArray = new JSONArray();
+
+        // Loops through given list
         for (Product product : list) {
+
+            // Creates JSONObject
             JSONObject jsonObject = new JSONObject();
+
+            // Puts product info in the JSONObject in a 'Key' -> 'Value' format
             jsonObject.put("product_id", product.getId());
             jsonObject.put("product_description", product.getDescription());
             jsonObject.put("size", product.getSize());
             jsonObject.put("unit_price", product.getPrice());
             jsonObject.put("supplier_id", product.getSupplierId());
+
+            // Places newly created JSONObject into JSONArray
             jsonArray.put(jsonObject);
+
         }
+
+        // Prints JSONArray in JSON format
         System.out.println(jsonArray.toString());
         menu();
     }
 
     // Question 8
-    public static  String ProductsToJsonString(Product p){
-        return null;
+    public static void ProductsToJsonString(Product p){
+        menu();
     }
-
-
 }
