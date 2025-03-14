@@ -213,4 +213,16 @@ public class MainApp {
             e.printStackTrace();
         }
     }
+
+    // Question 7
+    public static String ProductsListToJsonString(List<Product> list){
+        return null;
+    }
+
+    // Question 8
+    public static  String ProductsToJsonString(Product p){
+        return null;
+    }
+
+
 }
