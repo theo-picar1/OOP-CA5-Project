@@ -31,45 +31,47 @@ public class MainApp {
                 "Add new product",
                 "Update product by ID",
                 "Filter products",
-                "Print entities as JSON"
+                "Display all products as JSON",
+                "Display product as JSON "
         };
 
         Methods.menuOptions(options);
 
-        int choice = Methods.validateRange(0, 7);
+        int choice = Methods.validateRange(1, 9);
 
         try {
             switch (choice) {
-                case 0:
+                case 1:
                     System.out.println("Ending application. Goodbye!");
                     break;
-                case 1:
+                case 2:
                     getAllProducts();
                     break;
-                case 2:
+                case 3:
                     getProductById();
                     break;
-                case 3:
+                case 4:
                     deleteProductById();
                     break;
-                case 4:
+                case 5:
                     addProduct();
                     break;
-                case 5:
+                case 6:
                     updateProduct();
                     break;
-                case 6:
+                case 7:
                     filterProducts();
                     break;
-                case 7:
-                    List<Product> products = IProductDao.getAllProducts();
-                    ProductsListToJsonString(products);
-                    break;
                 case 8:
-                    System.out.println("Question 8");
+                    List<Product> products = IProductDao.getAllProducts();
+                    productsListToJsonString(products);
+                    break;
+                case 9:
+                    productToJsonString();
                     break;
             }
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -99,7 +101,7 @@ public class MainApp {
     // Question 2
     public static void getProductById() {
         try {
-            System.out.println("Please enter the id of the product you wish to delete:");
+            System.out.println("Please enter the id of the product you wish to view:");
             String id = sc.next();
 
             System.out.println("Finding product with given id...");
@@ -229,7 +231,7 @@ public class MainApp {
     }
 
     // Question 7
-    public static void ProductsListToJsonString(List<Product> list) {
+    public static void productsListToJsonString(List<Product> list) {
         // Creates JSONArray
         JSONArray jsonArray = new JSONArray();
 
@@ -257,7 +259,37 @@ public class MainApp {
     }
 
     // Question 8
-    public static void ProductsToJsonString(Product p){
+    public static void productToJsonString() {
+        try {
+            System.out.println("Please enter the id of the product you wish to turn into a JSON:");
+            String id = sc.next();
+
+            System.out.println("Finding product with given id...");
+            Product product = IProductDao.getProductById(id);
+
+            if(product != null) {
+                System.out.println("Product found!\n{" + product.toString() + "}\nTurning found product into a JSON string...");
+
+                // Refer to method productsListToJsonString() for explanation
+                JSONObject jsonObject = new JSONObject();
+
+                jsonObject.put("product_id", product.getId());
+                jsonObject.put("product_description", product.getDescription());
+                jsonObject.put("size", product.getSize());
+                jsonObject.put("unit_price", product.getPrice());
+                jsonObject.put("supplier_id", product.getSupplierId());
+
+                System.out.println("Product as a JSON string:\n" +jsonObject);
+            }
+            else {
+                System.out.println("No product found with given id!");
+            }
+        }
+        catch(DaoException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println();
         menu();
     }
 }
