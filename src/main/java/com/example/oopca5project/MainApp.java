@@ -4,6 +4,8 @@ import com.example.oopca5project.DAOs.ProductDaoInterface;
 import com.example.oopca5project.DAOs.MySqlProductDao;
 import com.example.oopca5project.DTOs.Product;
 import com.example.oopca5project.Exceptions.DaoException;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.List;
 import java.util.Scanner;
@@ -22,41 +24,53 @@ public class MainApp {
 
     public static void menu() {
         String[] options = {
+                "End application",
                 "Display all products",
                 "Find product by ID",
                 "Delete product by ID",
                 "Add new product",
                 "Update product by ID",
                 "Filter products",
-                "End application"
+                "Print entities as JSON"
         };
 
         Methods.menuOptions(options);
 
-        int choice = Methods.validateRange(1, 7);
+        int choice = Methods.validateRange(0, 7);
 
-        switch (choice) {
-            case 1:
-                getAllProducts();
-                break;
-            case 2:
-                getProductById();
-                break;
-            case 3:
-                deleteProductById();
-                break;
-            case 4:
-                addProduct();
-                break;
-            case 5:
-                updateProduct();
-                break;
-            case 6:
-                filterProducts();
-                break;
-            case 7:
-                System.out.println("Ending application. Goodbye!");
-                break;
+        try {
+            switch (choice) {
+                case 0:
+                    System.out.println("Ending application. Goodbye!");
+                    break;
+                case 1:
+                    getAllProducts();
+                    break;
+                case 2:
+                    getProductById();
+                    break;
+                case 3:
+                    deleteProductById();
+                    break;
+                case 4:
+                    addProduct();
+                    break;
+                case 5:
+                    updateProduct();
+                    break;
+                case 6:
+                    filterProducts();
+                    break;
+                case 7:
+                    List<Product> products = IProductDao.getAllProducts();
+                    ProductsListToJsonString(products);
+                    break;
+                case 8:
+                    System.out.println("Question 8");
+                    break;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -164,7 +178,7 @@ public class MainApp {
 
             System.out.println("Updating product with given id...");
             if (rowsAffected > 0) {
-                System.out.println("Product with id " +id+ " has been successfully added");
+                System.out.println("Product with id " +id+ " has been successfully updated");
             }
             else {
                 System.out.println("Error in updating product. Check if your product id exists in the database!");
@@ -212,5 +226,38 @@ public class MainApp {
         catch (DaoException e) {
             e.printStackTrace();
         }
+    }
+
+    // Question 7
+    public static void ProductsListToJsonString(List<Product> list) {
+        // Creates JSONArray
+        JSONArray jsonArray = new JSONArray();
+
+        // Loops through given list
+        for (Product product : list) {
+
+            // Creates JSONObject
+            JSONObject jsonObject = new JSONObject();
+
+            // Puts product info in the JSONObject in a 'Key' -> 'Value' format
+            jsonObject.put("product_id", product.getId());
+            jsonObject.put("product_description", product.getDescription());
+            jsonObject.put("size", product.getSize());
+            jsonObject.put("unit_price", product.getPrice());
+            jsonObject.put("supplier_id", product.getSupplierId());
+
+            // Places newly created JSONObject into JSONArray
+            jsonArray.put(jsonObject);
+
+        }
+
+        // Prints JSONArray in JSON format
+        System.out.println(jsonArray.toString());
+        menu();
+    }
+
+    // Question 8
+    public static void ProductsToJsonString(Product p){
+        menu();
     }
 }
