@@ -208,9 +208,7 @@ public class MainApp {
                 double price = sc.nextDouble();
 
                 // Reference: https://stackoverflow.com/questions/66532091/java-8-streams-filter-by-a-property-of-an-object
-                List<Product> productsBelowCertainPrice = products.stream()
-                        .filter(p -> p.getPrice() < price)
-                        .collect(Collectors.toList());
+                List<Product> productsBelowCertainPrice = Methods.filterProductsByPrice(price, products);
 
                 if(productsBelowCertainPrice.isEmpty()) {
                     System.out.println("No product found that is below given price!");

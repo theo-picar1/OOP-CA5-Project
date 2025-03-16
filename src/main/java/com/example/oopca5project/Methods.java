@@ -2,7 +2,9 @@ package com.example.oopca5project;
 
 import com.example.oopca5project.DTOs.Product;
 
+import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 public class Methods {
     static Scanner sc = new Scanner(System.in);
@@ -107,5 +109,12 @@ public class Methods {
         // returns newly made product object
         return new Product(id,product_description,size,unit_price,supplier_id);
         
+    }
+
+    // SQL DAO METHODS - FOR JUNIT TESTING
+    public static List<Product> filterProductsByPrice(double price, List<Product> products) {
+        return products.stream()
+                .filter(p -> p.getPrice() < price)
+                .collect(Collectors.toList());
     }
 }
