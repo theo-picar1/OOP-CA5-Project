@@ -269,13 +269,8 @@ public class MainApp {
                 System.out.println("Product found!\n{" + product.toString() + "}\nTurning found product into a JSON string...");
 
                 // Refer to method productsListToJsonString() for explanation
-                JSONObject jsonObject = new JSONObject();
 
-                jsonObject.put("product_id", product.getId());
-                jsonObject.put("product_description", product.getDescription());
-                jsonObject.put("size", product.getSize());
-                jsonObject.put("unit_price", product.getPrice());
-                jsonObject.put("supplier_id", product.getSupplierId());
+                JSONObject jsonObject = Methods.turnProductIntoJson(product);
 
                 System.out.println("Product as a JSON string:\n" +jsonObject);
             }
