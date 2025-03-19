@@ -120,6 +120,10 @@ public class Methods {
     }
 
     public static JSONObject turnProductIntoJson(Product product) {
+        if(product == null) {
+            return null;
+        }
+
         JSONObject jsonObject = new JSONObject();
 
         jsonObject.put("product_id", product.getId());

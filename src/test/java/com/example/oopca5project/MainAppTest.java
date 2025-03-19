@@ -9,7 +9,8 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 class MainAppTest {
 
-    // Question 6
+    // ***************************
+    // ***** FEATURE 6 TESTS *****
     @Test
     // Tests to see if filteredProducts will return nothing if provided with no products to filter by (no match test)
     void filterProductsTest1() {
@@ -55,5 +56,16 @@ class MainAppTest {
         int actual = filteredProducts.size();
 
         assertEquals(expected, actual);
+    }
+    // ***************************
+
+    // ***************************
+    // ***** FEATURE 8 TESTS *****
+    @Test
+    // Tests to see if null is returned when null is sent in as a product
+    void oneProductToJsonTest1() {
+        Product product = null;
+
+        assertNull(Methods.turnProductIntoJson(product));
     }
 }
