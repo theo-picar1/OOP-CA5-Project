@@ -11,7 +11,7 @@ class MainAppTest {
 
     // Question 6
     @Test
-    // Tests to see if filteredProducts will return nothing if provided with no products to filter by
+    // Tests to see if filteredProducts will return nothing if provided with no products to filter by (no match test)
     void filterProductsTest1() {
         double price = 10.00;
         List<Product> products = new ArrayList<>();
@@ -24,7 +24,7 @@ class MainAppTest {
     }
 
     @Test
-    // Tests to see if filteredProducts will return everything in the provided products list
+    // Tests to see if filteredProducts will return everything in the provided products list (complete match test)
     void filterProductsTest2() {
         double price = 10.00;
         List<Product> products = new ArrayList<>();
@@ -35,6 +35,23 @@ class MainAppTest {
         List<Product> filteredProducts = Methods.filterProductsByPrice(price, products);
 
         int expected = products.size();
+        int actual = filteredProducts.size();
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    // Tests to see if only some of the products are returned (semi-match test)
+    void filterProductsTest3() {
+        double price = 10.00;
+        List<Product> products = new ArrayList<>();
+        products.add(new Product("", "", "", 9.10, ""));
+        products.add(new Product("", "", "", 8.10, ""));
+        products.add(new Product("", "", "", 11.10, ""));
+
+        List<Product> filteredProducts = Methods.filterProductsByPrice(price, products);
+
+        int expected = 2;
         int actual = filteredProducts.size();
 
         assertEquals(expected, actual);
