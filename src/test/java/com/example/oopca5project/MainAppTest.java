@@ -68,4 +68,18 @@ class MainAppTest {
 
         assertNull(Methods.turnProductIntoJson(product));
     }
+
+    @Test
+    // Tests to see if null is NOT returned (which will be assumed that the product was successfully turned into a JSON object)
+    void oneProductToJsonTest2() {
+        Product product = new Product(
+            "testProduct",
+            "testDescription",
+            "testSize",
+            20.25,
+            "testSupplier"
+        );
+
+        assertNotNull(Methods.turnProductIntoJson(product));
+    }
 }
