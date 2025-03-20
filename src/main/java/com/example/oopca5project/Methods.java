@@ -1,6 +1,7 @@
 package com.example.oopca5project;
 
 import com.example.oopca5project.DTOs.Product;
+import org.json.JSONObject;
 
 import java.util.List;
 import java.util.Scanner;
@@ -116,5 +117,21 @@ public class Methods {
         return products.stream()
                 .filter(p -> p.getPrice() < price)
                 .collect(Collectors.toList());
+    }
+
+    public static JSONObject turnProductIntoJson(Product product) {
+        if(product == null) {
+            return null;
+        }
+
+        JSONObject jsonObject = new JSONObject();
+
+        jsonObject.put("product_id", product.getId());
+        jsonObject.put("product_description", product.getDescription());
+        jsonObject.put("size", product.getSize());
+        jsonObject.put("unit_price", product.getPrice());
+        jsonObject.put("supplier_id", product.getSupplierId());
+
+        return jsonObject;
     }
 }
