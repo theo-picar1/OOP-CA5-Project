@@ -1,5 +1,7 @@
 package com.example.oopca5project;
 
+import com.example.oopca5project.DAOs.MySqlProductDao;
+import com.example.oopca5project.DAOs.ProductDaoInterface;
 import com.example.oopca5project.DTOs.Product;
 import org.junit.jupiter.api.Test;
 
@@ -8,6 +10,30 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 class MainAppTest {
+
+    // ***** FEATURE 1 TESTS *****
+
+        // Input F1 tests.
+
+    // ***************************
+    // ***** FEATURE 2 TESTS *****
+
+        // Input F2 tests.
+
+    // ***************************
+    // ***** FEATURE 3 TESTS *****
+
+        // Input F3 tests.
+
+    // ***************************
+    // ***** FEATURE 4 TESTS *****
+
+        // Input F4 tests
+
+    // ***************************
+    // ***** FEATURE 5 TESTS *****
+
+        // Input F5 tests.
 
     // ***************************
     // ***** FEATURE 6 TESTS *****
@@ -57,7 +83,11 @@ class MainAppTest {
 
         assertEquals(expected, actual);
     }
+
     // ***************************
+    // ***** FEATURE 7 TESTS *****
+
+        // Input F7 tests here
 
     // ***************************
     // ***** FEATURE 8 TESTS *****
