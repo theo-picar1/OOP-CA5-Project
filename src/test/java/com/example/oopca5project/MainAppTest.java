@@ -3,37 +3,79 @@ package com.example.oopca5project;
 import com.example.oopca5project.DAOs.MySqlProductDao;
 import com.example.oopca5project.DAOs.ProductDaoInterface;
 import com.example.oopca5project.DTOs.Product;
+import com.example.oopca5project.Exceptions.DaoException;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.*;
+
 class MainAppTest {
 
     // ***** FEATURE 1 TESTS *****
 
-        // Input F1 tests.
+    // Input F1 tests.
 
     // ***************************
     // ***** FEATURE 2 TESTS *****
 
-        // Input F2 tests.
+    // Input F2 tests.
 
     // ***************************
     // ***** FEATURE 3 TESTS *****
 
-        // Input F3 tests.
+    // Input F3 tests.
 
     // ***************************
     // ***** FEATURE 4 TESTS *****
 
-        // Input F4 tests
+    @Test
+    void addProductWasntAdded() throws DaoException {
+        ProductDaoInterface productAdd = new MySqlProductDao();
+        Product product = new Product("test1", "", "", 1, "");
+
+        try {
+            productAdd.addProduct(product);
+            productAdd.addProduct(product);
+        } catch (Exception e) {
+            assertTrue(true);
+        } finally {
+            productAdd.deleteProductById("test1");
+        }
+    }
+
+    @Test
+    void addProductWasntAddedAndNull() {
+        ProductDaoInterface productAdd = new MySqlProductDao();
+
+        try {
+            productAdd.addProduct(null);
+        } catch (Exception e) {
+            assertTrue(true);
+        }
+    }
+
+    @Test
+    void addProductWasAdded() {
+        ProductDaoInterface productAdd = new MySqlProductDao();
+        Product product = new Product("test3", "", "", 1, "");
+
+        int n = 0;
+        try {
+            n = productAdd.addProduct(product);
+            productAdd.deleteProductById("test3");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        assertEquals(1, n);
+    }
 
     // ***************************
     // ***** FEATURE 5 TESTS *****
 
-        // Input F5 tests.
+    // Input F5 tests.
 
     // ***************************
     // ***** FEATURE 6 TESTS *****
@@ -51,7 +93,7 @@ class MainAppTest {
     }
 
     @Test
-    // Tests to see if filteredProducts will return everything in the provided products list (complete match test)
+        // Tests to see if filteredProducts will return everything in the provided products list (complete match test)
     void filterProductsTest2() {
         double price = 10.00;
         List<Product> products = new ArrayList<>();
@@ -68,7 +110,7 @@ class MainAppTest {
     }
 
     @Test
-    // Tests to see if only some of the products are returned (semi-match test)
+        // Tests to see if only some of the products are returned (semi-match test)
     void filterProductsTest3() {
         double price = 10.00;
         List<Product> products = new ArrayList<>();
@@ -87,7 +129,7 @@ class MainAppTest {
     // ***************************
     // ***** FEATURE 7 TESTS *****
 
-        // Input F7 tests here
+    // Input F7 tests here
 
     // ***************************
     // ***** FEATURE 8 TESTS *****
@@ -100,15 +142,9 @@ class MainAppTest {
     }
 
     @Test
-    // Tests to see if null is NOT returned (which will be assumed that the product was successfully turned into a JSON object)
+        // Tests to see if null is NOT returned (which will be assumed that the product was successfully turned into a JSON object)
     void oneProductToJsonTest2() {
-        Product product = new Product(
-            "testProduct",
-            "testDescription",
-            "testSize",
-            20.25,
-            "testSupplier"
-        );
+        Product product = new Product("testProduct", "testDescription", "testSize", 20.25, "testSupplier");
 
         assertNotNull(Methods.turnProductIntoJson(product));
     }

@@ -1,7 +1,7 @@
 package com.example.oopca5project;
 
-import com.example.oopca5project.DAOs.ProductDaoInterface;
 import com.example.oopca5project.DAOs.MySqlProductDao;
+import com.example.oopca5project.DAOs.ProductDaoInterface;
 import com.example.oopca5project.DTOs.Product;
 import com.example.oopca5project.Exceptions.DaoException;
 import org.json.JSONArray;
@@ -9,7 +9,6 @@ import org.json.JSONObject;
 
 import java.util.List;
 import java.util.Scanner;
-import java.util.stream.Collectors;
 
 public class MainApp {
     static ProductDaoInterface IProductDao = new MySqlProductDao();
@@ -34,7 +33,7 @@ public class MainApp {
                 "Display all products as JSON",
                 "Display product as JSON "
         };
-
+        
         Methods.menuOptions(options);
 
         int choice = Methods.validateRange(1, 9);
@@ -70,8 +69,7 @@ public class MainApp {
                     productToJsonString();
                     break;
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -92,8 +90,7 @@ public class MainApp {
 
             System.out.println();
             menu();
-        }
-        catch (DaoException e) {
+        } catch (DaoException e) {
             e.printStackTrace();
         }
     }
@@ -107,14 +104,12 @@ public class MainApp {
             System.out.println("Finding product with given id...");
             Product product = IProductDao.getProductById(id);
 
-            if(product != null) {
+            if (product != null) {
                 System.out.println("Product found!\n{" + product.toString() + "}");
-            }
-            else {
+            } else {
                 System.out.println("No product found with given id!");
             }
-        }
-        catch(DaoException e) {
+        } catch (DaoException e) {
             e.printStackTrace();
         }
 
@@ -131,14 +126,12 @@ public class MainApp {
             System.out.println("Deleting product with given id...");
             int rowsAffected = IProductDao.deleteProductById(id);
 
-            if(rowsAffected > 0) {
-                System.out.println("Successfully deleted product with id " +id);
-            }
-            else {
+            if (rowsAffected > 0) {
+                System.out.println("Successfully deleted product with id " + id);
+            } else {
                 System.out.println("An error occurred. Please check if your id exists in the database!");
             }
-        }
-        catch(DaoException e) {
+        } catch (DaoException e) {
             e.printStackTrace();
         }
 
@@ -152,20 +145,25 @@ public class MainApp {
             System.out.println("Enter product id (e.g. 'product1', 'product2'): ");
             String id = sc.next();
 
-            int rowsAffected = IProductDao.addProduct(Methods.getProduct(id));
+            Product p = IProductDao.getProductById(id);
 
-            System.out.println("Adding product...");
-            if(rowsAffected > 0) {
-                System.out.println("Product has been successfully added!");
-            }
-            else {
-                System.out.println("An error occurred. Product could not be added!");
+            if (p == null) {
+
+                int rowsAffected = IProductDao.addProduct(Methods.getProduct(id));
+
+                System.out.println("Adding product...");
+                if (rowsAffected > 0) {
+                    System.out.println("Product has been successfully added!");
+                } else {
+                    System.out.println("An error occurred. Product could not be added!");
+                }
+            } else {
+                System.out.println("Product with given id already exists!");
             }
 
             System.out.println();
             menu();
-        }
-        catch (DaoException e) {
+        } catch (DaoException e) {
             e.printStackTrace();
         }
     }
@@ -176,20 +174,26 @@ public class MainApp {
             System.out.println("Enter product id you wish to update (e.g. 'product1', 'product2'): ");
             String id = sc.next();
 
-            int rowsAffected = IProductDao.updateProduct(id, Methods.getProduct(id));
+            Product p = IProductDao.getProductById(id);
 
-            System.out.println("Updating product with given id...");
-            if (rowsAffected > 0) {
-                System.out.println("Product with id " +id+ " has been successfully updated");
-            }
-            else {
-                System.out.println("Error in updating product. Check if your product id exists in the database!");
+            if (p == null) {
+
+                int rowsAffected = IProductDao.updateProduct(id, Methods.getProduct(id));
+
+                System.out.println("Updating product with given id...");
+                if (rowsAffected > 0) {
+                    System.out.println("Product with id " + id + " has been successfully updated");
+                } else {
+                    System.out.println("Error in updating product. Check if your product id exists in the database!");
+                }
+
+            } else {
+                System.out.println("Product with given id already exists!");
             }
 
             System.out.println();
             menu();
-        }
-        catch (DaoException e) {
+        } catch (DaoException e) {
             e.printStackTrace();
         }
     }
@@ -202,19 +206,17 @@ public class MainApp {
 
             if (products.isEmpty()) {
                 System.out.println("Products table is empty! Please add some data first.");
-            }
-            else {
+            } else {
                 System.out.println("Please enter a price (e.g. 10.00) to filter products below that price");
                 double price = sc.nextDouble();
 
                 // Reference: https://stackoverflow.com/questions/66532091/java-8-streams-filter-by-a-property-of-an-object
                 List<Product> productsBelowCertainPrice = Methods.filterProductsByPrice(price, products);
 
-                if(productsBelowCertainPrice.isEmpty()) {
+                if (productsBelowCertainPrice.isEmpty()) {
                     System.out.println("No product found that is below given price!");
-                }
-                else {
-                    for(Product product : productsBelowCertainPrice) {
+                } else {
+                    for (Product product : productsBelowCertainPrice) {
                         System.out.println("{" + product.toString() + "}");
                     }
                 }
@@ -222,8 +224,7 @@ public class MainApp {
 
             System.out.println();
             menu();
-        }
-        catch (DaoException e) {
+        } catch (DaoException e) {
             e.printStackTrace();
         }
     }
@@ -265,19 +266,17 @@ public class MainApp {
             System.out.println("Finding product with given id...");
             Product product = IProductDao.getProductById(id);
 
-            if(product != null) {
+            if (product != null) {
                 System.out.println("Product found!\n{" + product.toString() + "}\nTurning found product into a JSON string...");
 
                 // Refer to method productsListToJsonString() for explanation
                 JSONObject jsonObject = Methods.turnProductIntoJson(product);
 
-                System.out.println("Product as a JSON string:\n" +jsonObject);
-            }
-            else {
+                System.out.println("Product as a JSON string:\n" + jsonObject);
+            } else {
                 System.out.println("No product found with given id!");
             }
-        }
-        catch(DaoException e) {
+        } catch (DaoException e) {
             e.printStackTrace();
         }
 
