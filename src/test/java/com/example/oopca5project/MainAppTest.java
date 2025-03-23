@@ -16,7 +16,37 @@ class MainAppTest {
 
     // ***** FEATURE 1 TESTS *****
 
-    // Input F1 tests.
+    @Test
+// Tests if getAllProducts() returns an empty list (null check)
+    void getAllProductsReturnsNull() {
+        ProductDaoInterface productDao = new MySqlProductDao();
+
+        List<Product> products = null;
+        try {
+            products = productDao.getAllProducts();
+        } catch (DaoException e) {
+            fail("DaoException occurred: " + e.getMessage());
+        }
+
+        assertNotNull(products);
+        assertFalse(products.isEmpty(), "Expected empty list but got: " + products);
+    }
+
+    // Tests if getAllProducts() returns the expected products
+    @Test
+    void getAllProductsReturnsProducts() {
+        ProductDaoInterface productDao = new MySqlProductDao();
+
+        List<Product> products = null;
+        try {
+            products = productDao.getAllProducts();
+        } catch (DaoException e) {
+            fail("DaoException occurred: " + e.getMessage());
+        }
+
+        assertNotNull(products);
+        assertFalse(products.isEmpty(), "Expected products, but the list is empty");
+    }
 
     // ***************************
     // ***** FEATURE 2 TESTS *****
