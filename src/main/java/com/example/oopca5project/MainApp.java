@@ -39,7 +39,7 @@ public class MainApp {
                 "Display product as JSON",
                 "Testing server"
         };
-        
+
         Methods.menuOptions(options);
 
         int choice = Methods.validateRange(1, 10);
@@ -75,7 +75,7 @@ public class MainApp {
                     productToJsonString();
                     break;
                 case 10:
-                    client.start(8000);
+                    client.start();
                     break;
             }
         } catch (Exception e) {
@@ -83,31 +83,42 @@ public class MainApp {
         }
     }
 
-    public void start(int serverPort) {
+    public void start() {
         try (
-            Socket socket = new Socket("localhost", serverPort);
-            OutputStream outputStream = socket.getOutputStream();
+                Socket socket = new Socket("localhost", 8000);
+                PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+                BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         ) {
-            PrintWriter out = new PrintWriter(outputStream, true);
-            System.out.println("Client: Client is now running and has successfully connected to the server!\nClient: Sending a message to the server...");
+            Scanner sc = new Scanner(System.in);
 
-            out.println("Client: Hello server!");
+            System.out.println("Client: Client has connected to the server!");
+            System.out.println("Valid commands are: \"echo <message>\" to get message echoed back, \"quit\"");
+            System.out.println("Please enter a command: ");
+            String request = sc.nextLine();
 
-            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            while (true) {
+                out.println(request);
 
-            String response = in.readLine();
+                if (request.startsWith("echo")) {
+                    String timeString = in.readLine();  // (blocks) waits for response from server, then input string terminated by a newline character ("\n")
+                    System.out.println("Client message: Response from server after \"time\" request: " + timeString);
+                }
+                else if (request.startsWith("quit")) {
+                    String response = in.readLine();   // wait for response -
+                    System.out.println("Client message: Response from server: \"" + response + "\"");
+                    break;
+                }
+                else {
+                    System.out.println("Command unknown. Try again.");
+                }
 
-            System.out.println(response);
-            System.out.println("Client is exiting...");
-
-            menu();
+                request = sc.nextLine();
+            }
+        } catch (IOException e) {
+            System.out.println("Client error: " + e);
         }
-        catch(UnknownHostException e) {
-            System.out.println(e);
-        }
-        catch(IOException e) {
-            System.out.println(e);
-        }
+
+        System.out.println("The client is now terminating...");
     }
 
     // Question 1
