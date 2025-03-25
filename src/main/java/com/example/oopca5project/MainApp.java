@@ -7,6 +7,10 @@ import com.example.oopca5project.Exceptions.DaoException;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.*;
+import java.net.Socket;
+import java.net.UnknownHostException;
+
 import java.util.List;
 import java.util.Scanner;
 
@@ -22,6 +26,7 @@ public class MainApp {
     }
 
     public static void menu() {
+        MainApp client = new MainApp();
         String[] options = {
                 "End application",
                 "Display all products",
@@ -31,12 +36,13 @@ public class MainApp {
                 "Update product by ID",
                 "Filter products",
                 "Display all products as JSON",
-                "Display product as JSON "
+                "Display product as JSON",
+                "Testing server"
         };
         
         Methods.menuOptions(options);
 
-        int choice = Methods.validateRange(1, 9);
+        int choice = Methods.validateRange(1, 10);
 
         try {
             switch (choice) {
@@ -68,9 +74,39 @@ public class MainApp {
                 case 9:
                     productToJsonString();
                     break;
+                case 10:
+                    client.start(8000);
+                    break;
             }
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    public void start(int serverPort) {
+        try (
+            Socket socket = new Socket("localhost", serverPort);
+            OutputStream outputStream = socket.getOutputStream();
+        ) {
+            PrintWriter out = new PrintWriter(outputStream, true);
+            System.out.println("Client: Client is now running and has successfully connected to the server!\nClient: Sending a message to the server...");
+
+            out.println("Client: Hello server!");
+
+            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+
+            String response = in.readLine();
+
+            System.out.println(response);
+            System.out.println("Client is exiting...");
+
+            menu();
+        }
+        catch(UnknownHostException e) {
+            System.out.println(e);
+        }
+        catch(IOException e) {
+            System.out.println(e);
         }
     }
 
