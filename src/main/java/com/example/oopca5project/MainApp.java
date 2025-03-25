@@ -7,6 +7,10 @@ import com.example.oopca5project.Exceptions.DaoException;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.*;
+import java.net.Socket;
+import java.net.UnknownHostException;
+
 import java.util.List;
 import java.util.Scanner;
 
@@ -22,6 +26,7 @@ public class MainApp {
     }
 
     public static void menu() {
+        MainApp client = new MainApp();
         String[] options = {
                 "End application",
                 "Display all products",
@@ -31,12 +36,13 @@ public class MainApp {
                 "Update product by ID",
                 "Filter products",
                 "Display all products as JSON",
-                "Display product as JSON "
+                "Display product as JSON",
+                "Testing server"
         };
-        
+
         Methods.menuOptions(options);
 
-        int choice = Methods.validateRange(1, 9);
+        int choice = Methods.validateRange(1, 10);
 
         try {
             switch (choice) {
@@ -68,10 +74,51 @@ public class MainApp {
                 case 9:
                     productToJsonString();
                     break;
+                case 10:
+                    client.start();
+                    break;
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public void start() {
+        try (
+                Socket socket = new Socket("localhost", 8000);
+                PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+                BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        ) {
+            Scanner sc = new Scanner(System.in);
+
+            System.out.println("Client: Client has connected to the server!");
+            System.out.println("Valid commands are: \"echo <message>\" to get message echoed back, \"quit\"");
+            System.out.println("Please enter a command: ");
+            String request = sc.nextLine();
+
+            while (true) {
+                out.println(request);
+
+                if (request.startsWith("echo")) {
+                    String timeString = in.readLine();  // (blocks) waits for response from server, then input string terminated by a newline character ("\n")
+                    System.out.println("Client message: Response from server after \"time\" request: " + timeString);
+                }
+                else if (request.startsWith("quit")) {
+                    String response = in.readLine();   // wait for response -
+                    System.out.println("Client message: Response from server: \"" + response + "\"");
+                    break;
+                }
+                else {
+                    System.out.println("Command unknown. Try again.");
+                }
+
+                request = sc.nextLine();
+            }
+        } catch (IOException e) {
+            System.out.println("Client error: " + e);
+        }
+
+        System.out.println("The client is now terminating...");
     }
 
     // Question 1
