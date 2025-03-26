@@ -98,20 +98,24 @@ class ClientHandler implements Runnable {
                 System.out.println("Server: (ClientHandler): Read command from client " +clientNumber+ ": " +request);
 
                 if (request.equals("1")) {
+                    // Get all products the exact same way you would in the MainApp class
                     List<Product> products = IProductDao.getAllProducts();
 
                     System.out.println("Retrieving all products...");
                     if (products.isEmpty()) {
+                        // Difference now is we use socketWriter to print it out in the client
                         socketWriter.println("Products table is empty! Please add some data first.");
                     }
                     else {
                         for (Product product : products) {
+                            // Same here
                             socketWriter.println("{" + product.toString() + "}");
                         }
                     }
 
-                    System.out.println("Done!");
+                    // Lets the client know that Server is not sending any more data from products
                     socketWriter.println("Done!");
+                    System.out.println("Ending displayAllProducts() menu...");
                 }
                 else if (request.equals("2")) {
                     socketWriter.println("Sorry to see you leaving. Goodbye.");

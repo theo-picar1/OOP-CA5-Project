@@ -92,7 +92,7 @@ public class MainApp {
             Scanner sc = new Scanner(System.in);
 
             System.out.println("Client: Client has connected to the server!");
-            System.out.println("Valid commands are: \"echo <message>\" to get message echoed back, \"quit\"");
+            System.out.println("Valid commands are: \"1. Display all products\", \"2. Quit\"");
             System.out.println("Please enter a command: ");
             String request = sc.nextLine();
 
@@ -102,6 +102,8 @@ public class MainApp {
                 if (request.equals("1")) {
                     String response;
 
+                    // Because Server is sending back multiple socketWriter statements, we need to use while loop as readLine() does one line at a time.
+                    // End the while loop once "Done!" is read.
                     while((response = in.readLine()) != null && !response.equalsIgnoreCase("Done!")) {
                         System.out.println(response);
                     }
