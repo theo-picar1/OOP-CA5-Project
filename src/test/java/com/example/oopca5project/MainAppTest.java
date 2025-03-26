@@ -84,7 +84,35 @@ class MainAppTest {
     // ***************************
     // ***** FEATURE 3 TESTS *****
 
-    // Input F3 tests.
+    @Test
+    void deleteProductByIdDeletesProduct() {
+        ProductDaoInterface productDao = new MySqlProductDao();
+        String validProductId = "product2";
+
+        int rowsAffected = 0;
+        try {
+            rowsAffected = productDao.deleteProductById(validProductId);
+        } catch (DaoException e) {
+            fail("DaoException occurred: " + e.getMessage());
+        }
+
+        assertEquals(1, 1, rowsAffected);
+    }
+
+    @Test
+    void deleteProductByIdReturnsZeroForInvalidId() {
+        ProductDaoInterface productDao = new MySqlProductDao();
+        String invalidProductId = "product0";
+
+        int rowsAffected = 0;
+        try {
+            rowsAffected = productDao.deleteProductById(invalidProductId);
+        } catch (DaoException e) {
+            fail("DaoException occurred: " + e.getMessage());
+        }
+
+        assertEquals(0, 0, rowsAffected);
+    }
 
     // ***************************
     // ***** FEATURE 4 TESTS *****
@@ -139,7 +167,7 @@ class MainAppTest {
         String id = null;
         try {
             Product p = productUpdate.getProductById(null);
-            productUpdate.updateProduct(null,p);
+            productUpdate.updateProduct(null, p);
         } catch (Exception e) {
             assertTrue(true);
         }
@@ -151,7 +179,7 @@ class MainAppTest {
 
         try {
             Product p = productUpdate.getProductById("1");
-            productUpdate.updateProduct("1",p);
+            productUpdate.updateProduct("1", p);
         } catch (Exception e) {
             assertTrue(true);
         }
