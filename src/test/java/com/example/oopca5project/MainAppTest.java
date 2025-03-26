@@ -51,7 +51,35 @@ class MainAppTest {
     // ***************************
     // ***** FEATURE 2 TESTS *****
 
-    // Input F2 tests.
+    @Test
+    void getProductByIdReturnsProduct() {
+        ProductDaoInterface productDao = new MySqlProductDao();
+        String validProductId = "product1"; // Use a valid product ID from the database
+
+        Product product = null;
+        try {
+            product = productDao.getProductById(validProductId);
+        } catch (DaoException e) {
+            fail("DaoException occurred: " + e.getMessage());
+        }
+
+        assertEquals("product1", validProductId, product.getId());
+    }
+
+    @Test
+    void getProductByIdReturnsNullForInvalidId() {
+        ProductDaoInterface productDao = new MySqlProductDao();
+        String invalidProductId = "product0";
+
+        Product product = null;
+        try {
+            product = productDao.getProductById(invalidProductId);
+        } catch (DaoException e) {
+            fail("DaoException occurred: " + e.getMessage());
+        }
+
+        assertNull(product, "Expected null when product is not found");
+    }
 
     // ***************************
     // ***** FEATURE 3 TESTS *****
