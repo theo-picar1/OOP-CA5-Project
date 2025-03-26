@@ -105,7 +105,44 @@ class MainAppTest {
     // ***************************
     // ***** FEATURE 5 TESTS *****
 
-    // Input F5 tests.
+    @Test
+    void updateProductWasntUpdatedAndIdNull() {
+        ProductDaoInterface productUpdate = new MySqlProductDao();
+        String id = null;
+        try {
+            Product p = productUpdate.getProductById(null);
+            productUpdate.updateProduct(null,p);
+        } catch (Exception e) {
+            assertTrue(true);
+        }
+    }
+
+    @Test
+    void updateProductWasntUpdatedAndIdWrong() {
+        ProductDaoInterface productUpdate = new MySqlProductDao();
+
+        try {
+            Product p = productUpdate.getProductById("1");
+            productUpdate.updateProduct("1",p);
+        } catch (Exception e) {
+            assertTrue(true);
+        }
+    }
+
+    @Test
+    void updateProductWasUpdated() {
+        ProductDaoInterface productUpdate = new MySqlProductDao();
+        int n = 0;
+        Product p2 = new Product("test1", "", "", 1, "");
+        try {
+            Product p1 = productUpdate.getProductById("product2");
+            n = productUpdate.updateProduct("product1", p2);
+            productUpdate.updateProduct("product1", p1);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        assertEquals(1, n);
+    }
 
     // ***************************
     // ***** FEATURE 6 TESTS *****

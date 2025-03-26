@@ -223,7 +223,7 @@ public class MainApp {
 
             Product p = IProductDao.getProductById(id);
 
-            if (p == null) {
+            if (p != null) {
 
                 int rowsAffected = IProductDao.updateProduct(id, Methods.getProduct(id));
 
@@ -235,7 +235,7 @@ public class MainApp {
                 }
 
             } else {
-                System.out.println("Product with given id already exists!");
+                System.out.println("Product with given id doesnt exist!");
             }
 
             System.out.println();
