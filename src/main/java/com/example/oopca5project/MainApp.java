@@ -85,7 +85,7 @@ public class MainApp {
 
     public void start() {
         try (
-                Socket socket = new Socket("localhost", 8000);
+                Socket socket = new Socket("localhost", 8001);
                 PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
                 BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         ) {
@@ -99,11 +99,14 @@ public class MainApp {
             while (true) {
                 out.println(request);
 
-                if (request.startsWith("echo")) {
-                    String timeString = in.readLine();  // (blocks) waits for response from server, then input string terminated by a newline character ("\n")
-                    System.out.println("Client message: Response from server after \"time\" request: " + timeString);
+                if (request.equals("1")) {
+                    String response;
+
+                    while((response = in.readLine()) != null && !response.equalsIgnoreCase("Done!")) {
+                        System.out.println(response);
+                    }
                 }
-                else if (request.startsWith("quit")) {
+                else if (request.equals("2")) {
                     String response = in.readLine();   // wait for response -
                     System.out.println("Client message: Response from server: \"" + response + "\"");
                     break;

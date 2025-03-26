@@ -1,5 +1,8 @@
 package com.example.oopca5project;
 
+import com.example.oopca5project.DTOs.Product;
+import com.example.oopca5project.Exceptions.DaoException;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -7,9 +10,12 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.time.LocalTime;
+import java.util.List;
+
+import static com.example.oopca5project.MainApp.IProductDao;
 
 public class Server {
-    final int SERVER_PORT = 8000;
+    final int SERVER_PORT = 8001;
 
     public static void main(String[] args) {
         Server server = new Server();
@@ -91,12 +97,23 @@ class ClientHandler implements Runnable {
             while((request = socketReader.readLine()) != null) {
                 System.out.println("Server: (ClientHandler): Read command from client " +clientNumber+ ": " +request);
 
-                if (request.startsWith("echo")) {
-                    String message = request.substring(5);
-                    socketWriter.println(message);
-                    System.out.println("Server message: echo message sent to client.");
+                if (request.equals("1")) {
+                    List<Product> products = IProductDao.getAllProducts();
+
+                    System.out.println("Retrieving all products...");
+                    if (products.isEmpty()) {
+                        socketWriter.println("Products table is empty! Please add some data first.");
+                    }
+                    else {
+                        for (Product product : products) {
+                            socketWriter.println("{" + product.toString() + "}");
+                        }
+                    }
+
+                    System.out.println("Done!");
+                    socketWriter.println("Done!");
                 }
-                else if (request.startsWith("quit")) {
+                else if (request.equals("2")) {
                     socketWriter.println("Sorry to see you leaving. Goodbye.");
                     System.out.println("Server message: Client has notified us that it is quitting.");
                 }
@@ -106,7 +123,7 @@ class ClientHandler implements Runnable {
                 }
             }
         }
-        catch(IOException e) {
+        catch(IOException | DaoException e) {
             e.printStackTrace();
         }
         finally {
