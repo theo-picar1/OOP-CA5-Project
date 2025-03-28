@@ -9,7 +9,6 @@ import org.json.JSONObject;
 
 import java.io.*;
 import java.net.Socket;
-import java.net.UnknownHostException;
 
 import java.util.List;
 import java.util.Scanner;
@@ -68,8 +67,7 @@ public class MainApp {
                     filterProducts();
                     break;
                 case 8:
-                    List<Product> products = IProductDao.getAllProducts();
-                    productsListToJsonString(products);
+                    Methods.productsListToJsonString(IProductDao.getAllProducts());
                     break;
                 case 9:
                     productToJsonString();
@@ -274,34 +272,6 @@ public class MainApp {
         } catch (DaoException e) {
             e.printStackTrace();
         }
-    }
-
-    // Question 7
-    public static void productsListToJsonString(List<Product> list) {
-        // Creates JSONArray
-        JSONArray jsonArray = new JSONArray();
-
-        // Loops through given list
-        for (Product product : list) {
-
-            // Creates JSONObject
-            JSONObject jsonObject = new JSONObject();
-
-            // Puts product info in the JSONObject in a 'Key' -> 'Value' format
-            jsonObject.put("product_id", product.getId());
-            jsonObject.put("product_description", product.getDescription());
-            jsonObject.put("size", product.getSize());
-            jsonObject.put("unit_price", product.getPrice());
-            jsonObject.put("supplier_id", product.getSupplierId());
-
-            // Places newly created JSONObject into JSONArray
-            jsonArray.put(jsonObject);
-
-        }
-
-        // Prints JSONArray in JSON format
-        System.out.println(jsonArray.toString());
-        menu();
     }
 
     // Question 8

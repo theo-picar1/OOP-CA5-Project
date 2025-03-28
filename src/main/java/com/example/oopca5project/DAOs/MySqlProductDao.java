@@ -153,7 +153,7 @@ public class MySqlProductDao extends MySqlDao implements ProductDaoInterface {
                     throw new DaoException("addProduct() error! " + "Product already exists!");
                 }
             } else {
-                throw new DaoException("addProduct() error! " + "Product is null!");
+                return 0;
             }
         } catch (SQLException e) {
             // Throws DaoException
@@ -233,5 +233,4 @@ public class MySqlProductDao extends MySqlDao implements ProductDaoInterface {
 
         return rowsAffected;
     }
-
 }

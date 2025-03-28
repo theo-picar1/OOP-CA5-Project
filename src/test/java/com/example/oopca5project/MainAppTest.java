@@ -4,6 +4,7 @@ import com.example.oopca5project.DAOs.MySqlProductDao;
 import com.example.oopca5project.DAOs.ProductDaoInterface;
 import com.example.oopca5project.DTOs.Product;
 import com.example.oopca5project.Exceptions.DaoException;
+import org.json.JSONArray;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -122,14 +123,18 @@ class MainAppTest {
         ProductDaoInterface productAdd = new MySqlProductDao();
         Product product = new Product("test1", "", "", 1, "");
 
+        int n = 0;
         try {
             productAdd.addProduct(product);
-            productAdd.addProduct(product);
+            n = productAdd.addProduct(product);
+        } catch (DaoException ignored) {
+
         } catch (Exception e) {
-            assertTrue(true);
+            e.printStackTrace();
         } finally {
             productAdd.deleteProductById("test1");
         }
+        assertEquals(0, n);
     }
 
     @Test
@@ -164,7 +169,7 @@ class MainAppTest {
     @Test
     void updateProductWasntUpdatedAndIdNull() {
         ProductDaoInterface productUpdate = new MySqlProductDao();
-        String id = null;
+
         try {
             Product p = productUpdate.getProductById(null);
             productUpdate.updateProduct(null, p);
@@ -252,7 +257,28 @@ class MainAppTest {
     // ***************************
     // ***** FEATURE 7 TESTS *****
 
-    // Input F7 tests here
+    @Test
+    void productsListToJsonStringNullList() {
+        List<Product> list = null;
+
+        assertNull(Methods.productsListToJsonString(list));
+    }
+
+    @Test
+    void productsListToJsonStringNullList1() {
+        List<Product> list = List.of(
+                new Product("1", "desc", "small", 2, "1"),
+                new Product("2", "descrip", "medium", 4, "2")
+        );
+
+        JSONArray jsonArray = new JSONArray(
+                "[" +
+                            "{\"size\":\"small\",\"product_id\":\"1\",\"product_description\":\"desc\",\"unit_price\":2,\"supplier_id\":\"1\"}," +
+                            "{\"size\":\"medium\",\"product_id\":\"2\",\"product_description\":\"descrip\",\"unit_price\":4,\"supplier_id\":\"2\"}" +
+                        "]");
+
+        assertEquals(jsonArray.toString(), Methods.productsListToJsonString(list).toString());
+    }
 
     // ***************************
     // ***** FEATURE 8 TESTS *****
