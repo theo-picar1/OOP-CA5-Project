@@ -1,30 +1,30 @@
-drop database if exists Paper_company;
-create database Paper_company;
-use Paper_company;
+drop
+database if exists Paper_company;
+create
+database Paper_company;
+use
+Paper_company;
 
 drop table if exists Products;
+drop table if exists Suppliers;
 
 create table Products
 (
     product_id          varchar(20)  not null,
     product_description varchar(255) not null,
     size                varchar(50)  not null,
-    unit_price          double not null,
+    unit_price double not null,
     supplier_id         varchar(30)  not null,
     primary key (product_id)
 );
 
-CREATE TABLE Suppliers
+create table Suppliers
 (
-    supplier_id   INT PRIMARY KEY AUTO_INCREMENT,
-    supplier_name VARCHAR(255) NOT NULL,
-    contact_name  VARCHAR(255),
-    contact_email VARCHAR(255),
-    phone_number  VARCHAR(20),
-    address       VARCHAR(255),
-    city          VARCHAR(100),
-    postal_code   VARCHAR(20),
-    country       VARCHAR(100)
+    supplier_id       varchar(30) not null,
+    supplier_name     varchar(20),
+    supplier_phone_no varchar(50),
+    supplier_email    varchar(320),
+    primary key (supplier_id)
 );
 
 
@@ -40,15 +40,9 @@ VALUES ('product1', 'A4 Paper', '20cm x 50cm', 6.29, 'Supplier_1'),
        ('product9', 'Graph Paper Pad', '20cm x 50cm', 7.89, 'Supplier_9'),
        ('product10', 'Legal Pad', '22cm x 35cm', 6.75, 'Supplier_10');
 
-INSERT INTO Suppliers (supplier_name, contact_name, contact_email, phone_number, address, city, postal_code, country)
-VALUES
-    ('ABC Supplies', 'John Doe', 'johndoe@abc.com', '123-456-7890', '123 ABC St.', 'New York', '10001', 'USA'),
-    ('XYZ Ltd.', 'Jane Smith', 'janesmith@xyz.com', '987-654-3210', '456 XYZ Ave.', 'Los Angeles', '90001', 'USA'),
-    ('Global Corp', 'Samuel Green', 'samuelgreen@global.com', '555-123-4567', '789 Global Rd.', 'Chicago', '60601', 'USA'),
-    ('Tech Solutions', 'Michael Brown', 'michaelbrown@tech.com', '555-234-5678', '321 Tech Ln.', 'San Francisco', '94101', 'USA'),
-    ('Eco Suppliers', 'Sarah White', 'sarahwhite@eco.com', '555-345-6789', '654 Eco Dr.', 'Miami', '33101', 'USA'),
-    ('Quality Goods', 'William Black', 'williamblack@quality.com', '555-456-7890', '987 Quality Blvd.', 'Houston', '77001', 'USA'),
-    ('Prime Goods', 'Emma Blue', 'emmablue@prime.com', '555-567-8901', '159 Prime Pkwy', 'Seattle', '98101', 'USA'),
-    ('Fast Supplies', 'Olivia Green', 'oliviagreen@fast.com', '555-678-9012', '753 Fast St.', 'Dallas', '75201', 'USA'),
-    ('Metro Goods', 'Lucas Gray', 'lucasgray@metro.com', '555-789-0123', '258 Metro Rd.', 'Boston', '02101', 'USA'),
-    ('Rapid Corp', 'Ava Red', 'avared@rapid.com', '555-890-1234', '369 Rapid St.', 'Denver', '80201', 'USA');
+insert into Suppliers(supplier_id, supplier_name, supplier_phone_no, supplier_email)
+values ('Supplier 1', 'Theo', '0842641245', 'supplier1@gmail.com'),
+       ('Supplier 2', 'Ewan', '0852321298', 'supplier2@icloud.com'),
+       ('Supplier 3', 'Oisin', '0859867465', 'supplier1@yahoo.com'),
+       ('Supplier 4', 'Dami', '0855253415', 'supplier1@me.com'),
+       ('Supplier 5', 'Lala', '0899861276', 'supplier1@outlook.com');
