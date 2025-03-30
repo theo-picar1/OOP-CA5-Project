@@ -82,58 +82,43 @@ public class MainApp {
 
     public void start() {
         try (
-                Socket socket = new Socket("localhost", 8000);
+                Socket socket = new Socket("localhost", 8001);
                 PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
                 BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))
         ) {
             Scanner sc = new Scanner(System.in);
 
             System.out.println("Client: Client has connected to the server!");
-            System.out.println("Valid commands are: \"echo <message>\" to get message echoed back, \"find product\" to find a product By Id, \"quit\"");
+            System.out.println("Valid commands are: 1. Display all products, 2. Find product by ID, 3. Quit");
             System.out.println("Please enter a command: ");
             String request = sc.nextLine();
 
             while (true) {
-
-                // checks if 'find product' was typed
-                if (request.startsWith("find product")) {
-
-                    // Asks for product ID
-                    System.out.println("Please enter the id of the product you wish to view:");
-
-                    // Gets product ID from user input
-                    String id = sc.next();
-
-                    // Adds product ID onto end of 'find product' so it can be retrieved later by server
-                    request += id;
-                }
-
-                // Passes request to server
                 out.println(request);
 
-                if (request.startsWith("echo")) {
-                    String timeString = in.readLine();  // (blocks) waits for response from server, then input string terminated by a newline character ("\n")
-                    System.out.println("Client message: Response from server after \"time\" request: " + timeString);
-                } else if (request.startsWith("quit")) {
-                    String response = in.readLine();   // wait for response -
-                    System.out.println("Client message: Response from server: \"" + response + "\"");
-                    break;
-                } else if (request.startsWith("find product")) { // enters if 'find product' was entered
+                if (request.equals("1")) {
+                    String response;
 
+                    // Because Server is sending back multiple socketWriter statements, we need to use while loop as readLine() does one line at a time.
+                    // End the while loop once "Done!" is read.
+                    while((response = in.readLine()) != null && !response.equalsIgnoreCase("Done!")) {
+                        System.out.println(response);
+                    }
+                }
+                else if (request.equals("2")) {
                     // Reads in response from Server
                     String response = in.readLine();
 
                     // Checks if response is null
                     if(response != null) {
-
                         // Makes JSON string passed from Server into a Product object
                         Product product = Methods.makeProductFromJSON(new JSONObject(response));
 
                         // Prints product object
                         System.out.println("Client message: Response from server: \"" + product + "\"");
 
-                    }else{
-
+                    }
+                    else{
                         // Prints out if product wasn't found
                         System.out.println("Product not found");
                     }
@@ -141,7 +126,13 @@ public class MainApp {
                     // exits while loop
                     break;
 
-                } else {
+                }
+                else if(request.startsWith("3")) {
+                    String response = in.readLine();   // wait for response -
+                    System.out.println("Client message: Response from server: \"" + response + "\"");
+                    break;
+                }
+                else {
                     System.out.println("Command unknown. Try again.");
                 }
 

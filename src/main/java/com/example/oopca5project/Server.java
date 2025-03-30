@@ -5,7 +5,6 @@ import com.example.oopca5project.DAOs.ProductDaoInterface;
 import com.example.oopca5project.DTOs.Product;
 import com.example.oopca5project.Exceptions.DaoException;
 import org.json.JSONObject;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -13,9 +12,12 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.time.LocalTime;
+import java.util.List;
+
+import static com.example.oopca5project.MainApp.IProductDao;
 
 public class Server {
-    final int SERVER_PORT = 8000;
+    final int SERVER_PORT = 8001;
 
     public static void main(String[] args) {
         Server server = new Server();
@@ -97,12 +99,27 @@ class ClientHandler implements Runnable {
             while((request = socketReader.readLine()) != null) {
                 System.out.println("Server: (ClientHandler): Read command from client " +clientNumber+ ": " +request);
 
-                if (request.startsWith("echo")) {
-                    String message = request.substring(5);
-                    socketWriter.println(message);
-                    System.out.println("Server message: echo message sent to client.");
+                if (request.equals("1")) {
+                    // Get all products the exact same way you would in the MainApp class
+                    List<Product> products = IProductDao.getAllProducts();
+
+                    System.out.println("Retrieving all products...");
+                    if (products.isEmpty()) {
+                        // Difference now is we use socketWriter to print it out in the client
+                        socketWriter.println("Products table is empty! Please add some data first.");
+                    }
+                    else {
+                        for (Product product : products) {
+                            // Same here
+                            socketWriter.println("{" + product.toString() + "}");
+                        }
+                    }
+
+                    // Lets the client know that Server is not sending any more data from products
+                    socketWriter.println("Done!");
+                    System.out.println("Ending displayAllProducts() menu...");
                 }
-                else if (request.startsWith("quit")) {
+                else if (request.equals("2")) {
                     socketWriter.println("Sorry to see you leaving. Goodbye.");
                     System.out.println("Server message: Client has notified us that it is quitting.");
                 } else if(request.startsWith("find product")){ // enters if 'find product' is typed
@@ -136,7 +153,7 @@ class ClientHandler implements Runnable {
                 }
             }
         }
-        catch(IOException e) {
+        catch(IOException | DaoException e) {
             e.printStackTrace();
         }
         finally {
