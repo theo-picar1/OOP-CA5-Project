@@ -119,10 +119,7 @@ class ClientHandler implements Runnable {
                     socketWriter.println("Done!");
                     System.out.println("Ending displayAllProducts() menu...");
                 }
-                else if (request.equals("2")) {
-                    socketWriter.println("Sorry to see you leaving. Goodbye.");
-                    System.out.println("Server message: Client has notified us that it is quitting.");
-                } else if(request.startsWith("find product")){ // enters if 'find product' is typed
+                else if(request.startsWith("2")){ // enters if 'find product' is typed
 
                     // Initialize MySqlProductDao object to use Dao methods
                     ProductDaoInterface getProduct= new MySqlProductDao();
@@ -146,6 +143,10 @@ class ClientHandler implements Runnable {
 
                     // Send confirmation message to Client
                     socketWriter.println("Server message: ID has been passed to server passing back product");
+                }
+                else if (request.equals("3")) {
+                    socketWriter.println("Sorry to see you leaving. Goodbye.");
+                    System.out.println("Server message: Client has notified us that it is quitting.");
                 }
                 else {
                     socketWriter.println("Error! I'm sorry I don't understand your request");
