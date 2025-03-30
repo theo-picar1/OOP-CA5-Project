@@ -15,7 +15,7 @@ public class Product {
         this.supplier_id = supplier_id;
     }
 
-    public Product() { };
+    public Product() { }
 
     public String getId() {
         return product_id;
