@@ -119,7 +119,7 @@ class ClientHandler implements Runnable {
                     socketWriter.println("Done!");
                     System.out.println("Ending displayAllProducts() menu...");
                 }
-                else if(request.startsWith("2")){ // enters if 'find product' is typed
+                else if(request.startsWith("2")){ // enters if '2' is typed
 
                     // Initialize MySqlProductDao object to use Dao methods
                     ProductDaoInterface getProduct= new MySqlProductDao();
@@ -128,8 +128,8 @@ class ClientHandler implements Runnable {
                     Product product = new Product();
                     try {
 
-                        // Get product ID that was added onto the end of 'find product' and get Product JSONObject
-                        product = getProduct.getProductById(request.substring(12));
+                        // Get product ID that was added onto the end of '2' and get Product JSONObject
+                        product = getProduct.getProductById(request.substring(1));
 
                     } catch (DaoException e) {
                         e.printStackTrace();

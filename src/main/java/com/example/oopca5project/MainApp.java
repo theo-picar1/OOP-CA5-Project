@@ -89,11 +89,33 @@ public class MainApp {
             Scanner sc = new Scanner(System.in);
 
             System.out.println("Client: Client has connected to the server!");
-            System.out.println("Valid commands are: 1. Display all products, 2. Find product by ID, 3. Quit");
-            System.out.println("Please enter a command: ");
-            String request = sc.nextLine();
+
+            // Initializes variables
+            String request;
 
             while (true) {
+                request = "";
+                // Outputs all available commands
+                System.out.println("\nValid commands are: 1. Display all products, 2. Find product by ID, 3. Quit");
+                System.out.println("Please enter a command: ");
+
+                // asks for user input to choose command
+                request = sc.next();
+
+                // checks if '2' was typed
+                if (request.equals("2")) {
+
+                    // Asks for product ID
+                    System.out.println("Please enter the id of the product you wish to view:");
+
+                    // Gets product ID from user input
+                    String id = sc.next();
+
+                    // Adds product ID onto end of '2' so it can be retrieved later by server
+                    request += id;
+                }
+
+                // Passes request to server
                 out.println(request);
 
                 if (request.equals("1")) {
@@ -105,12 +127,14 @@ public class MainApp {
                         System.out.println(response);
                     }
                 }
-                else if (request.equals("2")) {
+                else if (request.startsWith("2")) { // Enters if request was '2'
+
                     // Reads in response from Server
                     String response = in.readLine();
 
                     // Checks if response is null
                     if(response != null) {
+
                         // Makes JSON string passed from Server into a Product object
                         Product product = Methods.makeProductFromJSON(new JSONObject(response));
 
@@ -123,9 +147,8 @@ public class MainApp {
                         System.out.println("Product not found");
                     }
 
-                    // exits while loop
+                    // Break out of while loop
                     break;
-
                 }
                 else if(request.startsWith("3")) {
                     String response = in.readLine();   // wait for response -
@@ -135,9 +158,6 @@ public class MainApp {
                 else {
                     System.out.println("Command unknown. Try again.");
                 }
-
-                // asks for request input again if command was unknown
-                request = sc.nextLine();
             }
         } catch (IOException e) {
             System.out.println("Client error: " + e);
