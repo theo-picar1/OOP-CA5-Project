@@ -30,4 +30,12 @@ public class Supplier {
     public String getEmail() { return supplier_email; }
 
     public void setEmail(String email) { supplier_email = email; }
+
+    @Override
+    public String toString() {
+        return "\nID = " + supplier_id +
+                ", Name = " + supplier_name +
+                ", Phone no. = " + supplier_phone_no +
+                ", Email = " + supplier_email + "\n";
+    }
 }

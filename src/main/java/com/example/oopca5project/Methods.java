@@ -1,6 +1,7 @@
 package com.example.oopca5project;
 
 import com.example.oopca5project.DTOs.Product;
+import com.example.oopca5project.DTOs.Supplier;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -177,5 +178,16 @@ public class Methods {
 
         // return initialized product
         return product;
+    }
+
+    public static void printObjectIfNotNull(Object obj){
+
+        // checks if object is null
+        if(obj != null){
+
+            // Print object if not null
+            System.out.println(obj);
+
+        }
     }
 }

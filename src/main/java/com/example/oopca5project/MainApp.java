@@ -3,6 +3,7 @@ package com.example.oopca5project;
 import com.example.oopca5project.DAOs.MySqlProductDao;
 import com.example.oopca5project.DAOs.ProductDaoInterface;
 import com.example.oopca5project.DTOs.Product;
+import com.example.oopca5project.DTOs.Supplier;
 import com.example.oopca5project.Exceptions.DaoException;
 import org.json.JSONObject;
 
@@ -35,12 +36,13 @@ public class MainApp {
                 "Filter products",
                 "Display all products as JSON",
                 "Display product as JSON",
-                "Testing server (Find product by ID)"
+                "Testing server (Find product by ID)",
+                "Get Supplier object via Product ID"
         };
 
         Methods.menuOptions(options);
 
-        int choice = Methods.validateRange(1, 10);
+        int choice = Methods.validateRange(1, 11);
 
         try {
             switch (choice) {
@@ -49,31 +51,30 @@ public class MainApp {
                     break;
                 case 2:
                     getAllProducts();
-                    break;
                 case 3:
                     System.out.println("\nmoved to 10\n");
                     menu();
                 case 4:
                     deleteProductById();
-                    break;
                 case 5:
                     addProduct();
-                    break;
                 case 6:
                     updateProduct();
-                    break;
                 case 7:
                     filterProducts();
-                    break;
                 case 8:
                     Methods.productsListToJsonString(IProductDao.getAllProducts());
-                    break;
                 case 9:
                     productToJsonString();
-                    break;
                 case 10:
                     client.start();
-                    break;
+                case 11:
+
+                    // Print Supplier object if not Null
+                    Methods.printObjectIfNotNull(getSupplier());
+
+                    // call menu again.
+                    menu();
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -94,7 +95,7 @@ public class MainApp {
             String request;
 
             while (true) {
-                request = "";
+
                 // Outputs all available commands
                 System.out.println("\nValid commands are: 1. Display all products, 2. Find product by ID, 3. Quit");
                 System.out.println("Please enter a command: ");
@@ -324,5 +325,31 @@ public class MainApp {
 
         System.out.println();
         menu();
+    }
+
+    public static Supplier getSupplier(){
+
+        // Asks for Product ID input
+        System.out.println("Enter product ID you want to search by");
+
+        // Takes in input
+        String ProductId = sc.next();
+
+        // initializes variables
+        Supplier supplier = null;
+
+        try {
+
+            // Gets Supplier object from db using product ID
+            supplier = IProductDao.getSupplierByProductId(ProductId);
+
+        }catch(Exception e){
+
+            // Prints error
+            e.printStackTrace();
+        }
+
+        // returns Supplier
+        return supplier;
     }
 }
