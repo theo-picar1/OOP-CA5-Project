@@ -4,7 +4,6 @@ import com.example.oopca5project.DAOs.MySqlProductDao;
 import com.example.oopca5project.DAOs.ProductDaoInterface;
 import com.example.oopca5project.DTOs.Product;
 import com.example.oopca5project.Exceptions.DaoException;
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.*;
@@ -36,7 +35,7 @@ public class MainApp {
                 "Filter products",
                 "Display all products as JSON",
                 "Display product as JSON",
-                "Testing server"
+                "Testing server (Find product by ID)"
         };
 
         Methods.menuOptions(options);
@@ -52,8 +51,8 @@ public class MainApp {
                     getAllProducts();
                     break;
                 case 3:
-                    getProductById();
-                    break;
+                    System.out.println("\nmoved to 10\n");
+                    menu();
                 case 4:
                     deleteProductById();
                     break;
@@ -85,31 +84,68 @@ public class MainApp {
         try (
                 Socket socket = new Socket("localhost", 8000);
                 PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-                BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))
         ) {
             Scanner sc = new Scanner(System.in);
 
             System.out.println("Client: Client has connected to the server!");
-            System.out.println("Valid commands are: \"echo <message>\" to get message echoed back, \"quit\"");
+            System.out.println("Valid commands are: \"echo <message>\" to get message echoed back, \"find product\" to find a product By Id, \"quit\"");
             System.out.println("Please enter a command: ");
             String request = sc.nextLine();
 
             while (true) {
+
+                // checks if 'find product' was typed
+                if (request.startsWith("find product")) {
+
+                    // Asks for product ID
+                    System.out.println("Please enter the id of the product you wish to view:");
+
+                    // Gets product ID from user input
+                    String id = sc.next();
+
+                    // Adds product ID onto end of 'find product' so it can be retrieved later by server
+                    request += id;
+                }
+
+                // Passes request to server
                 out.println(request);
 
                 if (request.startsWith("echo")) {
                     String timeString = in.readLine();  // (blocks) waits for response from server, then input string terminated by a newline character ("\n")
                     System.out.println("Client message: Response from server after \"time\" request: " + timeString);
-                }
-                else if (request.startsWith("quit")) {
+                } else if (request.startsWith("quit")) {
                     String response = in.readLine();   // wait for response -
                     System.out.println("Client message: Response from server: \"" + response + "\"");
                     break;
-                }
-                else {
+                } else if (request.startsWith("find product")) { // enters if 'find product' was entered
+
+                    // Reads in response from Server
+                    String response = in.readLine();
+
+                    // Checks if response is null
+                    if(response != null) {
+
+                        // Makes JSON string passed from Server into a Product object
+                        Product product = Methods.makeProductFromJSON(new JSONObject(response));
+
+                        // Prints product object
+                        System.out.println("Client message: Response from server: \"" + product + "\"");
+
+                    }else{
+
+                        // Prints out if product wasn't found
+                        System.out.println("Product not found");
+                    }
+
+                    // exits while loop
+                    break;
+
+                } else {
                     System.out.println("Command unknown. Try again.");
                 }
 
+                // asks for request input again if command was unknown
                 request = sc.nextLine();
             }
         } catch (IOException e) {
@@ -138,28 +174,6 @@ public class MainApp {
         } catch (DaoException e) {
             e.printStackTrace();
         }
-    }
-
-    // Question 2
-    public static void getProductById() {
-        try {
-            System.out.println("Please enter the id of the product you wish to view:");
-            String id = sc.next();
-
-            System.out.println("Finding product with given id...");
-            Product product = IProductDao.getProductById(id);
-
-            if (product != null) {
-                System.out.println("Product found!\n{" + product.toString() + "}");
-            } else {
-                System.out.println("No product found with given id!");
-            }
-        } catch (DaoException e) {
-            e.printStackTrace();
-        }
-
-        System.out.println();
-        menu();
     }
 
     // Question 3
@@ -284,7 +298,7 @@ public class MainApp {
             Product product = IProductDao.getProductById(id);
 
             if (product != null) {
-                System.out.println("Product found!\n{" + product.toString() + "}\nTurning found product into a JSON string...");
+                System.out.println("Product found!\n{" + product + "}\nTurning found product into a JSON string...");
 
                 // Refer to method productsListToJsonString() for explanation
                 JSONObject jsonObject = Methods.turnProductIntoJson(product);

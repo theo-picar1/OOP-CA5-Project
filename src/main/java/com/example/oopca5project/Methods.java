@@ -162,4 +162,20 @@ public class Methods {
         // Returns newly created JSONObject
         return jsonObject;
     }
+
+    public static Product makeProductFromJSON(JSONObject jsonObject) {
+
+        // Create product
+        Product product = new Product();
+
+        // initialize product using key -> value method from given JSONObject
+        product.setId(jsonObject.getString("product_id"));
+        product.setDescription(jsonObject.getString("product_description"));
+        product.setSize(jsonObject.getString("size"));
+        product.setPrice(jsonObject.getDouble("unit_price"));
+        product.setSupplierId(jsonObject.getString("supplier_id"));
+
+        // return initialized product
+        return product;
+    }
 }
