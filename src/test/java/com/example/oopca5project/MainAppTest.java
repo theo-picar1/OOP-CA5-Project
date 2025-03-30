@@ -4,6 +4,7 @@ import com.example.oopca5project.DAOs.MySqlProductDao;
 import com.example.oopca5project.DAOs.ProductDaoInterface;
 import com.example.oopca5project.DTOs.Product;
 import com.example.oopca5project.Exceptions.DaoException;
+import org.json.JSONArray;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -84,7 +85,35 @@ class MainAppTest {
     // ***************************
     // ***** FEATURE 3 TESTS *****
 
-    // Input F3 tests.
+    @Test
+    void deleteProductByIdDeletesProduct() {
+        ProductDaoInterface productDao = new MySqlProductDao();
+        String validProductId = "product2";
+
+        int rowsAffected = 0;
+        try {
+            rowsAffected = productDao.deleteProductById(validProductId);
+        } catch (DaoException e) {
+            fail("DaoException occurred: " + e.getMessage());
+        }
+
+        assertEquals(1, 1, rowsAffected);
+    }
+
+    @Test
+    void deleteProductByIdReturnsZeroForInvalidId() {
+        ProductDaoInterface productDao = new MySqlProductDao();
+        String invalidProductId = "product0";
+
+        int rowsAffected = 0;
+        try {
+            rowsAffected = productDao.deleteProductById(invalidProductId);
+        } catch (DaoException e) {
+            fail("DaoException occurred: " + e.getMessage());
+        }
+
+        assertEquals(0, 0, rowsAffected);
+    }
 
     // ***************************
     // ***** FEATURE 4 TESTS *****
@@ -94,14 +123,18 @@ class MainAppTest {
         ProductDaoInterface productAdd = new MySqlProductDao();
         Product product = new Product("test1", "", "", 1, "");
 
+        int n = 0;
         try {
             productAdd.addProduct(product);
-            productAdd.addProduct(product);
+            n = productAdd.addProduct(product);
+        } catch (DaoException ignored) {
+
         } catch (Exception e) {
-            assertTrue(true);
+            e.printStackTrace();
         } finally {
             productAdd.deleteProductById("test1");
         }
+        assertEquals(0, n);
     }
 
     @Test
@@ -136,10 +169,10 @@ class MainAppTest {
     @Test
     void updateProductWasntUpdatedAndIdNull() {
         ProductDaoInterface productUpdate = new MySqlProductDao();
-        String id = null;
+
         try {
             Product p = productUpdate.getProductById(null);
-            productUpdate.updateProduct(null,p);
+            productUpdate.updateProduct(null, p);
         } catch (Exception e) {
             assertTrue(true);
         }
@@ -151,7 +184,7 @@ class MainAppTest {
 
         try {
             Product p = productUpdate.getProductById("1");
-            productUpdate.updateProduct("1",p);
+            productUpdate.updateProduct("1", p);
         } catch (Exception e) {
             assertTrue(true);
         }
@@ -224,7 +257,28 @@ class MainAppTest {
     // ***************************
     // ***** FEATURE 7 TESTS *****
 
-    // Input F7 tests here
+    @Test
+    void productsListToJsonStringNullList() {
+        List<Product> list = null;
+
+        assertNull(Methods.productsListToJsonString(list));
+    }
+
+    @Test
+    void productsListToJsonStringNullList1() {
+        List<Product> list = List.of(
+                new Product("1", "desc", "small", 2, "1"),
+                new Product("2", "descrip", "medium", 4, "2")
+        );
+
+        JSONArray jsonArray = new JSONArray(
+                "[" +
+                            "{\"size\":\"small\",\"product_id\":\"1\",\"product_description\":\"desc\",\"unit_price\":2,\"supplier_id\":\"1\"}," +
+                            "{\"size\":\"medium\",\"product_id\":\"2\",\"product_description\":\"descrip\",\"unit_price\":4,\"supplier_id\":\"2\"}" +
+                        "]");
+
+        assertEquals(jsonArray.toString(), Methods.productsListToJsonString(list).toString());
+    }
 
     // ***************************
     // ***** FEATURE 8 TESTS *****

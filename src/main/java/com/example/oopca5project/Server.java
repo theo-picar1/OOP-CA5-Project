@@ -1,8 +1,10 @@
 package com.example.oopca5project;
 
+import com.example.oopca5project.DAOs.MySqlProductDao;
+import com.example.oopca5project.DAOs.ProductDaoInterface;
 import com.example.oopca5project.DTOs.Product;
 import com.example.oopca5project.Exceptions.DaoException;
-
+import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -120,6 +122,30 @@ class ClientHandler implements Runnable {
                 else if (request.equals("2")) {
                     socketWriter.println("Sorry to see you leaving. Goodbye.");
                     System.out.println("Server message: Client has notified us that it is quitting.");
+                } else if(request.startsWith("find product")){ // enters if 'find product' is typed
+
+                    // Initialize MySqlProductDao object to use Dao methods
+                    ProductDaoInterface getProduct= new MySqlProductDao();
+
+                    // initialize new product object
+                    Product product = new Product();
+                    try {
+
+                        // Get product ID that was added onto the end of 'find product' and get Product JSONObject
+                        product = getProduct.getProductById(request.substring(12));
+
+                    } catch (DaoException e) {
+                        e.printStackTrace();
+                    }
+
+                    // Use retrieved Product and turn it into a JSON object
+                    JSONObject message = Methods.turnProductIntoJson(product);
+
+                    // Send product object to Client
+                    socketWriter.println(message.toString());
+
+                    // Send confirmation message to Client
+                    socketWriter.println("Server message: ID has been passed to server passing back product");
                 }
                 else {
                     socketWriter.println("Error! I'm sorry I don't understand your request");
