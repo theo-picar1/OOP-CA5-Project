@@ -4,7 +4,8 @@ use Paper_company;
 
 drop table if exists Products;
 drop table if exists Suppliers;
-
+drop table if exists Customers;
+drop table if exists CustomersProducts;
 
 create table Suppliers
 (
