@@ -1,13 +1,13 @@
 package com.example.oopca5project;
 
-import com.example.oopca5project.DTOs.Product;
-import com.example.oopca5project.DTOs.Supplier;
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Collectors;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import com.example.oopca5project.DTOs.Product;
 
 public class Methods {
     static Scanner sc = new Scanner(System.in);
@@ -107,7 +107,7 @@ public class Methods {
 
         // getting product supplier id
         System.out.println("Enter product supplier id (e.g. 'supplier1', 'supplier2'): ");
-        supplier_id = sc.nextLine();
+        supplier_id = sc.next();
 
         // returns newly made product object
         return new Product(id,product_description,size,unit_price,supplier_id);

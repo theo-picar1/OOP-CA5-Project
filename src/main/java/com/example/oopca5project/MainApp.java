@@ -1,17 +1,20 @@
 package com.example.oopca5project;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.Socket;
+import java.util.List;
+import java.util.Scanner;
+
+import org.json.JSONObject;
+
 import com.example.oopca5project.DAOs.MySqlProductDao;
 import com.example.oopca5project.DAOs.ProductDaoInterface;
 import com.example.oopca5project.DTOs.Product;
 import com.example.oopca5project.DTOs.Supplier;
 import com.example.oopca5project.Exceptions.DaoException;
-import org.json.JSONObject;
-
-import java.io.*;
-import java.net.Socket;
-
-import java.util.List;
-import java.util.Scanner;
 
 public class MainApp {
     static ProductDaoInterface IProductDao = new MySqlProductDao();
@@ -97,7 +100,7 @@ public class MainApp {
             while (true) {
 
                 // Outputs all available commands
-                System.out.println("\nValid commands are: 1. Display all products, 2. Find product by ID, 3. Quit");
+                System.out.println("\nValid commands are: 1. Display all products, 2. Find product by ID, 3. Add product, 4. Quit");
                 System.out.println("Please enter a command: ");
 
                 // asks for user input to choose command
@@ -114,6 +117,18 @@ public class MainApp {
 
                     // Adds product ID onto end of '2' so it can be retrieved later by server
                     request += id;
+                } else if(request.equals("3")){
+                    // Asks for product ID
+                    System.out.println("Please enter the id of the product you wish to add:");
+
+                    // Gets product ID from user input
+                    String id = sc.next();
+
+                    // Make product
+                    Product product = Methods.getProduct(id);
+
+                    // Turn product into JSONObject and put it at end of '3' so it can be retrieved later by server
+                    request += Methods.turnProductIntoJson(product);
                 }
 
                 // Passes request to server
@@ -141,17 +156,32 @@ public class MainApp {
 
                         // Prints product object
                         System.out.println("Client message: Response from server: \"" + product + "\"");
-
-                    }
-                    else{
+                    } else{
                         // Prints out if product wasn't found
                         System.out.println("Product not found");
                     }
 
                     // Break out of while loop
                     break;
+
+                } else if(request.startsWith("3")){
+
+                    // Reads in response from Server
+                    String response = in.readLine();
+
+                    // makes respense into a JSON object
+                    JSONObject jsonResponse = new JSONObject(response);
+
+                    // gets message from passed from server
+                    String message = jsonResponse.getString("message");
+
+                    // prints message
+                    System.out.println("Message from server: " + message);
+
+                    // Break out of while loop
+                    break;
                 }
-                else if(request.startsWith("3")) {
+                else if(request.equals("4")) {
                     String response = in.readLine();   // wait for response -
                     System.out.println("Client message: Response from server: \"" + response + "\"");
                     break;
@@ -165,6 +195,7 @@ public class MainApp {
         }
 
         System.out.println("The client is now terminating...");
+        menu();
     }
 
     // Question 1
@@ -209,6 +240,18 @@ public class MainApp {
         System.out.println();
         menu();
     }
+
+//      Feature 11 – “Add an Entity”
+//      Implement a client-side menu item that will allow the user to input data for an
+//      entity, serialize the data into a JSON formatted request and send the JSON request
+//      to the server. The server will extract the received JSON data and add the entity
+//      details to the database using a relevant DAO method (INSERT), and will send a
+//      success/failure response to the client. On successful insertion, the response will
+//      return the new Entity object (as JSON data) incorporating the newly allocated ID (if
+//      the ID was auto generated). This will be sent from server to client, and the client will
+//      display the newly added entity, along with its auto generated ID. If the insert fails,
+//      and appropriate error (as JSON) should be returned to the client and an
+//      appropriate client-side message displayed for the user.
 
     // Question 4
     public static void addProduct() {
