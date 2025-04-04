@@ -10,14 +10,23 @@ import java.util.Scanner;
 
 import org.json.JSONObject;
 
+import com.example.oopca5project.DAOs.CustomerDaoInterface;
+import com.example.oopca5project.DAOs.MySqlCustomerDao;
 import com.example.oopca5project.DAOs.MySqlProductDao;
+import com.example.oopca5project.DAOs.MySqlSupplierDao;
 import com.example.oopca5project.DAOs.ProductDaoInterface;
+import com.example.oopca5project.DAOs.SupplierDaoInterface;
+import com.example.oopca5project.DTOs.Customer;
 import com.example.oopca5project.DTOs.Product;
 import com.example.oopca5project.DTOs.Supplier;
 import com.example.oopca5project.Exceptions.DaoException;
 
 public class MainApp {
     static ProductDaoInterface IProductDao = new MySqlProductDao();
+
+    static SupplierDaoInterface ISupplierDao = new MySqlSupplierDao();
+
+    static CustomerDaoInterface ICustomerDao = new MySqlCustomerDao();
 
     static Scanner sc = new Scanner(System.in);
 
@@ -40,12 +49,14 @@ public class MainApp {
                 "Display all products as JSON",
                 "Display product as JSON",
                 "Testing server (Find product by ID)",
-                "Get Supplier object via Product ID"
+                "Get Supplier object via Product ID",
+                "Display all Suppliers",
+                "Display all Customers"
         };
 
         Methods.menuOptions(options);
 
-        int choice = Methods.validateRange(1, 11);
+        int choice = Methods.validateRange(1, 13);
 
         try {
             switch (choice) {
@@ -60,7 +71,8 @@ public class MainApp {
                 case 4:
                     deleteProductById();
                 case 5:
-                    addProduct();
+                    System.out.println("\nmoved to 10\n");
+                    menu();
                 case 6:
                     updateProduct();
                 case 7:
@@ -78,6 +90,10 @@ public class MainApp {
 
                     // call menu again.
                     menu();
+                case 12:
+                    getAllSuppliers();
+                case 13:
+                    getAllCustomers();
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -241,47 +257,6 @@ public class MainApp {
         menu();
     }
 
-//      Feature 11 – “Add an Entity”
-//      Implement a client-side menu item that will allow the user to input data for an
-//      entity, serialize the data into a JSON formatted request and send the JSON request
-//      to the server. The server will extract the received JSON data and add the entity
-//      details to the database using a relevant DAO method (INSERT), and will send a
-//      success/failure response to the client. On successful insertion, the response will
-//      return the new Entity object (as JSON data) incorporating the newly allocated ID (if
-//      the ID was auto generated). This will be sent from server to client, and the client will
-//      display the newly added entity, along with its auto generated ID. If the insert fails,
-//      and appropriate error (as JSON) should be returned to the client and an
-//      appropriate client-side message displayed for the user.
-
-    // Question 4
-    public static void addProduct() {
-        try {
-            System.out.println("Enter product id (e.g. 'product1', 'product2'): ");
-            String id = sc.next();
-
-            Product p = IProductDao.getProductById(id);
-
-            if (p == null) {
-
-                int rowsAffected = IProductDao.addProduct(Methods.getProduct(id));
-
-                System.out.println("Adding product...");
-                if (rowsAffected > 0) {
-                    System.out.println("Product has been successfully added!");
-                } else {
-                    System.out.println("An error occurred. Product could not be added!");
-                }
-            } else {
-                System.out.println("Product with given id already exists!");
-            }
-
-            System.out.println();
-            menu();
-        } catch (DaoException e) {
-            e.printStackTrace();
-        }
-    }
-
     // Question 5
     public static void updateProduct() {
         try {
@@ -384,7 +359,7 @@ public class MainApp {
         try {
 
             // Gets Supplier object from db using product ID
-            supplier = IProductDao.getSupplierByProductId(ProductId);
+            supplier = ISupplierDao.getSupplierByProductId(ProductId);
 
         }catch(Exception e){
 
@@ -394,5 +369,45 @@ public class MainApp {
 
         // returns Supplier
         return supplier;
+    }
+
+       public static void getAllSuppliers() {
+        try {
+            List<Supplier> suppliers = ISupplierDao.getAllSuppliers();
+
+            System.out.println("Retrieving all suppliers...");
+            if (suppliers.isEmpty()) {
+                System.out.println("Suppliers table is empty! Please add some data first.");
+            } else {
+                for (Supplier supplier : suppliers) {
+                    System.out.println("{" + supplier.toString() + "}");
+                }
+            }
+
+            System.out.println();
+            menu();
+        } catch (DaoException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void getAllCustomers() {
+        try {
+            List<Customer> customers = ICustomerDao.getAllCustomers();
+
+            System.out.println("Retrieving all suppliers...");
+            if (customers.isEmpty()) {
+                System.out.println("Suppliers table is empty! Please add some data first.");
+            } else {
+                for (Customer customer : customers) {
+                    System.out.println("{" + customer.toString() + "}");
+                }
+            }
+
+            System.out.println();
+            menu();
+        } catch (DaoException e) {
+            e.printStackTrace();
+        }
     }
 }

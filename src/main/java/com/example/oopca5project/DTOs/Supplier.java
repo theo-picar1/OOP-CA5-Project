@@ -33,9 +33,9 @@ public class Supplier {
 
     @Override
     public String toString() {
-        return "\nID = " + supplier_id +
+        return "ID = " + supplier_id +
                 ", Name = " + supplier_name +
                 ", Phone no. = " + supplier_phone_no +
-                ", Email = " + supplier_email + "\n";
+                ", Email = " + supplier_email;
     }
 }
