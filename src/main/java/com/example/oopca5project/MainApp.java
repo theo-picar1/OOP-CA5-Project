@@ -395,9 +395,9 @@ public class MainApp {
         try {
             List<Customer> customers = ICustomerDao.getAllCustomers();
 
-            System.out.println("Retrieving all suppliers...");
+            System.out.println("Retrieving all customers...");
             if (customers.isEmpty()) {
-                System.out.println("Suppliers table is empty! Please add some data first.");
+                System.out.println("Customers table is empty! Please add some data first.");
             } else {
                 for (Customer customer : customers) {
                     System.out.println("{" + customer.toString() + "}");
