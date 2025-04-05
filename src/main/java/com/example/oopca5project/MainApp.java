@@ -31,7 +31,7 @@ public class MainApp {
     static Scanner sc = new Scanner(System.in);
 
     public static void main(String[] args) {
-        System.out.println("OOP-CA5 PROJECT");
+        System.out.println("***** OOP-CA5 PROJECT *****");
 
         menu();
     }
@@ -51,52 +51,68 @@ public class MainApp {
                 "Testing server (Find product by ID)",
                 "Get Supplier object via Product ID",
                 "Display all Suppliers",
-                "Display all Customers"
+                "Display all Customers",
+                "Add supplier"
         };
 
         Methods.menuOptions(options);
 
-        int choice = Methods.validateRange(1, 13);
+        int choice = Methods.validateRange(1, 14);
 
-        try {
-            switch (choice) {
-                case 1:
-                    System.out.println("Ending application. Goodbye!");
-                    break;
-                case 2:
-                    getAllProducts();
-                case 3:
-                    System.out.println("\nmoved to 10\n");
-                    menu();
-                case 4:
-                    deleteProductById();
-                case 5:
-                    System.out.println("\nmoved to 10\n");
-                    menu();
-                case 6:
-                    updateProduct();
-                case 7:
-                    filterProducts();
-                case 8:
-                    DaoMethods.productsListToJsonString(IProductDao.getAllProducts());
-                case 9:
-                    productToJsonString();
-                case 10:
-                    client.start();
-                case 11:
+        while (choice != 1) {
+            try {
+                switch (choice) {
+                    case 2:
+                        getAllProducts();
+                        break;
+                    case 3:
+                        System.out.println("\nmoved to 10\n");
+                        break;
+                    case 4:
+                        deleteProductById();
+                        break;
+                    case 5:
+                        System.out.println("\nmoved to 10\n");
+                        break;
+                    case 6:
+                        updateProduct();
+                        break;
+                    case 7:
+                        filterProducts();
+                        break;
+                    case 8:
+                        DaoMethods.productsListToJsonString(IProductDao.getAllProducts());
+                        break;
+                    case 9:
+                        productToJsonString();
+                        break;
+                    case 10:
+                        client.start();
+                        break;
+                    case 11:
+                        // Print Supplier object if not Null
+                        DaoMethods.printObjectIfNotNull(getSupplier());
 
-                    // Print Supplier object if not Null
-                    DaoMethods.printObjectIfNotNull(getSupplier());
-
-                    // call menu again.
-                    menu();
-                case 12:
-                    getAllSuppliers();
-                case 13:
-                    getAllCustomers();
+                        break;
+                    case 12:
+                        DaoMethods.getAllSuppliers();
+                        break;
+                    case 13:
+                        DaoMethods.getAllCustomers();
+                        break;
+                    case 14:
+                        DaoMethods.addSupplier();
+                        break;
+                    default:
+                        System.out.println("Invalid option, please try again!");
+                        break;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+
+            Methods.menuOptions(options);
+            choice = sc.nextInt();
         }
     }
 
@@ -133,7 +149,8 @@ public class MainApp {
 
                     // Adds product ID onto end of '2' so it can be retrieved later by server
                     request += id;
-                } else if(request.equals("3")){
+                }
+                else if (request.equals("3")) {
                     // Asks for product ID
                     System.out.println("Please enter the id of the product you wish to add:");
 
@@ -155,7 +172,7 @@ public class MainApp {
 
                     // Because Server is sending back multiple socketWriter statements, we need to use while loop as readLine() does one line at a time.
                     // End the while loop once "Done!" is read.
-                    while((response = in.readLine()) != null && !response.equalsIgnoreCase("Done!")) {
+                    while ((response = in.readLine()) != null && !response.equalsIgnoreCase("Done!")) {
                         System.out.println(response);
                     }
                 }
@@ -165,14 +182,14 @@ public class MainApp {
                     String response = in.readLine();
 
                     // Checks if response is null
-                    if(response != null) {
+                    if (response != null) {
 
                         // Makes JSON string passed from Server into a Product object
                         Product product = DaoMethods.makeProductFromJSON(new JSONObject(response));
 
                         // Prints product object
                         System.out.println("Client message: Response from server: \"" + product + "\"");
-                    } else{
+                    } else {
                         // Prints out if product wasn't found
                         System.out.println("Product not found");
                     }
@@ -180,12 +197,13 @@ public class MainApp {
                     // Break out of while loop
                     break;
 
-                } else if(request.startsWith("3")){
+                }
+                else if (request.startsWith("3")) {
 
                     // Reads in response from Server
                     String response = in.readLine();
 
-                    // makes respense into a JSON object
+                    // makes response into a JSON object
                     JSONObject jsonResponse = new JSONObject(response);
 
                     // gets message from passed from server
@@ -197,7 +215,7 @@ public class MainApp {
                     // Break out of while loop
                     break;
                 }
-                else if(request.equals("4")) {
+                else if (request.equals("4")) {
                     String response = in.readLine();   // wait for response -
                     System.out.println("Client message: Response from server: \"" + response + "\"");
                     break;
@@ -211,7 +229,7 @@ public class MainApp {
         }
 
         System.out.println("The client is now terminating...");
-        menu();
+
     }
 
     // Question 1
@@ -229,7 +247,7 @@ public class MainApp {
             }
 
             System.out.println();
-            menu();
+
         } catch (DaoException e) {
             e.printStackTrace();
         }
@@ -254,7 +272,7 @@ public class MainApp {
         }
 
         System.out.println();
-        menu();
+
     }
 
     // Question 5
@@ -281,7 +299,7 @@ public class MainApp {
             }
 
             System.out.println();
-            menu();
+
         } catch (DaoException e) {
             e.printStackTrace();
         }
@@ -312,7 +330,7 @@ public class MainApp {
             }
 
             System.out.println();
-            menu();
+
         } catch (DaoException e) {
             e.printStackTrace();
         }
@@ -342,10 +360,10 @@ public class MainApp {
         }
 
         System.out.println();
-        menu();
+
     }
 
-    public static Supplier getSupplier(){
+    public static Supplier getSupplier() {
 
         // Asks for Product ID input
         System.out.println("Enter product ID you want to search by");
@@ -361,7 +379,7 @@ public class MainApp {
             // Gets Supplier object from db using product ID
             supplier = ISupplierDao.getSupplierByProductId(ProductId);
 
-        }catch(Exception e){
+        } catch (Exception e) {
 
             // Prints error
             e.printStackTrace();
@@ -369,45 +387,5 @@ public class MainApp {
 
         // returns Supplier
         return supplier;
-    }
-
-       public static void getAllSuppliers() {
-        try {
-            List<Supplier> suppliers = ISupplierDao.getAllSuppliers();
-
-            System.out.println("Retrieving all suppliers...");
-            if (suppliers.isEmpty()) {
-                System.out.println("Suppliers table is empty! Please add some data first.");
-            } else {
-                for (Supplier supplier : suppliers) {
-                    System.out.println("{" + supplier.toString() + "}");
-                }
-            }
-
-            System.out.println();
-            menu();
-        } catch (DaoException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static void getAllCustomers() {
-        try {
-            List<Customer> customers = ICustomerDao.getAllCustomers();
-
-            System.out.println("Retrieving all customers...");
-            if (customers.isEmpty()) {
-                System.out.println("Customers table is empty! Please add some data first.");
-            } else {
-                for (Customer customer : customers) {
-                    System.out.println("{" + customer.toString() + "}");
-                }
-            }
-
-            System.out.println();
-            menu();
-        } catch (DaoException e) {
-            e.printStackTrace();
-        }
     }
 }

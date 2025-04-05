@@ -133,17 +133,19 @@ class ClientHandler implements Runnable {
                     }
 
                     // Use retrieved Product and turn it into a JSON object
-                    JSONObject message = Methods.turnProductIntoJson(product);
+                    JSONObject message = DaoMethods.turnProductIntoJson(product);
 
                     // Send product object to Client
                     socketWriter.println(message.toString());
 
                     // Send confirmation message to Client
                     socketWriter.println("Server message: ID has been passed to server passing back product");
-                } else if (request.equals("4")) {
+                }
+                else if (request.equals("4")) {
                     socketWriter.println("Sorry to see you leaving. Goodbye.");
                     System.out.println("Server message: Client has notified us that it is quitting.");
-                } else if (request.startsWith("3")) {
+                }
+                else if (request.startsWith("3")) {
 
                     // Initialize MySqlProductDao object to use Dao methods
                     ProductDaoInterface addProduct = new MySqlProductDao();
@@ -172,7 +174,7 @@ class ClientHandler implements Runnable {
                         if (product == null) {
                            
                             // get product object from JSON
-                            product = Methods.makeProductFromJSON(jsonObject);
+                            product = DaoMethods.makeProductFromJSON(jsonObject);
 
                             // add product to database
                             productAdded = addProduct.addProduct(product);
