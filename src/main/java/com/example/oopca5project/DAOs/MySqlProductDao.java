@@ -157,8 +157,7 @@ public class MySqlProductDao extends MySqlDao implements ProductDaoInterface {
                 return 0;
             }
         } catch (SQLException e) {
-            // Throws DaoException
-            throw new DaoException("addProductResultSet() " + e.getMessage());
+           return 0;
 
         } finally {
             try {
@@ -189,25 +188,29 @@ public class MySqlProductDao extends MySqlDao implements ProductDaoInterface {
         int rowsAffected;
 
         try {
-            // Get connection to database using MySqlDao method
-            connection = this.getConnection();
+            if(p != null) {
+                // Get connection to database using MySqlDao method
+                connection = this.getConnection();
 
-            // Making query to update product
-            String query = "UPDATE Products SET Product_id = ?, Product_Description = ?, Size = ?, Unit_Price = ?, Supplier_id = ? WHERE Product_id = ?";
+                // Making query to update product
+                String query = "UPDATE Products SET Product_id = ?, Product_Description = ?, Size = ?, Unit_Price = ?, Supplier_id = ? WHERE Product_id = ?";
 
-            // Making the query into a prepared preparedStatement
-            preparedStatement = connection.prepareStatement(query);
+                // Making the query into a prepared preparedStatement
+                preparedStatement = connection.prepareStatement(query);
 
-            // Initializing/Setting '?' in the prepared preparedStatement
-            preparedStatement.setString(1, id);
-            preparedStatement.setString(2, p.getDescription());
-            preparedStatement.setString(3, p.getSize());
-            preparedStatement.setDouble(4, p.getPrice());
-            preparedStatement.setString(5, p.getSupplierId());
-            preparedStatement.setString(6, id);
+                // Initializing/Setting '?' in the prepared preparedStatement
+                preparedStatement.setString(1, id);
+                preparedStatement.setString(2, p.getDescription());
+                preparedStatement.setString(3, p.getSize());
+                preparedStatement.setDouble(4, p.getPrice());
+                preparedStatement.setString(5, p.getSupplierId());
+                preparedStatement.setString(6, id);
 
-            // Getting the value of how many rows were affected
-            rowsAffected = preparedStatement.executeUpdate();
+                // Getting the value of how many rows were affected
+                rowsAffected = preparedStatement.executeUpdate();
+            }else {
+                return 0;
+            }
         } catch (SQLException e) {
             // Throws DaoException
             throw new DaoException("updateProductResultSet() " + e.getMessage());

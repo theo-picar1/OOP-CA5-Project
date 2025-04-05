@@ -21,7 +21,7 @@ public class Supplier {
 
     public String getName() { return supplier_name; }
 
-    public void setName(String name) { supplier_id = name; }
+    public void setName(String name) { supplier_name = name; }
 
     public String getPhoneNo() { return supplier_phone_no; }
 

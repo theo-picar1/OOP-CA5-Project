@@ -8,6 +8,9 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.List;
 
+import com.example.oopca5project.DTOs.Customer;
+import com.example.oopca5project.DTOs.Supplier;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.example.oopca5project.DAOs.MySqlProductDao;
@@ -15,6 +18,8 @@ import com.example.oopca5project.DAOs.ProductDaoInterface;
 import com.example.oopca5project.DTOs.Product;
 import com.example.oopca5project.Exceptions.DaoException;
 import static com.example.oopca5project.MainApp.IProductDao;
+import static com.example.oopca5project.MainApp.ISupplierDao;
+import static com.example.oopca5project.MainApp.ICustomerDao;
 
 public class Server {
 
@@ -99,24 +104,17 @@ class ClientHandler implements Runnable {
                 System.out.println("Server: (ClientHandler): Read command from client " + clientNumber + ": " + request);
 
                 if (request.equals("1")) {
-                    // Get all products the exact same way you would in the MainApp class
+
+                    // Get all Product objects from table
                     List<Product> products = IProductDao.getAllProducts();
 
-                    System.out.println("Retrieving all products...");
-                    if (products.isEmpty()) {
-                        // Difference now is we use socketWriter to print it out in the client
-                        socketWriter.println("Products table is empty! Please add some data first.");
-                    } else {
-                        for (Product product : products) {
-                            // Same here
-                            socketWriter.println("{" + product.toString() + "}");
-                        }
-                    }
+                    // Turn Product objects into JSONArray
+                    JSONArray jsonArray = DaoMethods.productsListToJsonString(products);
 
-                    // Lets the client know that Server is not sending any more data from products
-                    socketWriter.println("Done!");
-                    System.out.println("Ending displayAllProducts() menu...");
-                } else if (request.startsWith("2")) { // enters if '2' is typed
+                    // Pass jsonArray to Client
+                    socketWriter.println(jsonArray);
+
+                } else if (request.equals("4")) { // enters if '2' is typed
 
                     // Initialize MySqlProductDao object to use Dao methods
                     ProductDaoInterface getProduct = new MySqlProductDao();
@@ -126,7 +124,7 @@ class ClientHandler implements Runnable {
                     try {
 
                         // Get product ID that was added onto the end of '2' and get Product JSONObject
-                        product = getProduct.getProductById(request.substring(1));
+                        product = getProduct.getProductById(socketReader.readLine());
 
                     } catch (DaoException e) {
                         e.printStackTrace();
@@ -141,11 +139,11 @@ class ClientHandler implements Runnable {
                     // Send confirmation message to Client
                     socketWriter.println("Server message: ID has been passed to server passing back product");
                 }
-                else if (request.equals("4")) {
+                else if (request.equals("6")) {
                     socketWriter.println("Sorry to see you leaving. Goodbye.");
                     System.out.println("Server message: Client has notified us that it is quitting.");
                 }
-                else if (request.startsWith("3")) {
+                else if (request.equals("5")) {
 
                     // Initialize MySqlProductDao object to use Dao methods
                     ProductDaoInterface addProduct = new MySqlProductDao();
@@ -153,8 +151,8 @@ class ClientHandler implements Runnable {
                     // initialize all variables
                     Product product;
                     int productAdded;
-                    String jsonString = request.substring(1);
-                    JSONObject jsonObject = new JSONObject(jsonString); 
+                    String jsonString = socketReader.readLine();
+                    JSONObject jsonObject = new JSONObject(jsonString);
                     String id = jsonObject.getString("product_id");
 
                     // make success and error messages
@@ -199,7 +197,27 @@ class ClientHandler implements Runnable {
                     } catch (DaoException e) {
                         e.printStackTrace();
                     }
-                } else {
+                } else if(request.equals("2")) {
+
+                    // Get all supplier objects from table
+                    List<Supplier> suppliers = ISupplierDao.getAllSuppliers();
+
+                    // Turn supplier objects into JSONArray
+                    JSONArray jsonArray = DaoMethods.suppliersListToJsonString(suppliers);
+
+                    // Pass jsonArray to Client
+                    socketWriter.println(jsonArray);
+
+                } else if(request.equals("3")){
+                    // Get all Customer objects from table
+                    List<Customer> customers = ICustomerDao.getAllCustomers();
+
+                    // Turn Customer objects into JSONArray
+                    JSONArray jsonArray = DaoMethods.customersListToJsonString(customers);
+
+                    // Pass jsonArray to Client
+                    socketWriter.println(jsonArray);
+                }else {
                     socketWriter.println("Error! I'm sorry I don't understand your request");
                     System.out.println("Server message: Invalid request from client.");
                 }
