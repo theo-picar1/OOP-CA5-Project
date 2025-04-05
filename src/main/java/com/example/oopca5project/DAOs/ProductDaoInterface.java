@@ -1,10 +1,9 @@
 package com.example.oopca5project.DAOs;
 
-import com.example.oopca5project.DTOs.Product;
-import com.example.oopca5project.DTOs.Supplier;
-import com.example.oopca5project.Exceptions.DaoException;
-
 import java.util.List;
+
+import com.example.oopca5project.DTOs.Product;
+import com.example.oopca5project.Exceptions.DaoException;
 
 public interface ProductDaoInterface {
 //  Feature 1 – Get all Products
@@ -35,7 +34,4 @@ public interface ProductDaoInterface {
 //              e.g. updateProduct(int id, Product p) – executes specified updates
 
     int updateProduct(String id, Product p) throws DaoException;
-
-    Supplier getSupplierByProductId(String supplierId) throws DaoException;
-
 }

@@ -30,4 +30,12 @@ public class Customer {
     public String getAddress() { return customer_address; }
 
     public void setAddress(String address) { customer_address = address; }
+
+    @Override
+    public String toString() {
+        return "ID = " + customer_id +
+                ", Name = " + customer_name +
+                ", Email = " + customer_email +
+                ", Address = " + customer_address;
+    }
 }
