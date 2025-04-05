@@ -8,6 +8,7 @@ import com.example.oopca5project.Exceptions.DaoException;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.Scanner;
@@ -27,9 +28,6 @@ public class DaoMethods {
         String product_description, size, supplier_id;
         double unit_price;
 
-        // getting rid of stray \n (new line) character
-        sc.nextLine();
-
         // getting product description
         System.out.println("Enter product description: ");
         product_description = sc.nextLine();
@@ -41,7 +39,6 @@ public class DaoMethods {
         // getting product unit price
         System.out.println("Enter product unit price: ");
         unit_price = Methods.validateDoubleRange(0);
-        sc.nextLine();
 
         // getting product supplier id
         System.out.println("Enter product supplier id (e.g. 'supplier1', 'supplier2'): ");
@@ -118,13 +115,18 @@ public class DaoMethods {
         return product;
     }
 
-    public static void printObjectIfNotNull(Object obj){
+    public static void printObject(Object obj){
 
         // checks if object is null
         if(obj != null){
 
             // Print object if not null
             System.out.println(obj);
+
+        }else{
+
+            // Print error message
+            System.out.println("Object was not found");
 
         }
     }
@@ -141,9 +143,6 @@ public class DaoMethods {
                     System.out.println("{" + supplier.toString() + "}");
                 }
             }
-
-            System.out.println();
-
         } catch (DaoException e) {
             e.printStackTrace();
         }
@@ -161,9 +160,6 @@ public class DaoMethods {
                     System.out.println("{" + customer.toString() + "}");
                 }
             }
-
-            System.out.println();
-
         } catch (DaoException e) {
             e.printStackTrace();
         }
@@ -197,6 +193,181 @@ public class DaoMethods {
         }
         catch(DaoException e) {
             e.printStackTrace();
+        }
+    }
+
+    // Overloaded methods
+    public static JSONArray suppliersListToJsonString(List<Supplier> list) {
+        if (list != null) {
+            // Creates JSONArray
+            JSONArray jsonArray = new JSONArray();
+
+            // Loops through given list
+            for (Supplier supplier : list) {
+
+                // Places newly created JSONObject into JSONArray
+                jsonArray.put(turnSupplierIntoJson(supplier));
+
+            }
+
+            // Returns JSONArray in JSON format
+            return jsonArray;
+        }
+        return null;
+    }
+
+    public static JSONObject turnSupplierIntoJson(Supplier supplier) {
+        // Checks if the passed product is null
+        if(supplier == null) {
+
+            // Returns null if null
+            return null;
+
+        }
+
+        // Creates JSONObject
+        JSONObject jsonObject = new JSONObject();
+
+        // Puts product info in the JSONObject in a 'Key' -> 'Value' format
+        jsonObject.put("supplier_id", supplier.getId());
+        jsonObject.put("supplier_name", supplier.getName());
+        jsonObject.put("supplier_phone_no", supplier.getPhoneNo());
+        jsonObject.put("supplier_email", supplier.getEmail());
+
+        // Returns newly created JSONObject
+        return jsonObject;
+    }
+
+    public static ArrayList<Supplier> makeSupplierListFromJSONArray(JSONArray jsonArray) {
+
+        // Create list of Supplier objects
+        ArrayList<Supplier> list = new ArrayList<>();
+
+        for(int i = 0; i < jsonArray.length(); i++) {
+            JSONObject obj = jsonArray.getJSONObject(i);
+            list.add(makeSupplierFromJSON(obj));
+        }
+
+        // return initialized Supplier list
+        return list;
+    }
+
+    public static Supplier makeSupplierFromJSON(JSONObject jsonObject) {
+
+        // Create supplier
+        Supplier supplier = new Supplier();
+
+        // initialize supplier using key -> value method from given JSONObject
+        supplier.setId(jsonObject.getString("supplier_id"));
+        supplier.setName(jsonObject.getString("supplier_name"));
+        supplier.setPhoneNo(jsonObject.getString("supplier_phone_no"));
+        supplier.setEmail(jsonObject.getString("supplier_email"));
+
+        // return initialized supplier
+        return supplier;
+    }
+
+    public static ArrayList<Product> makeProductListFromJSONArray(JSONArray jsonArray) {
+
+        // Create list of Product objects
+        ArrayList<Product> list = new ArrayList<>();
+
+        for(int i = 0; i < jsonArray.length(); i++) {
+            JSONObject obj = jsonArray.getJSONObject(i);
+            list.add(makeProductFromJSON(obj));
+        }
+
+        // return initialized Product list
+        return list;
+    }
+
+    public static ArrayList<Customer> makeCustomerListFromJSONArray(JSONArray jsonArray) {
+
+        // Create list of Customer objects
+        ArrayList<Customer> list = new ArrayList<>();
+
+        for(int i = 0; i < jsonArray.length(); i++) {
+            JSONObject obj = jsonArray.getJSONObject(i);
+            list.add(makeCustomerFromJSON(obj));
+        }
+
+        // return initialized Customer list
+        return list;
+    }
+
+    public static Customer makeCustomerFromJSON(JSONObject jsonObject) {
+
+        // Create Customer
+        Customer customer = new Customer();
+
+        // initialize supplier using key -> value method from given JSONObject
+        customer.setId(jsonObject.getInt("customer_id"));
+        customer.setName(jsonObject.getString("customer_name"));
+        customer.setEmail(jsonObject.getString("customer_email"));
+        customer.setAddress(jsonObject.getString("customer_address"));
+
+        // return initialized Customer
+        return customer;
+    }
+
+    public static JSONArray customersListToJsonString(List<Customer> list) {
+        if (list != null) {
+            // Creates JSONArray
+            JSONArray jsonArray = new JSONArray();
+
+            // Loops through given list
+            for (Customer customer : list) {
+
+                // Places newly created JSONObject into JSONArray
+                jsonArray.put(turnCustomerIntoJson(customer));
+
+            }
+
+            // Returns JSONArray in JSON format
+            return jsonArray;
+        }
+        return null;
+    }
+
+    public static JSONObject turnCustomerIntoJson(Customer customer) {
+        // Checks if the passed product is null
+        if(customer == null) {
+
+            // Returns null if null
+            return null;
+
+        }
+
+        // Creates JSONObject
+        JSONObject jsonObject = new JSONObject();
+
+        // Puts customer info in the JSONObject in a 'Key' -> 'Value' format
+        jsonObject.put("customer_id", customer.getId());
+        jsonObject.put("customer_name", customer.getName());
+        jsonObject.put("customer_email", customer.getEmail());
+        jsonObject.put("customer_address", customer.getAddress());
+
+        // Returns newly created JSONObject
+        return jsonObject;
+    }
+
+    // <T> is a Generic type. i.e it creates (lists) without casting types.
+    // This allows for a list of Products, Suppliers, and Customers to be
+    // Passed into this method without the need for overloading.
+    public static <T> void printListOfObjects(ArrayList<T> objList) {
+
+        // check if passed list is empty
+        if(objList != null && !objList.isEmpty()) {
+
+            // print each Object in turn
+            for (Object obj : objList) {
+                System.out.println(obj);
+            }
+
+        }else{
+
+            // Print error message if list is empty
+            System.out.println("List is empty");
         }
     }
 }

@@ -151,7 +151,7 @@ class MainAppTest {
     @Test
     void addProductWasAdded() {
         ProductDaoInterface productAdd = new MySqlProductDao();
-        Product product = new Product("test3", "", "", 1, "");
+        Product product = new Product("test3", "", "", 1, "supplier1");
 
         int n = 0;
         try {
@@ -161,6 +161,20 @@ class MainAppTest {
             e.printStackTrace();
         }
         assertEquals(1, n);
+    }
+
+    @Test
+    void addProductWasntAddedForeginKey() {
+        ProductDaoInterface productAdd = new MySqlProductDao();
+        Product product = new Product("test3", "j", "k", 1, "supp");
+
+        int n = 0;
+        try {
+            n = productAdd.addProduct(product);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        assertEquals(0, n);
     }
 
     // ***************************
@@ -194,9 +208,9 @@ class MainAppTest {
     void updateProductWasUpdated() {
         ProductDaoInterface productUpdate = new MySqlProductDao();
         int n = 0;
-        Product p2 = new Product("test1", "", "", 1, "");
+        Product p2 = new Product("test1", "", "", 1, "supplier1");
         try {
-            Product p1 = productUpdate.getProductById("product2");
+            Product p1 = productUpdate.getProductById("product3");
             n = productUpdate.updateProduct("product1", p2);
             productUpdate.updateProduct("product1", p1);
         } catch (Exception e) {
@@ -212,7 +226,7 @@ class MainAppTest {
     void filterProductsTest1() {
         double price = 10.00;
         List<Product> products = new ArrayList<>();
-        List<Product> filteredProducts = Methods.filterProductsByPrice(price, products);
+        List<Product> filteredProducts = DaoMethods.filterProductsByPrice(price, products);
 
         int expected = 0;
         int actual = filteredProducts.size();
@@ -229,7 +243,7 @@ class MainAppTest {
         products.add(new Product("", "", "", 8.10, ""));
         products.add(new Product("", "", "", 1.10, ""));
 
-        List<Product> filteredProducts = Methods.filterProductsByPrice(price, products);
+        List<Product> filteredProducts = DaoMethods.filterProductsByPrice(price, products);
 
         int expected = products.size();
         int actual = filteredProducts.size();
@@ -246,7 +260,7 @@ class MainAppTest {
         products.add(new Product("", "", "", 8.10, ""));
         products.add(new Product("", "", "", 11.10, ""));
 
-        List<Product> filteredProducts = Methods.filterProductsByPrice(price, products);
+        List<Product> filteredProducts = DaoMethods.filterProductsByPrice(price, products);
 
         int expected = 2;
         int actual = filteredProducts.size();
@@ -261,7 +275,7 @@ class MainAppTest {
     void productsListToJsonStringNullList() {
         List<Product> list = null;
 
-        assertNull(Methods.productsListToJsonString(list));
+        assertNull(DaoMethods.productsListToJsonString(list));
     }
 
     @Test
@@ -277,7 +291,7 @@ class MainAppTest {
                             "{\"size\":\"medium\",\"product_id\":\"2\",\"product_description\":\"descrip\",\"unit_price\":4,\"supplier_id\":\"2\"}" +
                         "]");
 
-        assertEquals(jsonArray.toString(), Methods.productsListToJsonString(list).toString());
+        assertEquals(jsonArray.toString(), DaoMethods.productsListToJsonString(list).toString());
     }
 
     // ***************************
@@ -287,7 +301,7 @@ class MainAppTest {
     void oneProductToJsonTest1() {
         Product product = null;
 
-        assertNull(Methods.turnProductIntoJson(product));
+        assertNull(DaoMethods.turnProductIntoJson(product));
     }
 
     @Test
@@ -295,6 +309,6 @@ class MainAppTest {
     void oneProductToJsonTest2() {
         Product product = new Product("testProduct", "testDescription", "testSize", 20.25, "testSupplier");
 
-        assertNotNull(Methods.turnProductIntoJson(product));
+        assertNotNull(DaoMethods.turnProductIntoJson(product));
     }
 }
