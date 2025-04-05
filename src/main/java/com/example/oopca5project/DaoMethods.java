@@ -1,16 +1,25 @@
 package com.example.oopca5project;
 
+import com.example.oopca5project.DAOs.*;
+import com.example.oopca5project.DTOs.Customer;
 import com.example.oopca5project.DTOs.Product;
+import com.example.oopca5project.DTOs.Supplier;
+import com.example.oopca5project.Exceptions.DaoException;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.Scanner;
-
 // This class is for separating DAO method logic from the main app. This helps with testing purposes
 public class DaoMethods {
     static Scanner sc = new Scanner(System.in);
+
+    static ProductDaoInterface IProductDao = new MySqlProductDao();
+
+    static SupplierDaoInterface ISupplierDao = new MySqlSupplierDao();
+
+    static CustomerDaoInterface ICustomerDao = new MySqlCustomerDao();
 
     public static Product getProduct(String id) {
 
@@ -117,6 +126,77 @@ public class DaoMethods {
             // Print object if not null
             System.out.println(obj);
 
+        }
+    }
+
+    public static void getAllSuppliers() {
+        try {
+            List<Supplier> suppliers = ISupplierDao.getAllSuppliers();
+
+            System.out.println("Retrieving all suppliers...");
+            if (suppliers.isEmpty()) {
+                System.out.println("Suppliers table is empty! Please add some data first.");
+            } else {
+                for (Supplier supplier : suppliers) {
+                    System.out.println("{" + supplier.toString() + "}");
+                }
+            }
+
+            System.out.println();
+
+        } catch (DaoException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void getAllCustomers() {
+        try {
+            List<Customer> customers = ICustomerDao.getAllCustomers();
+
+            System.out.println("Retrieving all customers...");
+            if (customers.isEmpty()) {
+                System.out.println("Customers table is empty! Please add some data first.");
+            } else {
+                for (Customer customer : customers) {
+                    System.out.println("{" + customer.toString() + "}");
+                }
+            }
+
+            System.out.println();
+
+        } catch (DaoException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void addSupplier() {
+        String id, name, phone, email;
+
+        System.out.println("please enter the id (SupplierX)");
+        id = sc.next();
+
+        System.out.println("Please enter the name");
+        name = sc.next();
+
+        System.out.println("Please enter the phone");
+        phone = sc.next();
+
+        System.out.println("Please enter the email");
+        email = sc.next();
+
+        Supplier supplier = new Supplier(id, name, phone, email);
+        try {
+            int rowsAffected = ISupplierDao.addSupplier(supplier);
+
+            if(rowsAffected >= 1) {
+                System.out.println("Successfully added supplier");
+            }
+            else {
+                System.err.println("Error! Supplier was not added");
+            }
+        }
+        catch(DaoException e) {
+            e.printStackTrace();
         }
     }
 }

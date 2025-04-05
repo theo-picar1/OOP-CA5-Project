@@ -7,6 +7,6 @@ import com.example.oopca5project.Exceptions.DaoException;
 
 public interface CustomerDaoInterface {
 
-    public List<Customer> getAllCustomers() throws DaoException;
+    List<Customer> getAllCustomers() throws DaoException;
 
 }

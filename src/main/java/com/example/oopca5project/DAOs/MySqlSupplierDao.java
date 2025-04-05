@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.example.oopca5project.DTOs.Product;
 import com.example.oopca5project.DTOs.Supplier;
 import com.example.oopca5project.Exceptions.DaoException;
 
@@ -107,5 +108,65 @@ public class MySqlSupplierDao extends MySqlDao implements SupplierDaoInterface {
 
         // return Supplier object
         return supplier;
+    }
+
+    @Override
+    public int addSupplier(Supplier s) throws DaoException {
+        // Initializing variables
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        int rowsAffected;
+
+        try {
+            // Get connection to database using MySqlDao method
+            connection = this.getConnection();
+
+            if (s != null) {
+                Supplier supplier = getSupplierByProductId(s.getId());
+
+                if (supplier == null) {
+
+                    String query = "INSERT INTO Suppliers VALUES (?, ?, ?, ?)";
+                    preparedStatement = connection.prepareStatement(query);
+
+                    // Initializing/Setting '?' in the prepared preparedStatement
+                    preparedStatement.setString(1, supplier.getId());
+                    preparedStatement.setString(2, supplier.getName());
+                    preparedStatement.setString(3, supplier.getPhoneNo());
+                    preparedStatement.setString(4, supplier.getEmail());
+
+                    // Getting the value of how many rows were affected
+                    rowsAffected = preparedStatement.executeUpdate();
+                }
+                else {
+                    throw new DaoException("addProduct() error! " + "Product already exists!");
+                }
+            }
+            else {
+                return 0;
+            }
+        } catch (SQLException e) {
+            // Throws DaoException
+            throw new DaoException("addProductResultSet() " + e.getMessage());
+
+        } finally {
+            try {
+                // Closes prepared preparedStatement
+                if (preparedStatement != null) {
+                    preparedStatement.close();
+                }
+                // Frees up connection
+                if (connection != null) {
+                    freeConnection(connection);
+                }
+                // Catches SQLException
+            } catch (SQLException e) {
+                // Throws DaoException
+                throw new DaoException("addProduct() " + e.getMessage());
+
+            }
+        }
+
+        return rowsAffected;
     }
 }

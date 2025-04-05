@@ -7,8 +7,9 @@ import com.example.oopca5project.Exceptions.DaoException;
 
 public interface SupplierDaoInterface {
 
-    public List<Supplier> getAllSuppliers() throws DaoException;
+    List<Supplier> getAllSuppliers() throws DaoException;
 
     Supplier getSupplierByProductId(String supplierId) throws DaoException;
 
+    int addSupplier(Supplier s) throws DaoException;
 }

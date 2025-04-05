@@ -62,9 +62,6 @@ public class MainApp {
         while (choice != 1) {
             try {
                 switch (choice) {
-                    case 1:
-                        System.out.println("Ending application. Goodbye!");
-                        break;
                     case 2:
                         getAllProducts();
                         break;
@@ -98,10 +95,16 @@ public class MainApp {
 
                         break;
                     case 12:
-                        getAllSuppliers();
+                        DaoMethods.getAllSuppliers();
                         break;
                     case 13:
-                        getAllCustomers();
+                        DaoMethods.getAllCustomers();
+                        break;
+                    case 14:
+                        DaoMethods.addSupplier();
+                        break;
+                    default:
+                        System.out.println("Invalid option, please try again!");
                         break;
                 }
             } catch (Exception e) {
@@ -146,7 +149,8 @@ public class MainApp {
 
                     // Adds product ID onto end of '2' so it can be retrieved later by server
                     request += id;
-                } else if (request.equals("3")) {
+                }
+                else if (request.equals("3")) {
                     // Asks for product ID
                     System.out.println("Please enter the id of the product you wish to add:");
 
@@ -171,7 +175,8 @@ public class MainApp {
                     while ((response = in.readLine()) != null && !response.equalsIgnoreCase("Done!")) {
                         System.out.println(response);
                     }
-                } else if (request.startsWith("2")) { // Enters if request was '2'
+                }
+                else if (request.startsWith("2")) { // Enters if request was '2'
 
                     // Reads in response from Server
                     String response = in.readLine();
@@ -192,12 +197,13 @@ public class MainApp {
                     // Break out of while loop
                     break;
 
-                } else if (request.startsWith("3")) {
+                }
+                else if (request.startsWith("3")) {
 
                     // Reads in response from Server
                     String response = in.readLine();
 
-                    // makes respense into a JSON object
+                    // makes response into a JSON object
                     JSONObject jsonResponse = new JSONObject(response);
 
                     // gets message from passed from server
@@ -208,11 +214,13 @@ public class MainApp {
 
                     // Break out of while loop
                     break;
-                } else if (request.equals("4")) {
+                }
+                else if (request.equals("4")) {
                     String response = in.readLine();   // wait for response -
                     System.out.println("Client message: Response from server: \"" + response + "\"");
                     break;
-                } else {
+                }
+                else {
                     System.out.println("Command unknown. Try again.");
                 }
             }
@@ -379,45 +387,5 @@ public class MainApp {
 
         // returns Supplier
         return supplier;
-    }
-
-    public static void getAllSuppliers() {
-        try {
-            List<Supplier> suppliers = ISupplierDao.getAllSuppliers();
-
-            System.out.println("Retrieving all suppliers...");
-            if (suppliers.isEmpty()) {
-                System.out.println("Suppliers table is empty! Please add some data first.");
-            } else {
-                for (Supplier supplier : suppliers) {
-                    System.out.println("{" + supplier.toString() + "}");
-                }
-            }
-
-            System.out.println();
-
-        } catch (DaoException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static void getAllCustomers() {
-        try {
-            List<Customer> customers = ICustomerDao.getAllCustomers();
-
-            System.out.println("Retrieving all customers...");
-            if (customers.isEmpty()) {
-                System.out.println("Customers table is empty! Please add some data first.");
-            } else {
-                for (Customer customer : customers) {
-                    System.out.println("{" + customer.toString() + "}");
-                }
-            }
-
-            System.out.println();
-
-        } catch (DaoException e) {
-            e.printStackTrace();
-        }
     }
 }
