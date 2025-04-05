@@ -48,4 +48,46 @@ public class MySqlCustomerDao extends MySqlDao implements CustomerDaoInterface {
         }
         return CustomerList;
     }
+
+    @Override
+    public int deleteCustomerById(int customerId) throws DaoException {
+        Connection connection = null;
+        PreparedStatement deleteFromCustomersProducts = null;
+        PreparedStatement deleteFromCustomers = null;
+        int rowsAffected = 0;
+
+        try {
+            connection = this.getConnection();
+
+            // Delete from CustomersProducts first due to foreign key constraint
+            String deleteProductsQuery = "DELETE FROM CustomersProducts WHERE customer_id = ?";
+            deleteFromCustomersProducts = connection.prepareStatement(deleteProductsQuery);
+            deleteFromCustomersProducts.setInt(1, customerId);
+            deleteFromCustomersProducts.executeUpdate();
+
+            // Now delete from Customers
+            String deleteCustomerQuery = "DELETE FROM Customers WHERE customer_id = ?";
+            deleteFromCustomers = connection.prepareStatement(deleteCustomerQuery);
+            deleteFromCustomers.setInt(1, customerId);
+            rowsAffected = deleteFromCustomers.executeUpdate();
+        } catch (SQLException e) {
+            throw new DaoException("deleteCustomerById() error! " + e.getMessage());
+        } finally {
+            try {
+                if (deleteFromCustomersProducts != null) {
+                    deleteFromCustomersProducts.close();
+                }
+                if (deleteFromCustomers != null) {
+                    deleteFromCustomers.close();
+                }
+                if (connection != null) {
+                    freeConnection(connection);
+                }
+            } catch (SQLException e) {
+                throw new DaoException("deleteCustomerById() error closing resources! " + e.getMessage());
+            }
+        }
+
+        return rowsAffected;
+    }
 }
