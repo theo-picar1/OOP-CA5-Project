@@ -78,7 +78,7 @@ public class MainApp {
                 case 7:
                     filterProducts();
                 case 8:
-                    Methods.productsListToJsonString(IProductDao.getAllProducts());
+                    DaoMethods.productsListToJsonString(IProductDao.getAllProducts());
                 case 9:
                     productToJsonString();
                 case 10:
@@ -86,7 +86,7 @@ public class MainApp {
                 case 11:
 
                     // Print Supplier object if not Null
-                    Methods.printObjectIfNotNull(getSupplier());
+                    DaoMethods.printObjectIfNotNull(getSupplier());
 
                     // call menu again.
                     menu();
@@ -141,10 +141,10 @@ public class MainApp {
                     String id = sc.next();
 
                     // Make product
-                    Product product = Methods.getProduct(id);
+                    Product product = DaoMethods.getProduct(id);
 
                     // Turn product into JSONObject and put it at end of '3' so it can be retrieved later by server
-                    request += Methods.turnProductIntoJson(product);
+                    request += DaoMethods.turnProductIntoJson(product);
                 }
 
                 // Passes request to server
@@ -168,7 +168,7 @@ public class MainApp {
                     if(response != null) {
 
                         // Makes JSON string passed from Server into a Product object
-                        Product product = Methods.makeProductFromJSON(new JSONObject(response));
+                        Product product = DaoMethods.makeProductFromJSON(new JSONObject(response));
 
                         // Prints product object
                         System.out.println("Client message: Response from server: \"" + product + "\"");
@@ -267,7 +267,7 @@ public class MainApp {
 
             if (p != null) {
 
-                int rowsAffected = IProductDao.updateProduct(id, Methods.getProduct(id));
+                int rowsAffected = IProductDao.updateProduct(id, DaoMethods.getProduct(id));
 
                 System.out.println("Updating product with given id...");
                 if (rowsAffected > 0) {
@@ -300,7 +300,7 @@ public class MainApp {
                 double price = sc.nextDouble();
 
                 // Reference: https://stackoverflow.com/questions/66532091/java-8-streams-filter-by-a-property-of-an-object
-                List<Product> productsBelowCertainPrice = Methods.filterProductsByPrice(price, products);
+                List<Product> productsBelowCertainPrice = DaoMethods.filterProductsByPrice(price, products);
 
                 if (productsBelowCertainPrice.isEmpty()) {
                     System.out.println("No product found that is below given price!");
@@ -331,7 +331,7 @@ public class MainApp {
                 System.out.println("Product found!\n{" + product + "}\nTurning found product into a JSON string...");
 
                 // Refer to method productsListToJsonString() for explanation
-                JSONObject jsonObject = Methods.turnProductIntoJson(product);
+                JSONObject jsonObject = DaoMethods.turnProductIntoJson(product);
 
                 System.out.println("Product as a JSON string:\n" + jsonObject);
             } else {
