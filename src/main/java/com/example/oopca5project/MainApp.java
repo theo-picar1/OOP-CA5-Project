@@ -93,6 +93,7 @@ public class MainApp {
                 e.printStackTrace();
             }
 
+            System.out.println("***** CONSOLE APPLICATION *****");
             Methods.menuOptions(options);
             choice = sc.nextInt();
         }
@@ -123,131 +124,73 @@ public class MainApp {
                         "Quit",
                 };
 
+                System.out.println("***** CLIENT / SERVER APPLICATION *****");
                 Methods.menuOptions(options);
 
                 System.out.println("Please enter a command: ");
-
-                // asks for user input to choose command
                 request = sc.next();
 
-                // Passes request to server
+                // Passes the user's request to the server
                 out.println(request);
 
+                // DISPLAY ALL PRODUCTS
                 if (request.equals("1")) {
-
-                    // Read in response from server
+                    // Reads in response from server. Same with all else statements
                     String response = in.readLine();
-
-                    // Make response into jsonArray
                     JSONArray jsonArray = new JSONArray(response);
 
-                    // Pass JSONArray into method to get list of Products
-                    ArrayList<Product> list = DaoMethods.makeProductListFromJSONArray(jsonArray);
-
-                    // Prints JSONArray
-                    DaoMethods.printListOfObjects(list);
-
-                    // Break out of while loop
-                    break;
+                    ArrayList<Product> list = DaoMethods.makeProductListFromJSONArray(jsonArray); // Turn the jsonArray into a list of products
+                    DaoMethods.printListOfObjects(list); // Then print it
                 }
-                else if (request.equals("4")) { // Enters if request was '2'
+                // DISPLAY ALL SUPPLIERS
+                else if(request.equals("2")){
+                    String response = in.readLine();
+                    JSONArray jsonArray = new JSONArray(response);
 
-                    // Asks for product ID
+                    ArrayList<Supplier> list = DaoMethods.makeSupplierListFromJSONArray(jsonArray);
+                    DaoMethods.printListOfObjects(list);
+                }
+                // DISPLAY ALL CUSTOMERS
+                else if(request.equals("3")){
+                    String response = in.readLine();
+                    JSONArray jsonArray = new JSONArray(response);
+
+                    ArrayList<Customer> list = DaoMethods.makeCustomerListFromJSONArray(jsonArray);
+                    DaoMethods.printListOfObjects(list);
+                }
+                else if (request.equals("4")) {
                     System.out.println("Please enter the id of the product you wish to view:");
-
-                    // Gets product ID from user input
                     String id = sc.next();
 
-                    // Passes id to server
                     out.println(id);
-
-                    // Reads in response from Server
                     String response = in.readLine();
 
-                    // Checks if response is null
                     if (response != null) {
-
                         // Makes JSON string passed from Server into a Product object
                         Product product = DaoMethods.makeProductFromJSON(new JSONObject(response));
-
-                        // Prints product object
                         System.out.println("Client message: Response from server: \"" + product + "\"");
-                    } else {
-                        // Prints out if product wasn't found
+                    }
+                    else {
                         System.out.println("Product not found");
                     }
-
-                    // Break out of while loop
-                    break;
-
                 }
                 else if (request.equals("5")) {
-
-                    // Asks for product ID
                     System.out.println("Please enter the id of the product you wish to add:");
-
-                    // Gets product ID from user input
                     String id = sc.next();
 
-                    // Make product
                     Product product = DaoMethods.getProduct(id);
-
-                    // Turns product into JSONObject
                     JSONObject jsonObject = DaoMethods.turnProductIntoJson(product);
-
-                    // Passes JSONObject to server
                     out.println(jsonObject);
 
-                    // Reads in response from Server
                     String response = in.readLine();
 
-                    // makes response into a JSON object
                     JSONObject jsonResponse = new JSONObject(response);
-
-                    // gets message from passed from server
                     String message = jsonResponse.getString("message");
-
-                    // prints message
                     System.out.println("Message from server: " + message);
-
-                    // Break out of while loop
-                    break;
-                }else if(request.equals("2")){
-
-                    // Read in response from server
-                    String response = in.readLine();
-
-                    // Make response into jsonArray
-                    JSONArray jsonArray = new JSONArray(response);
-
-                    // Pass JSONArray into method to get list of Suppliers
-                    ArrayList<Supplier> list = DaoMethods.makeSupplierListFromJSONArray(jsonArray);
-
-                    // Prints JSONArray
-                    DaoMethods.printListOfObjects(list);
-
-                    // Break out of while loop
-                    break;
                 }
                 else if (request.equals("6")) {
                     String response = in.readLine();
                     System.out.println("Client message: Response from server: \"" + response + "\"");
-                    break;
-                } else if(request.equals("3")){
-
-                    // Read in response from server
-                    String response = in.readLine();
-
-                    // Make response into jsonArray
-                    JSONArray jsonArray = new JSONArray(response);
-
-                    // Pass JSONArray into method to get list of Customers
-                    ArrayList<Customer> list = DaoMethods.makeCustomerListFromJSONArray(jsonArray);
-
-                    // Prints JSONArray
-                    DaoMethods.printListOfObjects(list);
-
-                    // Break out of while loop
                     break;
                 }
                 else {
@@ -260,27 +203,6 @@ public class MainApp {
 
         System.out.println("The client is now terminating...");
 
-    }
-
-    // Question 1
-    public static void getAllProducts() {
-        try {
-            List<Product> products = IProductDao.getAllProducts();
-
-            System.out.println("Retrieving all products...");
-            if (products.isEmpty()) {
-                System.out.println("Products table is empty! Please add some data first.");
-            } else {
-                for (Product product : products) {
-                    System.out.println("{" + product.toString() + "}");
-                }
-            }
-
-            System.out.println();
-
-        } catch (DaoException e) {
-            e.printStackTrace();
-        }
     }
 
     // Question 3

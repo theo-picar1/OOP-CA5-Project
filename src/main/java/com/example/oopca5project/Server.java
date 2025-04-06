@@ -23,7 +23,7 @@ import static com.example.oopca5project.MainApp.ICustomerDao;
 
 public class Server {
 
-    final int SERVER_PORT = 8001;
+    final int SERVER_PORT = 9201;
 
     public static void main(String[] args) {
         Server server = new Server();
@@ -103,59 +103,56 @@ class ClientHandler implements Runnable {
             while ((request = socketReader.readLine()) != null) {
                 System.out.println("Server: (ClientHandler): Read command from client " + clientNumber + ": " + request);
 
+                // DISPLAY ALL PRODUCTS
                 if (request.equals("1")) {
-
-                    // Get all Product objects from table
+                    // Get all objects from database, convert them to a jsonArray, then pass it back to the client.
                     List<Product> products = IProductDao.getAllProducts();
-
-                    // Turn Product objects into JSONArray
                     JSONArray jsonArray = DaoMethods.productsListToJsonString(products);
 
-                    // Pass jsonArray to Client
+                    socketWriter.println(jsonArray);
+                }
+                // DISPLAY ALL SUPPLIERS
+                else if(request.equals("2")) {
+                    List<Supplier> suppliers = ISupplierDao.getAllSuppliers();
+                    JSONArray jsonArray = DaoMethods.suppliersListToJsonString(suppliers);
+
                     socketWriter.println(jsonArray);
 
-                } else if (request.equals("4")) { // enters if '2' is typed
+                }
+                // DISPLAYS ALL CUSTOMERS
+                else if(request.equals("3")) {
+                    List<Customer> customers = ICustomerDao.getAllCustomers();
+                    JSONArray jsonArray = DaoMethods.customersListToJsonString(customers);
 
-                    // Initialize MySqlProductDao object to use Dao methods
+                    socketWriter.println(jsonArray);
+                }
+                // FIND PRODUCT BY ID
+                else if (request.equals("4")) {
                     ProductDaoInterface getProduct = new MySqlProductDao();
-
-                    // initialize new product object
                     Product product = new Product();
-                    try {
 
-                        // Get product ID that was added onto the end of '2' and get Product JSONObject
+                    try {
                         product = getProduct.getProductById(socketReader.readLine());
 
-                    } catch (DaoException e) {
+                    }
+                    catch (DaoException e) {
                         e.printStackTrace();
                     }
-
-                    // Use retrieved Product and turn it into a JSON object
+                    // Turn product into single json object and pass it back as a string to the client
                     JSONObject message = DaoMethods.turnProductIntoJson(product);
-
-                    // Send product object to Client
                     socketWriter.println(message.toString());
 
-                    // Send confirmation message to Client
                     socketWriter.println("Server message: ID has been passed to server passing back product");
                 }
-                else if (request.equals("6")) {
-                    socketWriter.println("Sorry to see you leaving. Goodbye.");
-                    System.out.println("Server message: Client has notified us that it is quitting.");
-                }
+                // ADD PRODUCT
                 else if (request.equals("5")) {
-
-                    // Initialize MySqlProductDao object to use Dao methods
                     ProductDaoInterface addProduct = new MySqlProductDao();
-
-                    // initialize all variables
                     Product product;
                     int productAdded;
                     String jsonString = socketReader.readLine();
                     JSONObject jsonObject = new JSONObject(jsonString);
                     String id = jsonObject.getString("product_id");
 
-                    // make success and error messages
                     JSONObject errorMessage = new JSONObject();
                     errorMessage.put("status", "error");
                     errorMessage.put("message", "An error occurred!!");
@@ -165,12 +162,9 @@ class ClientHandler implements Runnable {
                     successMessage.put("message", jsonString);
 
                     try {
-                        // check if product already exists in database
-                        product = addProduct.getProductById(id);
+                        // check if product doesn't exist
+                        if (addProduct.getProductById(id) == null) {
 
-                         // check if product doesn't exist
-                        if (product == null) {
-                           
                             // get product object from JSON
                             product = DaoMethods.makeProductFromJSON(jsonObject);
 
@@ -197,27 +191,14 @@ class ClientHandler implements Runnable {
                     } catch (DaoException e) {
                         e.printStackTrace();
                     }
-                } else if(request.equals("2")) {
-
-                    // Get all supplier objects from table
-                    List<Supplier> suppliers = ISupplierDao.getAllSuppliers();
-
-                    // Turn supplier objects into JSONArray
-                    JSONArray jsonArray = DaoMethods.suppliersListToJsonString(suppliers);
-
-                    // Pass jsonArray to Client
-                    socketWriter.println(jsonArray);
-
-                } else if(request.equals("3")){
-                    // Get all Customer objects from table
-                    List<Customer> customers = ICustomerDao.getAllCustomers();
-
-                    // Turn Customer objects into JSONArray
-                    JSONArray jsonArray = DaoMethods.customersListToJsonString(customers);
-
-                    // Pass jsonArray to Client
-                    socketWriter.println(jsonArray);
-                }else {
+                }
+                // QUIT CLIENT / SERVER APPLICATION AND RETURN TO CONSOLE APPLICATION
+                else if (request.equals("6")) {
+                    socketWriter.println("Sorry to see you leaving. Goodbye.");
+                    System.out.println("Server message: Client has notified us that it is quitting.");
+                }
+                // INVALID COMMAND
+                else {
                     socketWriter.println("Error! I'm sorry I don't understand your request");
                     System.out.println("Server message: Invalid request from client.");
                 }
