@@ -7,7 +7,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.example.oopca5project.DTOs.Product;
 import com.example.oopca5project.DTOs.Supplier;
 import com.example.oopca5project.Exceptions.DaoException;
 
@@ -198,5 +197,43 @@ public class MySqlSupplierDao extends MySqlDao implements SupplierDaoInterface {
             }
         }
         return supplier;
+    }
+
+    @Override
+    public int deleteSupplierById(String supplierId) throws DaoException {
+        Connection connection = null;
+        PreparedStatement deleteProductsStmt = null;
+        PreparedStatement deleteSupplierStmt = null;
+        int rowsAffected = 0;
+
+        try {
+            // Get connection
+            connection = this.getConnection();
+
+            // Delete all products by the supplier
+            String deleteProductsQuery = "DELETE FROM Products WHERE supplier_id = ?";
+            deleteProductsStmt = connection.prepareStatement(deleteProductsQuery);
+            deleteProductsStmt.setString(1, supplierId);
+            deleteProductsStmt.executeUpdate();
+
+            // Delete the supplier
+            String deleteSupplierQuery = "DELETE FROM Suppliers WHERE supplier_id = ?";
+            deleteSupplierStmt = connection.prepareStatement(deleteSupplierQuery);
+            deleteSupplierStmt.setString(1, supplierId);
+            rowsAffected = deleteSupplierStmt.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new DaoException("deleteSupplierById() error! " + e.getMessage());
+        } finally {
+            try {
+                if (deleteProductsStmt != null) deleteProductsStmt.close();
+                if (deleteSupplierStmt != null) deleteSupplierStmt.close();
+                if (connection != null) freeConnection(connection);
+            } catch (SQLException e) {
+                throw new DaoException("deleteSupplierById() error closing resources! " + e.getMessage());
+            }
+        }
+
+        return rowsAffected;
     }
 }

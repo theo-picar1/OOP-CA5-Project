@@ -14,4 +14,6 @@ public interface SupplierDaoInterface {
     Supplier getSupplierById(String id) throws DaoException;
 
     int addSupplier(Supplier s) throws DaoException;
+
+    int deleteSupplierById(String supplierId) throws DaoException;
 }
