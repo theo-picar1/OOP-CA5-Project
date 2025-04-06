@@ -83,4 +83,22 @@ public class Methods {
         return input;
 
     }
+
+    public static int validateInt() {
+        int input;
+
+        while(true) {
+            if(sc.hasNextInt()) {
+                input = sc.nextInt();
+
+                break;
+            }
+            else {
+                System.out.println("Please enter only integer values");
+                sc.next();
+            }
+        }
+
+        return input;
+    }
 }

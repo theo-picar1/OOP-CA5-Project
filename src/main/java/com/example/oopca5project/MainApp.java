@@ -42,18 +42,13 @@ public class MainApp {
         MainApp client = new MainApp();
         String[] options = {
                 "End application",
-                "Display all products",
-                "Find product by ID",
+                "Start Server",
                 "Delete product by ID",
-                "Add new product",
                 "Update product by ID",
                 "Filter products",
                 "Display all products as JSON",
                 "Display product as JSON",
-                "Start Server",
-                "Get Supplier object via Product ID",
-                "Display all Suppliers",
-                "Display all Customers",
+                "Display supplier by ProductID",
                 "Add supplier"
         };
 
@@ -67,35 +62,27 @@ public class MainApp {
             try {
                 switch (choice) {
                     case 2:
-                    case 3:
-                    case 5:
-                    case 12:
-                    case 13:
-                        System.out.println("\nmoved to 10\n");
+                        client.start(); // Use the server class
                         break;
-                    case 4:
+                    case 3:
                         deleteProductById();
                         break;
-                    case 6:
+                    case 4:
                         updateProduct();
                         break;
-                    case 7:
+                    case 5:
                         filterProducts();
                         break;
+                    case 6:
+                        DaoMethods.productsListToJsonString(IProductDao.getAllProducts()); // Display all products as JSON
+                        break;
+                    case 7:
+                        productToJsonString(); // Display single product as JSON
+                        break;
                     case 8:
-                        DaoMethods.productsListToJsonString(IProductDao.getAllProducts());
+                        DaoMethods.printObject(getSupplier()); // Get a supplier from productID
                         break;
                     case 9:
-                        productToJsonString();
-                        break;
-                    case 10:
-                        client.start();
-                        break;
-                    case 11:
-                        // Print Supplier object if not Null
-                        DaoMethods.printObject(getSupplier());
-                        break;
-                    case 14:
                         DaoMethods.addSupplier();
                         break;
                     default:
@@ -113,7 +100,7 @@ public class MainApp {
 
     public void start() {
         try (
-                Socket socket = new Socket("localhost", 8001);
+                Socket socket = new Socket("localhost", 9201);
                 PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
                 BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))
         ) {
