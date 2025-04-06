@@ -101,4 +101,51 @@ public class Methods {
 
         return input;
     }
+
+    // Method that handles user input for
+    public static Product getProduct(String id) {
+        // initializing variables
+        String product_description, size, supplier_id;
+        double unit_price;
+
+        // getting product description
+        System.out.println("Enter product description: ");
+        // Clear the leftover line if there was any. Stops it from printing out product size prompt
+        if (sc.hasNextLine()) {
+            sc.nextLine();
+        }
+        product_description = sc.nextLine();
+
+        // getting product size
+        System.out.println("Enter product size: ");
+        size = sc.next();
+
+        // getting product unit price
+        System.out.println("Enter product unit price: ");
+        unit_price = Methods.validateDoubleRange(0);
+
+        // getting product supplier id
+        System.out.println("Enter product supplier id (e.g. 'supplier1', 'supplier2'): ");
+        supplier_id = sc.next();
+
+        // returns newly made product object
+        return new Product(id, product_description, size, unit_price, supplier_id);
+    }
+
+    // Method that will print an object that was passed in. Method also checks to see if the object passed in is null or not.
+    public static void printObject(Object obj){
+
+        // checks if object is null
+        if(obj != null){
+
+            // Print object if not null
+            System.out.println(obj);
+
+        }else{
+
+            // Print error message
+            System.out.println("Object was not found");
+
+        }
+    }
 }

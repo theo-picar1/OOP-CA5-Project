@@ -25,9 +25,7 @@ import com.example.oopca5project.Exceptions.DaoException;
 
 public class MainApp {
     static ProductDaoInterface IProductDao = new MySqlProductDao();
-
     static SupplierDaoInterface ISupplierDao = new MySqlSupplierDao();
-
     static CustomerDaoInterface ICustomerDao = new MySqlCustomerDao();
 
     static Scanner sc = new Scanner(System.in);
@@ -73,17 +71,32 @@ public class MainApp {
                     case 5:
                         filterProducts();
                         break;
-                    case 6:
-                        DaoMethods.productsListToJsonString(IProductDao.getAllProducts()); // Display all products as JSON
+                    case 6: // DISPLAY ALL PRODUCTS AS JSON ARRAY
+                        DaoMethods.productsListToJsonString(IProductDao.getAllProducts());
                         break;
-                    case 7:
-                        productToJsonString(); // Display single product as JSON
+                    case 7: // DISPLAY PRODUCT AS JSON CASE
+                        productToJsonString();
                         break;
-                    case 8:
-                        DaoMethods.printObject(getSupplier()); // Get a supplier from productID
+                    case 8: // GET SUPPLIER THROUGH PRODUCT ID
+                        Methods.printObject(getSupplier());
                         break;
-                    case 9:
-                        DaoMethods.addSupplier();
+                    case 9: // ADD SUPPLIER CASE
+                        System.out.println("Please enter the id: (e.g. SupplierX)");
+                        String id = sc.next();
+
+                        System.out.println("Please enter the name of your supplier:");
+                        String name = sc.next();
+
+                        System.out.println("Please enter the Irish telephone number of your supplier:");
+                        String phone = sc.next();
+
+                        System.out.println("Please enter the email of your supplier:");
+                        String email = sc.next();
+
+                        Supplier supplier = new Supplier(id, name, phone, email);
+
+                        DaoMethods.addSupplier(supplier);
+
                         break;
                     default:
                         System.out.println("Invalid option, please try again!");
@@ -113,8 +126,6 @@ public class MainApp {
             String request;
 
             while (true) {
-
-                // Outputs all available commands
                 String[] options = {
                         "Display all Products",
                         "Display all Suppliers",
@@ -178,7 +189,7 @@ public class MainApp {
                     System.out.println("Please enter the id of the product you wish to add:");
                     String id = sc.next();
 
-                    Product product = DaoMethods.getProduct(id);
+                    Product product = Methods.getProduct(id);
                     JSONObject jsonObject = DaoMethods.turnProductIntoJson(product);
                     out.println(jsonObject);
 
@@ -233,11 +244,12 @@ public class MainApp {
             System.out.println("Enter product id you wish to update (e.g. 'product1', 'product2'): ");
             String id = sc.next();
 
-            Product p = IProductDao.getProductById(id);
+            Product product = IProductDao.getProductById(id);
 
-            if (p != null) {
+            if (product != null) {
+                product = Methods.getProduct(product.getId());
 
-                int rowsAffected = IProductDao.updateProduct(id, DaoMethods.getProduct(id));
+                int rowsAffected = IProductDao.updateProduct(id, product);
 
                 System.out.println("Updating product with given id...");
                 if (rowsAffected > 0) {

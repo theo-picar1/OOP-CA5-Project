@@ -17,6 +17,7 @@ import com.example.oopca5project.DAOs.MySqlProductDao;
 import com.example.oopca5project.DAOs.ProductDaoInterface;
 import com.example.oopca5project.DTOs.Product;
 import com.example.oopca5project.Exceptions.DaoException;
+
 import static com.example.oopca5project.MainApp.IProductDao;
 import static com.example.oopca5project.MainApp.ISupplierDao;
 import static com.example.oopca5project.MainApp.ICustomerDao;
@@ -117,7 +118,6 @@ class ClientHandler implements Runnable {
                     JSONArray jsonArray = DaoMethods.suppliersListToJsonString(suppliers);
 
                     socketWriter.println(jsonArray);
-
                 }
                 // DISPLAYS ALL CUSTOMERS
                 else if(request.equals("3")) {
@@ -128,25 +128,23 @@ class ClientHandler implements Runnable {
                 }
                 // FIND PRODUCT BY ID
                 else if (request.equals("4")) {
-                    ProductDaoInterface getProduct = new MySqlProductDao();
-                    Product product = new Product();
+                    Product product;
 
                     try {
-                        product = getProduct.getProductById(socketReader.readLine());
+                        product = IProductDao.getProductById(socketReader.readLine());
 
+                        // Turn product into single json object and pass it back as a string to the client
+                        JSONObject message = DaoMethods.turnProductIntoJson(product);
+                        socketWriter.println(message.toString());
+
+                        socketWriter.println("Server message: ID has been passed to server passing back product");
                     }
                     catch (DaoException e) {
                         e.printStackTrace();
                     }
-                    // Turn product into single json object and pass it back as a string to the client
-                    JSONObject message = DaoMethods.turnProductIntoJson(product);
-                    socketWriter.println(message.toString());
-
-                    socketWriter.println("Server message: ID has been passed to server passing back product");
                 }
                 // ADD PRODUCT
                 else if (request.equals("5")) {
-                    ProductDaoInterface addProduct = new MySqlProductDao();
                     Product product;
                     int productAdded;
                     String jsonString = socketReader.readLine();
@@ -163,13 +161,13 @@ class ClientHandler implements Runnable {
 
                     try {
                         // check if product doesn't exist
-                        if (addProduct.getProductById(id) == null) {
+                        if (IProductDao.getProductById(id) == null) {
 
                             // get product object from JSON
                             product = DaoMethods.makeProductFromJSON(jsonObject);
 
                             // add product to database
-                            productAdded = addProduct.addProduct(product);
+                            productAdded = IProductDao.addProduct(product);
 
                             // check if product was added
                             if (productAdded == 1) {
@@ -203,9 +201,11 @@ class ClientHandler implements Runnable {
                     System.out.println("Server message: Invalid request from client.");
                 }
             }
-        } catch (IOException | DaoException e) {
+        }
+        catch (IOException | DaoException e) {
             e.printStackTrace();
-        } finally {
+        }
+        finally {
             this.socketWriter.close();
 
             try {
