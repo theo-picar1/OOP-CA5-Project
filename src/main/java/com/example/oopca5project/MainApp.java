@@ -1,9 +1,6 @@
 package com.example.oopca5project;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
@@ -132,6 +129,7 @@ public class MainApp {
                         "Display all Customers",
                         "Find product by ID",
                         "Add product",
+                        "Choose image to display",
                         "Quit",
                 };
 
@@ -199,7 +197,16 @@ public class MainApp {
                     String message = jsonResponse.getString("message");
                     System.out.println("Message from server: " + message);
                 }
-                else if (request.equals("6")) {
+                else if(request.equals("6")) {
+                    DataOutputStream dataOutputStream = new DataOutputStream( socket.getOutputStream());
+
+                    System.out.println("Sending the chosen file to the Server");
+                    // Call the method responsible for handling sending the file to the server
+                    sendFile("images/my-beautiful-staffordshire-bull-terrier-v0-czmj26cdl58c1.jpg", dataOutputStream);
+
+                    dataOutputStream.close();
+                }
+                else if (request.equals("7")) {
                     String response = in.readLine();
                     System.out.println("Client message: Response from server: \"" + response + "\"");
                     break;
@@ -208,12 +215,15 @@ public class MainApp {
                     System.out.println("Command unknown. Try again.");
                 }
             }
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             System.out.println("Client error: " + e);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
         }
 
         System.out.println("The client is now terminating...");
-
     }
 
     // Question 3
@@ -325,6 +335,27 @@ public class MainApp {
 
         System.out.println();
 
+    }
+
+    private void sendFile(String fileName, DataOutputStream dataOutputStream) throws Exception {
+        int numberOfBytes;
+        // Open the File at the specified location (path)
+        File file = new File(fileName);
+        FileInputStream fileInputStream = new FileInputStream(file);
+
+        // Send the length of the file in bytes to the server as a "long"
+        dataOutputStream.writeLong(file.length());
+
+        // Here we break file into chunks by using a buffer
+        byte[] buffer = new byte[4 * 1024];
+
+        // read bytes from file into the buffer until buffer is full, or until we have reached the end of the image file
+        while ((numberOfBytes = fileInputStream.read(buffer))!= -1) {
+            dataOutputStream.write(buffer, 0, numberOfBytes);
+            dataOutputStream.flush();
+        }
+
+        fileInputStream.close();
     }
 
     public static Supplier getSupplier() {
