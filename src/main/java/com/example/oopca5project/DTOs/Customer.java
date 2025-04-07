@@ -15,6 +15,12 @@ public class Customer {
         customer_address = address;
     }
 
+    public Customer(String name, String email, String address) {
+        customer_name = name;
+        customer_email = email;
+        customer_address = address;
+    }
+
     public int getId() { return customer_id; }
 
     public void setId(int id) { customer_id = id; }

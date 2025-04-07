@@ -9,5 +9,9 @@ public interface CustomerDaoInterface {
 
     List<Customer> getAllCustomers() throws DaoException;
 
+    int addCustomer(Customer c) throws DaoException;
+
+    Customer getCustomerById(int id) throws DaoException;
+
     int deleteCustomerById(int customerId) throws DaoException;
 }

@@ -132,6 +132,7 @@ public class MainApp {
                         "Display all Customers",
                         "Find product by ID",
                         "Add product",
+                        "Add customer",
                         "Quit",
                 };
 
@@ -200,6 +201,17 @@ public class MainApp {
                     System.out.println("Message from server: " + message);
                 }
                 else if (request.equals("6")) {
+                    Customer customer = Methods.getCustomer();
+                    JSONObject jsonObject = DaoMethods.turnCustomerIntoJson(customer);
+                    out.println(jsonObject);
+
+                    String response = in.readLine();
+
+                    JSONObject jsonResponse = new JSONObject(response);
+                    String message = jsonResponse.getString("message");
+                    System.out.println("Message from server: " + message);
+                }
+                else if (request.equals("7")) {
                     String response = in.readLine();
                     System.out.println("Client message: Response from server: \"" + response + "\"");
                     break;

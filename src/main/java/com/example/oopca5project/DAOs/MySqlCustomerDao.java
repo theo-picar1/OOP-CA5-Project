@@ -11,6 +11,7 @@ import com.example.oopca5project.DTOs.Customer;
 import com.example.oopca5project.Exceptions.DaoException;
 
 public class MySqlCustomerDao extends MySqlDao implements CustomerDaoInterface {
+
     @Override
     public List<Customer> getAllCustomers() throws DaoException {
         Connection connection = null;
@@ -39,9 +40,15 @@ public class MySqlCustomerDao extends MySqlDao implements CustomerDaoInterface {
             throw new DaoException("getAllCustomers() error! " + e.getMessage());
         } finally {
             try {
-                if (resultSet != null) resultSet.close();
-                if (preparedStatement != null) preparedStatement.close();
-                if (connection != null) connection.close();
+                if (resultSet != null) {
+                    resultSet.close();
+                }
+                if (preparedStatement != null) {
+                    preparedStatement.close();
+                }
+                if (connection != null) {
+                    connection.close();
+                }
             } catch (SQLException e) {
                 throw new DaoException("Error closing resources: " + e.getMessage());
             }
@@ -85,6 +92,107 @@ public class MySqlCustomerDao extends MySqlDao implements CustomerDaoInterface {
                 }
             } catch (SQLException e) {
                 throw new DaoException("deleteCustomerById() error closing resources! " + e.getMessage());
+            }
+        }
+
+        return rowsAffected;
+    }
+
+    @Override
+    public Customer getCustomerById(int id) throws DaoException {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        Customer customer = null;
+
+        try {
+            connection = this.getConnection();
+            String query = "SELECT * FROM customers WHERE customer_id = ?";
+            preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1, id);
+
+            resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                String name = resultSet.getString("customer_name");
+                String address = resultSet.getString("customer_address");
+                String email = resultSet.getString("customer_email");
+
+                customer = new Customer(id, name, email, address);
+            }
+        } catch (SQLException e) {
+            throw new DaoException("Error retrieving product: " + e.getMessage());
+        } finally {
+            try {
+                if (resultSet != null) {
+                    resultSet.close();
+                }
+                if (preparedStatement != null) {
+                    preparedStatement.close();
+                }
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (SQLException e) {
+                throw new DaoException("Error closing resources: " + e.getMessage());
+            }
+        }
+        return customer;
+    }
+
+    @Override
+    public int addCustomer(Customer c) throws DaoException {
+        // Initializing variables
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        int rowsAffected;
+
+        try {
+            // Get connection to database using MySqlDao method
+            connection = this.getConnection();
+
+            if (c != null) {
+                Customer product = getCustomerById(c.getId());
+                if (product == null) {
+
+                    // Making query to add product
+                    String query = "INSERT INTO Customers VALUES (?, ?, ?, ?)";
+                    
+                    // Making the query into a prepared preparedStatement
+                    preparedStatement = connection.prepareStatement(query);
+
+                    // Initializing/Setting '?' in the prepared preparedStatement
+                    preparedStatement.setInt(1, c.getId());
+                    preparedStatement.setString(2, c.getName());
+                    preparedStatement.setString(3, c.getEmail());
+                    preparedStatement.setString(4, c.getAddress());
+
+                    // Getting the value of how many rows were affected
+                    rowsAffected = preparedStatement.executeUpdate();
+                } else {
+                    throw new DaoException("addProduct() error! " + "Product already exists!");
+                }
+            } else {
+                return 0;
+            }
+        } catch (SQLException e) {
+            return 0;
+
+        } finally {
+            try {
+                // Closes prepared preparedStatement
+                if (preparedStatement != null) {
+                    preparedStatement.close();
+                }
+                // Frees up connection
+                if (connection != null) {
+                    freeConnection(connection);
+                }
+                // Catches SQLException
+            } catch (SQLException e) {
+                // Throws DaoException
+                throw new DaoException("addProduct() " + e.getMessage());
+
             }
         }
 

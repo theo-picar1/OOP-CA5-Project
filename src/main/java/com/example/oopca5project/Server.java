@@ -8,19 +8,16 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.List;
 
-import com.example.oopca5project.DTOs.Customer;
-import com.example.oopca5project.DTOs.Supplier;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import com.example.oopca5project.DAOs.MySqlProductDao;
-import com.example.oopca5project.DAOs.ProductDaoInterface;
+import com.example.oopca5project.DTOs.Customer;
 import com.example.oopca5project.DTOs.Product;
+import com.example.oopca5project.DTOs.Supplier;
 import com.example.oopca5project.Exceptions.DaoException;
-
+import static com.example.oopca5project.MainApp.ICustomerDao;
 import static com.example.oopca5project.MainApp.IProductDao;
 import static com.example.oopca5project.MainApp.ISupplierDao;
-import static com.example.oopca5project.MainApp.ICustomerDao;
 
 public class Server {
 
@@ -145,12 +142,15 @@ class ClientHandler implements Runnable {
                 }
                 // ADD PRODUCT
                 else if (request.equals("5")) {
+
+                    // initialize variables
                     Product product;
                     int productAdded;
                     String jsonString = socketReader.readLine();
                     JSONObject jsonObject = new JSONObject(jsonString);
                     String id = jsonObject.getString("product_id");
 
+                    // initialize messages
                     JSONObject errorMessage = new JSONObject();
                     errorMessage.put("status", "error");
                     errorMessage.put("message", "An error occurred!!");
@@ -163,26 +163,66 @@ class ClientHandler implements Runnable {
                         // check if product doesn't exist
                         if (IProductDao.getProductById(id) == null) {
 
-                            // get product object from JSON
+                            // get and add Product to database
                             product = DaoMethods.makeProductFromJSON(jsonObject);
-
-                            // add product to database
                             productAdded = IProductDao.addProduct(product);
 
                             // check if product was added
                             if (productAdded == 1) {
 
-                                // send success message
                                 socketWriter.println(successMessage);
 
                             } else {
 
-                                // send error message
                                 socketWriter.println(errorMessage);
                             }
                         } else {
 
-                            // send error message
+                            socketWriter.println(errorMessage);
+                        }
+
+                    } catch (DaoException e) {
+                        e.printStackTrace();
+                    }
+                }
+                // ADD CUSTOMER
+                else if (request.equals("6")) {
+
+                    // initialize variables
+                    Customer customer;
+                    int customerAdded;
+                    String jsonString = socketReader.readLine();
+                    JSONObject jsonObject = new JSONObject(jsonString);
+                    int id = jsonObject.getInt("customer_id");
+
+                    // initialize messages
+                    JSONObject errorMessage = new JSONObject();
+                    errorMessage.put("status", "error");
+                    errorMessage.put("message", "An error occurred!!");
+
+                    JSONObject successMessage = new JSONObject();
+                    successMessage.put("status", "success");
+                    successMessage.put("message", jsonString);
+
+                    try {
+                        // check if Customer doesn't exist
+                        if (ICustomerDao.getCustomerById(id) == null) {
+
+                            // get and add Customer to database
+                            customer = DaoMethods.makeCustomerFromJSON(jsonObject);
+                            customerAdded = ICustomerDao.addCustomer(customer);
+
+                            // check if Customer was added
+                            if (customerAdded == 1) {
+
+                                socketWriter.println(successMessage);
+
+                            } else {
+
+                                socketWriter.println(errorMessage);
+                            }
+                        } else {
+
                             socketWriter.println(errorMessage);
                         }
 
@@ -191,7 +231,7 @@ class ClientHandler implements Runnable {
                     }
                 }
                 // QUIT CLIENT / SERVER APPLICATION AND RETURN TO CONSOLE APPLICATION
-                else if (request.equals("6")) {
+                else if (request.equals("7")) {
                     socketWriter.println("Sorry to see you leaving. Goodbye.");
                     System.out.println("Server message: Client has notified us that it is quitting.");
                 }
