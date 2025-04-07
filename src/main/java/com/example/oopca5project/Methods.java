@@ -1,12 +1,8 @@
 package com.example.oopca5project;
 
-import java.util.List;
 import java.util.Scanner;
-import java.util.stream.Collectors;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
+import com.example.oopca5project.DTOs.Customer;
 import com.example.oopca5project.DTOs.Product;
 
 public class Methods {
@@ -147,5 +143,28 @@ public class Methods {
             System.out.println("Object was not found");
 
         }
+    }
+
+    // Method that handles user input for getting Customer object
+    public static Customer getCustomer() {
+
+        // Get rid of '\n' character
+        sc.nextLine();
+
+        // initializing variables
+        String name, email, phoneNo;
+
+        // Get Customer variables
+        System.out.println("Enter customer name: ");
+        name = sc.nextLine();
+
+        System.out.println("Enter customer email: ");
+        email = sc.next();
+
+        System.out.println("Enter customer phone number: ");
+        phoneNo = sc.next();
+
+        // Return Customer object
+        return new Customer(name, email, phoneNo);
     }
 }

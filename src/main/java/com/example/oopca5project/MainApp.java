@@ -130,6 +130,7 @@ public class MainApp {
                         "Find product by ID",
                         "Add product",
                         "Choose image to display",
+                        "Add customer",
                         "Quit",
                 };
 
@@ -152,7 +153,7 @@ public class MainApp {
                     DaoMethods.printListOfObjects(list); // Then print it
                 }
                 // DISPLAY ALL SUPPLIERS
-                else if(request.equals("2")){
+                else if (request.equals("2")) {
                     String response = in.readLine();
                     JSONArray jsonArray = new JSONArray(response);
 
@@ -160,14 +161,13 @@ public class MainApp {
                     DaoMethods.printListOfObjects(list);
                 }
                 // DISPLAY ALL CUSTOMERS
-                else if(request.equals("3")){
+                else if (request.equals("3")) {
                     String response = in.readLine();
                     JSONArray jsonArray = new JSONArray(response);
 
                     ArrayList<Customer> list = DaoMethods.makeCustomerListFromJSONArray(jsonArray);
                     DaoMethods.printListOfObjects(list);
-                }
-                else if (request.equals("4")) {
+                } else if (request.equals("4")) {
                     System.out.println("Please enter the id of the product you wish to view:");
                     String id = sc.next();
 
@@ -178,12 +178,10 @@ public class MainApp {
                         // Makes JSON string passed from Server into a Product object
                         Product product = DaoMethods.makeProductFromJSON(new JSONObject(response));
                         System.out.println("Client message: Response from server: \"" + product + "\"");
-                    }
-                    else {
+                    } else {
                         System.out.println("Product not found");
                     }
-                }
-                else if (request.equals("5")) {
+                } else if (request.equals("5")) {
                     System.out.println("Please enter the id of the product you wish to add:");
                     String id = sc.next();
 
@@ -196,9 +194,8 @@ public class MainApp {
                     JSONObject jsonResponse = new JSONObject(response);
                     String message = jsonResponse.getString("message");
                     System.out.println("Message from server: " + message);
-                }
-                else if(request.equals("6")) {
-                    DataOutputStream dataOutputStream = new DataOutputStream( socket.getOutputStream());
+                } else if (request.equals("6")) {
+                    DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
 
                     System.out.println("Sending the chosen file to the Server");
                     // Call the method responsible for handling sending the file to the server
@@ -207,180 +204,189 @@ public class MainApp {
                     dataOutputStream.close();
                 }
                 else if (request.equals("7")) {
-                    String response = in.readLine();
-                    System.out.println("Client message: Response from server: \"" + response + "\"");
-                    break;
-                }
-                else {
-                    System.out.println("Command unknown. Try again.");
-                }
-            }
-        }
-        catch (IOException e) {
-            System.out.println("Client error: " + e);
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
+                        Customer customer = Methods.getCustomer();
+                        JSONObject jsonObject = DaoMethods.turnCustomerIntoJson(customer);
+                        out.println(jsonObject);
 
-        System.out.println("The client is now terminating...");
-    }
+                        String response = in.readLine();
 
-    // Question 3
-    public static void deleteProductById() {
-        try {
-            System.out.println("Please enter the id of the product you wish to delete:");
-            String id = sc.next();
-
-            System.out.println("Deleting product with given id...");
-            int rowsAffected = IProductDao.deleteProductById(id);
-
-            if (rowsAffected > 0) {
-                System.out.println("Successfully deleted product with id " + id);
-            } else {
-                System.out.println("An error occurred. Please check if your id exists in the database!");
-            }
-        } catch (DaoException e) {
-            e.printStackTrace();
-        }
-
-        System.out.println();
-
-    }
-
-    // Question 5
-    public static void updateProduct() {
-        try {
-            System.out.println("Enter product id you wish to update (e.g. 'product1', 'product2'): ");
-            String id = sc.next();
-
-            Product product = IProductDao.getProductById(id);
-
-            if (product != null) {
-                product = Methods.getProduct(product.getId());
-
-                int rowsAffected = IProductDao.updateProduct(id, product);
-
-                System.out.println("Updating product with given id...");
-                if (rowsAffected > 0) {
-                    System.out.println("Product with id " + id + " has been successfully updated");
-                } else {
-                    System.out.println("Error in updating product. Check if your product id exists in the database!");
-                }
-
-            } else {
-                System.out.println("Product with given id doesnt exist!");
-            }
-
-            System.out.println();
-
-        } catch (DaoException e) {
-            e.printStackTrace();
-        }
-    }
-
-    // Question 6
-    public static void filterProducts() {
-        try {
-            // Initially get all products first so we can have something to filter
-            List<Product> products = IProductDao.getAllProducts();
-
-            if (products.isEmpty()) {
-                System.out.println("Products table is empty! Please add some data first.");
-            } else {
-                System.out.println("Please enter a price (e.g. 10.00) to filter products below that price");
-                double price = sc.nextDouble();
-
-                // Reference: https://stackoverflow.com/questions/66532091/java-8-streams-filter-by-a-property-of-an-object
-                List<Product> productsBelowCertainPrice = DaoMethods.filterProductsByPrice(price, products);
-
-                if (productsBelowCertainPrice.isEmpty()) {
-                    System.out.println("No product found that is below given price!");
-                } else {
-                    for (Product product : productsBelowCertainPrice) {
-                        System.out.println("{" + product.toString() + "}");
+                        JSONObject jsonResponse = new JSONObject(response);
+                        String message = jsonResponse.getString("message");
+                        System.out.println("Message from server: " + message);
+                    } else if (request.equals("8")) {
+                        String response = in.readLine();
+                        System.out.println("Client message: Response from server: \"" + response + "\"");
+                        break;
+                    } else {
+                        System.out.println("Command unknown. Try again.");
                     }
                 }
             }
+        catch(IOException e){
+                System.out.println("Client error: " + e);
+            }
+        catch(Exception e){
+                e.printStackTrace();
+            }
+
+            System.out.println("The client is now terminating...");
+        }
+
+        // Question 3
+        public static void deleteProductById () {
+            try {
+                System.out.println("Please enter the id of the product you wish to delete:");
+                String id = sc.next();
+
+                System.out.println("Deleting product with given id...");
+                int rowsAffected = IProductDao.deleteProductById(id);
+
+                if (rowsAffected > 0) {
+                    System.out.println("Successfully deleted product with id " + id);
+                } else {
+                    System.out.println("An error occurred. Please check if your id exists in the database!");
+                }
+            } catch (DaoException e) {
+                e.printStackTrace();
+            }
 
             System.out.println();
 
-        } catch (DaoException e) {
-            e.printStackTrace();
         }
-    }
 
-    // Question 8
-    public static void productToJsonString() {
-        try {
-            System.out.println("Please enter the id of the product you wish to turn into a JSON:");
-            String id = sc.next();
+        // Question 5
+        public static void updateProduct () {
+            try {
+                System.out.println("Enter product id you wish to update (e.g. 'product1', 'product2'): ");
+                String id = sc.next();
 
-            System.out.println("Finding product with given id...");
-            Product product = IProductDao.getProductById(id);
+                Product product = IProductDao.getProductById(id);
 
-            if (product != null) {
-                System.out.println("Product found!\n{" + product + "}\nTurning found product into a JSON string...");
+                if (product != null) {
+                    product = Methods.getProduct(product.getId());
 
-                // Refer to method productsListToJsonString() for explanation
-                JSONObject jsonObject = DaoMethods.turnProductIntoJson(product);
+                    int rowsAffected = IProductDao.updateProduct(id, product);
 
-                System.out.println("Product as a JSON string:\n" + jsonObject);
-            } else {
-                System.out.println("No product found with given id!");
+                    System.out.println("Updating product with given id...");
+                    if (rowsAffected > 0) {
+                        System.out.println("Product with id " + id + " has been successfully updated");
+                    } else {
+                        System.out.println("Error in updating product. Check if your product id exists in the database!");
+                    }
+
+                } else {
+                    System.out.println("Product with given id doesnt exist!");
+                }
+
+                System.out.println();
+
+            } catch (DaoException e) {
+                e.printStackTrace();
             }
-        } catch (DaoException e) {
-            e.printStackTrace();
         }
 
-        System.out.println();
+        // Question 6
+        public static void filterProducts () {
+            try {
+                // Initially get all products first so we can have something to filter
+                List<Product> products = IProductDao.getAllProducts();
 
-    }
+                if (products.isEmpty()) {
+                    System.out.println("Products table is empty! Please add some data first.");
+                } else {
+                    System.out.println("Please enter a price (e.g. 10.00) to filter products below that price");
+                    double price = sc.nextDouble();
 
-    private void sendFile(String fileName, DataOutputStream dataOutputStream) throws Exception {
-        int numberOfBytes;
-        // Open the File at the specified location (path)
-        File file = new File(fileName);
-        FileInputStream fileInputStream = new FileInputStream(file);
+                    // Reference: https://stackoverflow.com/questions/66532091/java-8-streams-filter-by-a-property-of-an-object
+                    List<Product> productsBelowCertainPrice = DaoMethods.filterProductsByPrice(price, products);
 
-        // Send the length of the file in bytes to the server as a "long"
-        dataOutputStream.writeLong(file.length());
+                    if (productsBelowCertainPrice.isEmpty()) {
+                        System.out.println("No product found that is below given price!");
+                    } else {
+                        for (Product product : productsBelowCertainPrice) {
+                            System.out.println("{" + product.toString() + "}");
+                        }
+                    }
+                }
 
-        // Here we break file into chunks by using a buffer
-        byte[] buffer = new byte[4 * 1024];
+                System.out.println();
 
-        // read bytes from file into the buffer until buffer is full, or until we have reached the end of the image file
-        while ((numberOfBytes = fileInputStream.read(buffer))!= -1) {
-            dataOutputStream.write(buffer, 0, numberOfBytes);
-            dataOutputStream.flush();
+            } catch (DaoException e) {
+                e.printStackTrace();
+            }
         }
 
-        fileInputStream.close();
-    }
+        // Question 8
+        public static void productToJsonString () {
+            try {
+                System.out.println("Please enter the id of the product you wish to turn into a JSON:");
+                String id = sc.next();
 
-    public static Supplier getSupplier() {
+                System.out.println("Finding product with given id...");
+                Product product = IProductDao.getProductById(id);
 
-        // Asks for Product ID input
-        System.out.println("Enter product ID you want to search by");
+                if (product != null) {
+                    System.out.println("Product found!\n{" + product + "}\nTurning found product into a JSON string...");
 
-        // Takes in input
-        String ProductId = sc.next();
+                    // Refer to method productsListToJsonString() for explanation
+                    JSONObject jsonObject = DaoMethods.turnProductIntoJson(product);
 
-        // initializes variables
-        Supplier supplier = null;
+                    System.out.println("Product as a JSON string:\n" + jsonObject);
+                } else {
+                    System.out.println("No product found with given id!");
+                }
+            } catch (DaoException e) {
+                e.printStackTrace();
+            }
 
-        try {
+            System.out.println();
 
-            // Gets Supplier object from db using product ID
-            supplier = ISupplierDao.getSupplierByProductId(ProductId);
-
-        } catch (Exception e) {
-
-            // Prints error
-            e.printStackTrace();
         }
 
-        // returns Supplier
-        return supplier;
+        private void sendFile (String fileName, DataOutputStream dataOutputStream) throws Exception {
+            int numberOfBytes;
+            // Open the File at the specified location (path)
+            File file = new File(fileName);
+            FileInputStream fileInputStream = new FileInputStream(file);
+
+            // Send the length of the file in bytes to the server as a "long"
+            dataOutputStream.writeLong(file.length());
+
+            // Here we break file into chunks by using a buffer
+            byte[] buffer = new byte[4 * 1024];
+
+            // read bytes from file into the buffer until buffer is full, or until we have reached the end of the image file
+            while ((numberOfBytes = fileInputStream.read(buffer)) != -1) {
+                dataOutputStream.write(buffer, 0, numberOfBytes);
+                dataOutputStream.flush();
+            }
+
+            fileInputStream.close();
+        }
+
+        public static Supplier getSupplier () {
+
+            // Asks for Product ID input
+            System.out.println("Enter product ID you want to search by");
+
+            // Takes in input
+            String ProductId = sc.next();
+
+            // initializes variables
+            Supplier supplier = null;
+
+            try {
+
+                // Gets Supplier object from db using product ID
+                supplier = ISupplierDao.getSupplierByProductId(ProductId);
+
+            } catch (Exception e) {
+
+                // Prints error
+                e.printStackTrace();
+            }
+
+            // returns Supplier
+            return supplier;
+        }
     }
-}

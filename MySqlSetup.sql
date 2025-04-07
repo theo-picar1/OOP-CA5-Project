@@ -28,7 +28,7 @@ create table Products
 );
 
 create table Customers (
-    customer_id int not null,
+    customer_id int not null auto_increment,
     customer_name varchar(20),
     customer_email varchar(320),
     customer_address varchar(50),
