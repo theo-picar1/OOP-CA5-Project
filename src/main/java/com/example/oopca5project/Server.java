@@ -1,9 +1,6 @@
 package com.example.oopca5project;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.List;
@@ -80,6 +77,8 @@ class ClientHandler implements Runnable {
     PrintWriter socketWriter;
     Socket clientSocket;
     final int clientNumber;
+
+    private DataInputStream dataInputStream = null;
 
     public ClientHandler(Socket clientSocket, int clientNumber) {
         this.clientSocket = clientSocket;
@@ -185,8 +184,15 @@ class ClientHandler implements Runnable {
                         e.printStackTrace();
                     }
                 }
+                else if(request.equals("6")) {
+                    // Get input and output streams on the Socket to send/receive binary data
+                    dataInputStream = new DataInputStream(clientSocket.getInputStream());
+
+                    // call function to extract file data from the data input stream and write to file
+                    receiveFile("images/my-beautiful-staffordshire-bull-terrier-v0-czmj26cdl58c1-RECEIVED.jpg");
+                }
                 // ADD CUSTOMER
-                else if (request.equals("6")) {
+                else if (request.equals("7")) {
 
                     // initialize variables
                     Customer customer;
@@ -231,7 +237,7 @@ class ClientHandler implements Runnable {
                     }
                 }
                 // QUIT CLIENT / SERVER APPLICATION AND RETURN TO CONSOLE APPLICATION
-                else if (request.equals("7")) {
+                else if (request.equals("8")) {
                     socketWriter.println("Sorry to see you leaving. Goodbye.");
                     System.out.println("Server message: Client has notified us that it is quitting.");
                 }
@@ -242,7 +248,7 @@ class ClientHandler implements Runnable {
                 }
             }
         }
-        catch (IOException | DaoException e) {
+        catch (Exception e) {
             e.printStackTrace();
         }
         finally {
@@ -256,5 +262,40 @@ class ClientHandler implements Runnable {
             }
         }
         System.out.println("Server: (ClientHandler): Handler for Client " + clientNumber + " is terminating .....");
+    }
+
+    private void receiveFile(String fileName) throws Exception
+    {
+        FileOutputStream fileOutputStream = new FileOutputStream(fileName);
+
+        // DataInputStream allows us to read Java primitive types from stream, such as readLong()
+        long numberOfBytesRemaining = dataInputStream.readLong(); // bytes remaining to be read (initially equal to file size)
+        System.out.println("Server: file size in bytes = " + numberOfBytesRemaining);
+
+        // create a buffer to receive the incoming image bytes from the socket
+        // A buffer is an array that stores a certain amount of data temporarily.
+        byte[] buffer = new byte[4 * 1024];
+
+        System.out.println("Server: Bytes remaining to be read from socket: ");
+        int numberOfBytesRead;    // number of bytes read from the socket
+
+        // next, read the incoming bytes in chunks (of buffer size) that make up the image file
+        while (numberOfBytesRemaining > 0 &&  (numberOfBytesRead = dataInputStream.read(buffer, 0,(int)Math.min(buffer.length, numberOfBytesRemaining))) != -1) {
+
+            // Here we write the buffer data into the local file
+            fileOutputStream.write(buffer, 0, numberOfBytesRead);  // write N number of bytes from buffer into file
+
+            // reduce the 'numberOfBytesRemaining' to be read by the number of bytes read in.
+            // 'numberOfBytesRemaining' represents the number of bytes remaining to be read from
+            // the input stream.
+            // We repeat this until all the bytes are dealt with and the remaining size is reduced to zero
+            numberOfBytesRemaining = numberOfBytesRemaining - numberOfBytesRead;
+
+            System.out.print(numberOfBytesRemaining + "... ");
+        }
+        fileOutputStream.close();
+
+        System.out.println("File was received successfully! Look in the images folder to see the transferred file!");
+
     }
 }
