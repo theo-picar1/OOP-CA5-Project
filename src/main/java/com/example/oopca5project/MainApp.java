@@ -1,6 +1,12 @@
 package com.example.oopca5project;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +27,7 @@ import com.example.oopca5project.DTOs.Supplier;
 import com.example.oopca5project.Exceptions.DaoException;
 
 public class MainApp {
+
     static ProductDaoInterface IProductDao = new MySqlProductDao();
     static SupplierDaoInterface ISupplierDao = new MySqlSupplierDao();
     static CustomerDaoInterface ICustomerDao = new MySqlCustomerDao();
@@ -36,15 +43,15 @@ public class MainApp {
     public static void menu() {
         MainApp client = new MainApp();
         String[] options = {
-                "End application",
-                "Start Server",
-                "Delete product by ID",
-                "Update product by ID",
-                "Filter products",
-                "Display all products as JSON",
-                "Display product as JSON",
-                "Display supplier by ProductID",
-                "Add supplier"
+            "End application",
+            "Start Server",
+            "Delete product by ID",
+            "Update product by ID",
+            "Filter products",
+            "Display all products as JSON",
+            "Display product as JSON",
+            "Display supplier by ProductID",
+            "Add supplier"
         };
 
         Methods.menuOptions(options);
@@ -99,7 +106,7 @@ public class MainApp {
                 Socket socket = new Socket("localhost", 9201);
                 PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
                 BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))
-        ) {
+            ) {
             Scanner sc = new Scanner(System.in);
 
             System.out.println("Client: Client has connected to the server!");
@@ -109,15 +116,14 @@ public class MainApp {
 
             while (true) {
                 String[] options = {
-                        "Display all Products",
-                        "Display all Suppliers",
-                        "Display all Customers",
-                        "Find product by ID",
-                        "Add product",
-                        "Choose image to display",
-                        "Add customer",
-                        "Quit",
-                };
+                    "Display all Products",
+                    "Display all Suppliers",
+                    "Display all Customers",
+                    "Find product by ID",
+                    "Add product",
+                    "Choose image to display",
+                    "Add customer",
+                    "Quit",};
 
                 System.out.println("***** CLIENT / SERVER APPLICATION *****");
                 Methods.menuOptions(options);
@@ -136,7 +142,7 @@ public class MainApp {
 
                     ArrayList<Product> list = JunitTestMethods.makeProductListFromJSONArray(jsonArray); // Turn the jsonArray into a list of products
                     Methods.printListOfObjects(list); // Then print it
-                }
+                } 
                 // DISPLAY ALL SUPPLIERS
                 else if (request.equals("2")) {
                     String response = in.readLine();
@@ -144,7 +150,7 @@ public class MainApp {
 
                     ArrayList<Supplier> list = JunitTestMethods.makeSupplierListFromJSONArray(jsonArray);
                     Methods.printListOfObjects(list);
-                }
+                } 
                 // DISPLAY ALL CUSTOMERS
                 else if (request.equals("3")) {
                     String response = in.readLine();
@@ -188,16 +194,40 @@ public class MainApp {
 
                     dataOutputStream.close();
                 } else if (request.equals("7")) {
+
+                    // Get Customer object, turn it into a JSON string, and send to server
                     Customer customer = Methods.getCustomer();
                     JSONObject jsonObject = JunitTestMethods.turnCustomerIntoJson(customer);
                     out.println(jsonObject);
 
+                     // Take in response from server
                     String response = in.readLine();
 
+                    // Get message from JSONObject and print
                     JSONObject jsonResponse = new JSONObject(response);
                     String message = jsonResponse.getString("message");
                     System.out.println("Message from server: " + message);
+
                 } else if (request.equals("8")) {
+                    // Get ID of Product to update and send ID to server
+                    System.out.println("Please enter the id of the customer you wish to update:");
+                    String id = sc.next();
+                    out.println(id);
+
+                    // Get Product object, turn it into a JSON string, and send to server
+                    Product product = Methods.getProduct(id);
+                    JSONObject jsonObject = JunitTestMethods.turnProductIntoJson(product);
+                    out.println(jsonObject);
+
+                    // Take in response from server
+                    String response = in.readLine();
+
+                    // Get message from JSONObject and print 
+                    JSONObject jsonResponse = new JSONObject(response);
+                    String message = jsonResponse.getString("message");
+                    System.out.println("Message from server: " + message);
+
+                } else if (request.equals("9")) {
                     String response = in.readLine();
                     System.out.println("Client message: Response from server: \"" + response + "\"");
                     break;

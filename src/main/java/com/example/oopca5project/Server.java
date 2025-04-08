@@ -1,6 +1,11 @@
 package com.example.oopca5project;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.DataInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.List;
@@ -236,8 +241,54 @@ class ClientHandler implements Runnable {
                         e.printStackTrace();
                     }
                 }
-                // QUIT CLIENT / SERVER APPLICATION AND RETURN TO CONSOLE APPLICATION
+                // UPDATE PRODUCT
                 else if (request.equals("8")) {
+
+                    // initialize variables
+                    Product product;
+                    int productUpdated;
+                    String id = socketReader.readLine();
+                    String jsonString = socketReader.readLine();
+                    JSONObject jsonObject = new JSONObject(jsonString);
+
+                    // initialize messages
+                    JSONObject errorMessage = new JSONObject();
+                    errorMessage.put("status", "error");
+                    errorMessage.put("message", "An error occurred!!");
+
+                    JSONObject successMessage = new JSONObject();
+                    successMessage.put("status", "success");
+                    successMessage.put("message", jsonString);
+
+                    try {
+                        // check if Product doesn't exist
+                        if (IProductDao.getProductById(id) != null) {
+
+                            // get and update Product to database
+                            product = JunitTestMethods.makeProductFromJSON(jsonObject);
+                            productUpdated = IProductDao.updateProduct(id, product);
+
+                            // check if Customer was added
+                            if (productUpdated == 1) {
+
+                                socketWriter.println(successMessage);
+
+                            } else {
+
+                                socketWriter.println(errorMessage);
+                            }
+                        } else {
+
+                            socketWriter.println(errorMessage);
+                        }
+
+                    } catch (DaoException e) {
+                        e.printStackTrace();
+                    }
+                    
+                }
+                // QUIT CLIENT / SERVER APPLICATION AND RETURN TO CONSOLE APPLICATION
+                else if (request.equals("9")) {
                     socketWriter.println("Sorry to see you leaving. Goodbye.");
                     System.out.println("Server message: Client has notified us that it is quitting.");
                 }
