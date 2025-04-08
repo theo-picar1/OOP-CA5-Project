@@ -219,14 +219,13 @@ class MainAppTest {
         assertEquals(1, n);
     }
 
-    // ***************************
-    // ***** FEATURE 6 TESTS *****
+    // *************** FILTER PRODUCTS LESS THAN PRICE TEST ***************
     @Test
     // Tests to see if filteredProducts will return nothing if provided with no products to filter by (no match test)
     void filterProductsTest1() {
         double price = 10.00;
         List<Product> products = new ArrayList<>();
-        List<Product> filteredProducts = DaoMethods.filterProductsByPrice(price, products);
+        List<Product> filteredProducts = JunitTestMethods.filterProductsByPrice(price, products);
 
         int expected = 0;
         int actual = filteredProducts.size();
@@ -243,7 +242,7 @@ class MainAppTest {
         products.add(new Product("", "", "", 8.10, ""));
         products.add(new Product("", "", "", 1.10, ""));
 
-        List<Product> filteredProducts = DaoMethods.filterProductsByPrice(price, products);
+        List<Product> filteredProducts = JunitTestMethods.filterProductsByPrice(price, products);
 
         int expected = products.size();
         int actual = filteredProducts.size();
@@ -260,22 +259,21 @@ class MainAppTest {
         products.add(new Product("", "", "", 8.10, ""));
         products.add(new Product("", "", "", 11.10, ""));
 
-        List<Product> filteredProducts = DaoMethods.filterProductsByPrice(price, products);
+        List<Product> filteredProducts = JunitTestMethods.filterProductsByPrice(price, products);
 
         int expected = 2;
         int actual = filteredProducts.size();
 
         assertEquals(expected, actual);
     }
+    // ***************************************************************
 
-    // ***************************
-    // ***** FEATURE 7 TESTS *****
-
+    // *************** PRODUCT LISTS TO JSON STRING TESTS ***************
     @Test
     void productsListToJsonStringNullList() {
         List<Product> list = null;
 
-        assertNull(DaoMethods.productsListToJsonString(list));
+        assertNull(JunitTestMethods.productsListToJsonString(list));
     }
 
     @Test
@@ -287,21 +285,21 @@ class MainAppTest {
 
         JSONArray jsonArray = new JSONArray(
                 "[" +
-                            "{\"size\":\"small\",\"product_id\":\"1\",\"product_description\":\"desc\",\"unit_price\":2,\"supplier_id\":\"1\"}," +
-                            "{\"size\":\"medium\",\"product_id\":\"2\",\"product_description\":\"descrip\",\"unit_price\":4,\"supplier_id\":\"2\"}" +
+                        "{\"size\":\"small\",\"product_id\":\"1\",\"product_description\":\"desc\",\"unit_price\":2,\"supplier_id\":\"1\"}," +
+                        "{\"size\":\"medium\",\"product_id\":\"2\",\"product_description\":\"descrip\",\"unit_price\":4,\"supplier_id\":\"2\"}" +
                         "]");
 
-        assertEquals(jsonArray.toString(), DaoMethods.productsListToJsonString(list).toString());
+        assertEquals(jsonArray.toString(), JunitTestMethods.productsListToJsonString(list).toString());
     }
+    // ************************************************************
 
-    // ***************************
-    // ***** FEATURE 8 TESTS *****
+    // **************** PRODUCT TO JSON OBJECT TESTS ****************
     @Test
     // Tests to see if null is returned when null is sent in as a product
     void oneProductToJsonTest1() {
         Product product = null;
 
-        assertNull(DaoMethods.turnProductIntoJson(product));
+        assertNull(JunitTestMethods.turnProductIntoJson(product));
     }
 
     @Test
@@ -309,6 +307,7 @@ class MainAppTest {
     void oneProductToJsonTest2() {
         Product product = new Product("testProduct", "testDescription", "testSize", 20.25, "testSupplier");
 
-        assertNotNull(DaoMethods.turnProductIntoJson(product));
+        assertNotNull(JunitTestMethods.turnProductIntoJson(product));
     }
+    // *******************************************************************
 }

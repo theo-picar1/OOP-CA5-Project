@@ -1,5 +1,6 @@
 package com.example.oopca5project;
 
+import java.util.ArrayList;
 import java.util.Scanner;
 
 import com.example.oopca5project.DTOs.Customer;
@@ -166,5 +167,25 @@ public class Methods {
 
         // Return Customer object
         return new Customer(name, email, phoneNo);
+    }
+
+    // <T> is a Generic type. i.e it creates (lists) without casting types.
+    // This allows for a list of Products, Suppliers, and Customers to be
+    // Passed into this method without the need for overloading.
+    public static <T> void printListOfObjects(ArrayList<T> objList) {
+
+        // check if passed list is empty
+        if(objList != null && !objList.isEmpty()) {
+
+            // print each Object in turn
+            for (Object obj : objList) {
+                System.out.println(obj);
+            }
+
+        }else{
+
+            // Print error message if list is empty
+            System.out.println("List is empty");
+        }
     }
 }

@@ -1,3 +1,6 @@
+// IMPORTANT *****
+// This class is for separating DAO method logic from the main app. This helps with testing purposes in MainAppTest
+
 package com.example.oopca5project;
 
 import com.example.oopca5project.DAOs.*;
@@ -12,20 +15,22 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.Scanner;
-// This class is for separating DAO method logic from the main app. This helps with testing purposes in MainAppTest
-public class DaoMethods {
-    static Scanner sc = new Scanner(System.in);
+
+public class JunitTestMethods {
     static ProductDaoInterface IProductDao = new MySqlProductDao();
     static SupplierDaoInterface ISupplierDao = new MySqlSupplierDao();
     static CustomerDaoInterface ICustomerDao = new MySqlCustomerDao();
 
-    // SQL DAO METHODS - FOR JUNIT TESTING
+    // Finder: FILTER PRODUCTS < PRICE TESTS
+    // Method that returns only the products where their price is less than the price that was passed in
     public static List<Product> filterProductsByPrice(double price, List<Product> products) {
         return products.stream()
                 .filter(p -> p.getPrice() < price)
                 .collect(Collectors.toList());
     }
 
+    // FINDER: PRODUCT TO JSON OBJECT TESTS
+    // Method that returns a passed in product object as a JSON object
     public static JSONObject turnProductIntoJson(Product product) {
         // Checks if the passed product is null
         if(product == null) {
@@ -49,6 +54,7 @@ public class DaoMethods {
         return jsonObject;
     }
 
+    // ***** NO TESTS CREATED *****
     public static Product makeProductFromJSON(JSONObject jsonObject) {
 
         // Create product
@@ -65,22 +71,8 @@ public class DaoMethods {
         return product;
     }
 
-    public static void addSupplier(Supplier supplier) {
-        try {
-            int rowsAffected = ISupplierDao.addSupplier(supplier);
-
-            if(rowsAffected >= 1) {
-                System.out.println("Successfully added supplier");
-            }
-            else {
-                System.err.println("Error! Supplier was not added");
-            }
-        }
-        catch(DaoException e) {
-            e.printStackTrace();
-        }
-    }
-
+    // FINDER: PRODUCT LISTS TO JSON STRING TESTS
+    // Method that will take in a list of products and returns that list as a JSONArray
     public static JSONArray productsListToJsonString(List<Product> list) {
         if (list != null) {
             // Creates JSONArray
@@ -100,7 +92,8 @@ public class DaoMethods {
         return null;
     }
 
-    // Overloaded methods
+    // ***** NO TESTS CREATED YET *****
+    // Same logic as productsListToJsonString
     public static JSONArray suppliersListToJsonString(List<Supplier> list) {
         if (list != null) {
             // Creates JSONArray
@@ -120,6 +113,7 @@ public class DaoMethods {
         return null;
     }
 
+//     ***** NO TESTS CREATED YET *****
     public static JSONObject turnSupplierIntoJson(Supplier supplier) {
         // Checks if the passed product is null
         if(supplier == null) {
@@ -142,6 +136,7 @@ public class DaoMethods {
         return jsonObject;
     }
 
+    //  ***** NO TESTS CREATED YET *****
     public static ArrayList<Supplier> makeSupplierListFromJSONArray(JSONArray jsonArray) {
 
         // Create list of Supplier objects
@@ -156,6 +151,7 @@ public class DaoMethods {
         return list;
     }
 
+    //  ***** NO TESTS CREATED YET *****
     public static Supplier makeSupplierFromJSON(JSONObject jsonObject) {
 
         // Create supplier
@@ -171,6 +167,7 @@ public class DaoMethods {
         return supplier;
     }
 
+    //  ***** NO TESTS CREATED YET *****
     public static ArrayList<Product> makeProductListFromJSONArray(JSONArray jsonArray) {
 
         // Create list of Product objects
@@ -185,6 +182,7 @@ public class DaoMethods {
         return list;
     }
 
+    //  ***** NO TESTS CREATED YET *****
     public static ArrayList<Customer> makeCustomerListFromJSONArray(JSONArray jsonArray) {
 
         // Create list of Customer objects
@@ -199,6 +197,7 @@ public class DaoMethods {
         return list;
     }
 
+    //  ***** NO TESTS CREATED YET *****
     public static Customer makeCustomerFromJSON(JSONObject jsonObject) {
 
         // Create Customer
@@ -214,6 +213,7 @@ public class DaoMethods {
         return customer;
     }
 
+    //  ***** NO TESTS CREATED YET *****
     public static JSONArray customersListToJsonString(List<Customer> list) {
         if (list != null) {
             // Creates JSONArray
@@ -233,6 +233,7 @@ public class DaoMethods {
         return null;
     }
 
+    //  ***** NO TESTS CREATED YET *****
     public static JSONObject turnCustomerIntoJson(Customer customer) {
         // Checks if the passed product is null
         if(customer == null) {
@@ -253,25 +254,5 @@ public class DaoMethods {
 
         // Returns newly created JSONObject
         return jsonObject;
-    }
-
-    // <T> is a Generic type. i.e it creates (lists) without casting types.
-    // This allows for a list of Products, Suppliers, and Customers to be
-    // Passed into this method without the need for overloading.
-    public static <T> void printListOfObjects(ArrayList<T> objList) {
-
-        // check if passed list is empty
-        if(objList != null && !objList.isEmpty()) {
-
-            // print each Object in turn
-            for (Object obj : objList) {
-                System.out.println(obj);
-            }
-
-        }else{
-
-            // Print error message if list is empty
-            System.out.println("List is empty");
-        }
     }
 }

@@ -104,21 +104,21 @@ class ClientHandler implements Runnable {
                 if (request.equals("1")) {
                     // Get all objects from database, convert them to a jsonArray, then pass it back to the client.
                     List<Product> products = IProductDao.getAllProducts();
-                    JSONArray jsonArray = DaoMethods.productsListToJsonString(products);
+                    JSONArray jsonArray = JunitTestMethods.productsListToJsonString(products);
 
                     socketWriter.println(jsonArray);
                 }
                 // DISPLAY ALL SUPPLIERS
                 else if(request.equals("2")) {
                     List<Supplier> suppliers = ISupplierDao.getAllSuppliers();
-                    JSONArray jsonArray = DaoMethods.suppliersListToJsonString(suppliers);
+                    JSONArray jsonArray = JunitTestMethods.suppliersListToJsonString(suppliers);
 
                     socketWriter.println(jsonArray);
                 }
                 // DISPLAYS ALL CUSTOMERS
                 else if(request.equals("3")) {
                     List<Customer> customers = ICustomerDao.getAllCustomers();
-                    JSONArray jsonArray = DaoMethods.customersListToJsonString(customers);
+                    JSONArray jsonArray = JunitTestMethods.customersListToJsonString(customers);
 
                     socketWriter.println(jsonArray);
                 }
@@ -130,7 +130,7 @@ class ClientHandler implements Runnable {
                         product = IProductDao.getProductById(socketReader.readLine());
 
                         // Turn product into single json object and pass it back as a string to the client
-                        JSONObject message = DaoMethods.turnProductIntoJson(product);
+                        JSONObject message = JunitTestMethods.turnProductIntoJson(product);
                         socketWriter.println(message.toString());
 
                         socketWriter.println("Server message: ID has been passed to server passing back product");
@@ -163,7 +163,7 @@ class ClientHandler implements Runnable {
                         if (IProductDao.getProductById(id) == null) {
 
                             // get and add Product to database
-                            product = DaoMethods.makeProductFromJSON(jsonObject);
+                            product = JunitTestMethods.makeProductFromJSON(jsonObject);
                             productAdded = IProductDao.addProduct(product);
 
                             // check if product was added
@@ -215,7 +215,7 @@ class ClientHandler implements Runnable {
                         if (ICustomerDao.getCustomerById(id) == null) {
 
                             // get and add Customer to database
-                            customer = DaoMethods.makeCustomerFromJSON(jsonObject);
+                            customer = JunitTestMethods.makeCustomerFromJSON(jsonObject);
                             customerAdded = ICustomerDao.addCustomer(customer);
 
                             // check if Customer was added
