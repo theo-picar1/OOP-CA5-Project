@@ -45,7 +45,6 @@ public class MainApp {
         String[] options = {
             "End application",
             "Start Server",
-            "Delete product by ID",
             "Update product by ID",
             "Filter products",
             "Display all products as JSON",
@@ -67,24 +66,21 @@ public class MainApp {
                         client.start(); // Use the server class
                         break;
                     case 3:
-                        deleteProductById();
-                        break;
-                    case 4:
                         updateProduct();
                         break;
-                    case 5:
+                    case 4:
                         filterProducts();
                         break;
-                    case 6: // DISPLAY ALL PRODUCTS AS JSON ARRAY
+                    case 5: // DISPLAY ALL PRODUCTS AS JSON ARRAY
                         JunitTestMethods.productsListToJsonString(IProductDao.getAllProducts());
                         break;
-                    case 7: // DISPLAY PRODUCT AS JSON CASE
+                    case 6: // DISPLAY PRODUCT AS JSON CASE
                         productToJsonString();
                         break;
-                    case 8: // GET SUPPLIER THROUGH PRODUCT ID
+                    case 7: // GET SUPPLIER THROUGH PRODUCT ID
                         Methods.printObject(getSupplier());
                         break;
-                    case 9: // ADD SUPPLIER CASE
+                    case 8: // ADD SUPPLIER CASE
                         addSupplier();
                         break;
                     default:
@@ -123,7 +119,10 @@ public class MainApp {
                     "Add product",
                     "Choose image to display",
                     "Add customer",
-                    "Quit",};
+                    "Update product by ID",
+                    "Quit",
+                    "Delete product by ID",
+                };
 
                 System.out.println("***** CLIENT / SERVER APPLICATION *****");
                 Methods.menuOptions(options);
@@ -210,7 +209,7 @@ public class MainApp {
 
                 } else if (request.equals("8")) {
                     // Get ID of Product to update and send ID to server
-                    System.out.println("Please enter the id of the customer you wish to update:");
+                    System.out.println("Please enter the id of the product you wish to update:");
                     String id = sc.next();
                     out.println(id);
 
@@ -227,11 +226,20 @@ public class MainApp {
                     String message = jsonResponse.getString("message");
                     System.out.println("Message from server: " + message);
 
-                } else if (request.equals("9")) {
+                } else if (request.equals("9")) { // QUIT APPLICATION
                     String response = in.readLine();
                     System.out.println("Client message: Response from server: \"" + response + "\"");
                     break;
-                } else {
+                }
+                else if (request.equals("10")) { // DELETE PRODUCT BY ID
+                    System.out.println("Please enter the id of the product you wish to delete");
+                    String id = sc.next();
+                    out.println(id);
+
+                    String response = in.readLine();
+                    System.out.println("Client: RESPONSE FROM SERVER: '" +response+ "'");
+                }
+                else {
                     System.out.println("Command unknown. Try again.");
                 }
             }
