@@ -50,14 +50,13 @@ public class MainApp {
             "Display all products as JSON",
             "Display product as JSON",
             "Display supplier by ProductID",
-            "Add supplier"
         };
 
         Methods.menuOptions(options);
 
         System.out.println("Enter choice: ");
 
-        int choice = Methods.validateRange(1, 14);
+        int choice = Methods.validateRange(1, 7);
 
         while (choice != 1) {
             try {
@@ -79,9 +78,6 @@ public class MainApp {
                         break;
                     case 7: // GET SUPPLIER THROUGH PRODUCT ID
                         Methods.printObject(getSupplier());
-                        break;
-                    case 8: // ADD SUPPLIER CASE
-                        addSupplier();
                         break;
                     default:
                         System.out.println("Invalid option, please try again!");
@@ -122,6 +118,7 @@ public class MainApp {
                     "Update product by ID",
                     "Quit",
                     "Delete product by ID",
+                    "Add supplier",
                 };
 
                 System.out.println("***** CLIENT / SERVER APPLICATION *****");
@@ -171,7 +168,7 @@ public class MainApp {
                     } else {
                         System.out.println("Product not found");
                     }
-                } else if (request.equals("5")) {
+                } else if (request.equals("5")) { // ADD PRODUCT
                     System.out.println("Please enter the id of the product you wish to add:");
                     String id = sc.next();
 
@@ -238,6 +235,20 @@ public class MainApp {
 
                     String response = in.readLine();
                     System.out.println("Client: RESPONSE FROM SERVER: '" +response+ "'");
+                }
+                else if(request.equals("11")) { // ADD SUPPLIER
+                    System.out.println("Please enter the id of the supplier you wish to add:");
+                    String id = sc.next();
+
+                    Supplier supplier = Methods.createSupplier(id);
+                    JSONObject jsonObject = JunitTestMethods.turnSupplierIntoJson(supplier);
+                    out.println(jsonObject);
+
+                    String response = in.readLine();
+
+                    JSONObject jsonResponse = new JSONObject(response);
+                    String message = jsonResponse.getString("message");
+                    System.out.println("Message from server: " + message);
                 }
                 else {
                     System.out.println("Command unknown. Try again.");

@@ -198,7 +198,6 @@ class ClientHandler implements Runnable {
                 }
                 // ADD CUSTOMER
                 else if (request.equals("7")) {
-
                     // initialize variables
                     Customer customer;
                     int customerAdded;
@@ -315,6 +314,45 @@ class ClientHandler implements Runnable {
                         }
                     }
                     catch(DaoException e) {
+                        e.printStackTrace();
+                    }
+                }
+                else if (request.equals("11")) { // ADD SUPPLIER
+                    Supplier supplier;
+                    int rowsAffected;
+                    String jsonString = socketReader.readLine();
+                    JSONObject jsonObject = new JSONObject(jsonString);
+                    String id = jsonObject.getString("supplier_id");
+
+                    // Error messages
+                    JSONObject errorMessage = new JSONObject();
+                    errorMessage.put("status", "Error");
+                    errorMessage.put("message", "An error occurred! Check the server terminal for error message");
+
+                    // Success messages
+                    JSONObject successMessage = new JSONObject();
+                    successMessage.put("status", "success");
+                    successMessage.put("message", jsonString);
+
+                    try {
+                        // check if Supplier doesn't exist before proceeding
+                        if (ISupplierDao.getSupplierById(id) == null) {
+                            supplier = JunitTestMethods.makeSupplierFromJSON(jsonObject);
+                            rowsAffected = ISupplierDao.addSupplier(supplier);
+
+                            if (rowsAffected > 0) {
+                                socketWriter.println(successMessage);
+
+                            }
+                            else {
+                                socketWriter.println(errorMessage);
+                            }
+                        } else {
+                            socketWriter.println(errorMessage);
+                            System.err.println("Server: SUPPLIER ALREADY EXISTS IN THE TABLE WITH PROVIDED ID!");
+                        }
+
+                    } catch (DaoException e) {
                         e.printStackTrace();
                     }
                 }
