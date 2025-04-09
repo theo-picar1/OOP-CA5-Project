@@ -45,7 +45,6 @@ public class MainApp {
         String[] options = {
             "End application",
             "Start Server",
-            "Update product by ID",
             "Filter products",
             "Display all products as JSON",
             "Display product as JSON",
@@ -56,7 +55,7 @@ public class MainApp {
 
         System.out.println("Enter choice: ");
 
-        int choice = Methods.validateRange(1, 7);
+        int choice = Methods.validateRange(1, 6);
 
         while (choice != 1) {
             try {
@@ -65,18 +64,15 @@ public class MainApp {
                         client.start(); // Use the server class
                         break;
                     case 3:
-                        updateProduct();
-                        break;
-                    case 4:
                         filterProducts();
                         break;
-                    case 5: // DISPLAY ALL PRODUCTS AS JSON ARRAY
+                    case 4: // DISPLAY ALL PRODUCTS AS JSON ARRAY
                         JunitTestMethods.productsListToJsonString(IProductDao.getAllProducts());
                         break;
-                    case 6: // DISPLAY PRODUCT AS JSON CASE
+                    case 5: // DISPLAY PRODUCT AS JSON CASE
                         productToJsonString();
                         break;
-                    case 7: // GET SUPPLIER THROUGH PRODUCT ID
+                    case 6: // GET SUPPLIER THROUGH PRODUCT ID
                         Methods.printObject(getSupplier());
                         break;
                     default:
@@ -119,6 +115,7 @@ public class MainApp {
                     "Quit",
                     "Delete product by ID",
                     "Add supplier",
+                    "Update supplier by ID",
                 };
 
                 System.out.println("***** CLIENT / SERVER APPLICATION *****");
@@ -249,6 +246,20 @@ public class MainApp {
                     JSONObject jsonResponse = new JSONObject(response);
                     String message = jsonResponse.getString("message");
                     System.out.println("Message from server: " + message);
+                }else if(request.equals("12")) { // UPDATE SUPPLIER
+                    System.out.println("Please enter the id of the supplier you wish to update:");
+                    String id = sc.next();
+                    out.println(id);
+
+                    Supplier supplier = Methods.createSupplier(id);
+                    JSONObject jsonObject = JunitTestMethods.turnSupplierIntoJson(supplier);
+                    out.println(jsonObject);
+
+                    String response = in.readLine();
+
+                    JSONObject jsonResponse = new JSONObject(response);
+                    String message = jsonResponse.getString("message");
+                    System.out.println("Message from server: " + message);
                 }
                 else {
                     System.out.println("Command unknown. Try again.");
@@ -308,37 +319,6 @@ public class MainApp {
             } else {
                 System.err.println("Error! Supplier was not added");
             }
-        } catch (DaoException e) {
-            e.printStackTrace();
-        }
-    }
-
-    // Question 5
-    public static void updateProduct() {
-        try {
-            System.out.println("Enter product id you wish to update (e.g. 'product1', 'product2'): ");
-            String id = sc.next();
-
-            Product product = IProductDao.getProductById(id);
-
-            if (product != null) {
-                product = Methods.getProduct(product.getId());
-
-                int rowsAffected = IProductDao.updateProduct(id, product);
-
-                System.out.println("Updating product with given id...");
-                if (rowsAffected > 0) {
-                    System.out.println("Product with id " + id + " has been successfully updated");
-                } else {
-                    System.out.println("Error in updating product. Check if your product id exists in the database!");
-                }
-
-            } else {
-                System.out.println("Product with given id doesnt exist!");
-            }
-
-            System.out.println();
-
         } catch (DaoException e) {
             e.printStackTrace();
         }

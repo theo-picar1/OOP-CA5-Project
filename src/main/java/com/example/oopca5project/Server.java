@@ -267,7 +267,7 @@ class ClientHandler implements Runnable {
                             product = JunitTestMethods.makeProductFromJSON(jsonObject);
                             productUpdated = IProductDao.updateProduct(id, product);
 
-                            // check if Customer was added
+                            // check if Product was added
                             if (productUpdated == 1) {
 
                                 socketWriter.println(successMessage);
@@ -354,7 +354,51 @@ class ClientHandler implements Runnable {
 
                     } catch (DaoException e) {
                         e.printStackTrace();
+                    }  
+                }
+                // UPDATE SUPPLIER
+                else if (request.equals("12")) {
+                    // initialize variables
+                    Supplier supplier;
+                    int supplierUpdated;
+                    String id = socketReader.readLine();
+                    String jsonString = socketReader.readLine();
+                    JSONObject jsonObject = new JSONObject(jsonString);
+
+                    // initialize messages
+                    JSONObject errorMessage = new JSONObject();
+                    errorMessage.put("status", "error");
+                    errorMessage.put("message", "An error occurred!!");
+
+                    JSONObject successMessage = new JSONObject();
+                    successMessage.put("status", "success");
+                    successMessage.put("message", jsonString);
+                    try {
+                        // check if Supplier doesn't exist
+                        if (ISupplierDao.getSupplierById(id) != null) {
+
+                            // get and update Supplier to database
+                            supplier = JunitTestMethods.makeSupplierFromJSON(jsonObject);
+                            supplierUpdated = ISupplierDao.updateSupplier(id, supplier);
+
+                            // check if Supplier was updated
+                            if (supplierUpdated == 1) {
+
+                                socketWriter.println(successMessage);
+
+                            } else {
+
+                                socketWriter.println(errorMessage);
+                            }
+                        } else {
+
+                            socketWriter.println(errorMessage);
+                        }
+
+                    } catch (DaoException e) {
+                        e.printStackTrace();
                     }
+                    
                 }
                 // INVALID COMMAND
                 else {

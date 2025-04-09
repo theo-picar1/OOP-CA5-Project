@@ -236,4 +236,60 @@ public class MySqlSupplierDao extends MySqlDao implements SupplierDaoInterface {
 
         return rowsAffected;
     }
+
+    @Override
+    public int updateSupplier(String id, Supplier s) throws DaoException {
+        // Initializing variables
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        int rowsAffected;
+
+        try {
+            if(s != null) {
+                // Get connection to database using MySqlDao method
+                connection = this.getConnection();
+
+                // Making query to update supplier
+                String query = "UPDATE suppliers SET supplier_name = ?, supplier_phone_no = ?, supplier_email = ? WHERE Supplier_id = ?";
+
+                // Making the query into a prepared preparedStatement
+                preparedStatement = connection.prepareStatement(query);
+
+                // Initializing/Setting '?' in the prepared preparedStatement
+                preparedStatement.setString(1, s.getName());
+                preparedStatement.setString(2, s.getPhoneNo());
+                preparedStatement.setString(3, s.getEmail());
+                preparedStatement.setString(4, id);
+
+                // Getting the value of how many rows were affected
+                rowsAffected = preparedStatement.executeUpdate();
+            }else {
+                return 0;
+            }
+        } catch (SQLException e) {
+            // Throws DaoException
+            throw new DaoException("updateSupplierResultSet() " + e.getMessage());
+
+        } finally {
+            try {
+                // Closes prepared preparedStatement
+                if (preparedStatement != null) {
+                    preparedStatement.close();
+                }
+
+                // Frees up connection
+                if (connection != null) {
+                    freeConnection(connection);
+                }
+
+                // Catches SQLException
+            } catch (SQLException e) {
+                // Throws DaoException
+                throw new DaoException("updateSupplier() " + e.getMessage());
+
+            }
+        }
+
+        return rowsAffected;
+    }
 }

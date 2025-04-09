@@ -183,7 +183,7 @@ public class Methods {
         return new Supplier(id, name, phone, email);
     }
 
-    // <T> is a Generic type. i.e it creates (lists) without casting types.
+    // <T> is a Generic type. i.e. it creates (lists) without casting types.
     // This allows for a list of Products, Suppliers, and Customers to be
     // Passed into this method without the need for overloading.
     public static <T> void printListOfObjects(ArrayList<T> objList) {
