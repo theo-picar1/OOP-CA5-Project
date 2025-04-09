@@ -287,10 +287,36 @@ class ClientHandler implements Runnable {
                     }
                     
                 }
-                // QUIT CLIENT / SERVER APPLICATION AND RETURN TO CONSOLE APPLICATION
+                // TERMINATE CLIENT AND WAIT FOR NEW ONE
                 else if (request.equals("9")) {
                     socketWriter.println("Sorry to see you leaving. Goodbye.");
                     System.out.println("Server message: Client has notified us that it is quitting.");
+                }
+                else if(request.equals("10")) { // DELETE PRODUCT BY ID
+                    String id = socketReader.readLine();
+                    int rowsAffected;
+
+                    try {
+                        if(IProductDao.getProductById(id) != null) {
+                            rowsAffected = IProductDao.deleteProductById(id);
+
+                            if(rowsAffected > 0) {
+                                socketWriter.println("Product has successfully been deleted");
+                                System.out.println("Server: PRODUCT HAS SUCCESSFULLY BEEN DELETED");
+                            }
+                            else {
+                                socketWriter.println("Error: Product was not deleted!");
+                                System.out.println("Server: PRODUCT WAS NOT DELETED! CHECK FOR CODE ERRORS!");
+                            }
+                        }
+                        else {
+                            socketWriter.println("Product with given id does not exist in the table!");
+                            System.out.println("Server: NO PRODUCT FOUND WITH GIVEN ID");
+                        }
+                    }
+                    catch(DaoException e) {
+                        e.printStackTrace();
+                    }
                 }
                 // INVALID COMMAND
                 else {
