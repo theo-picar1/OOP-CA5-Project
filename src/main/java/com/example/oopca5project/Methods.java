@@ -5,6 +5,7 @@ import java.util.Scanner;
 
 import com.example.oopca5project.DTOs.Customer;
 import com.example.oopca5project.DTOs.Product;
+import com.example.oopca5project.DTOs.Supplier;
 
 public class Methods {
     static Scanner sc = new Scanner(System.in);
@@ -167,6 +168,19 @@ public class Methods {
 
         // Return Customer object
         return new Customer(name, email, phoneNo);
+    }
+
+    public static Supplier createSupplier(String id) {
+        System.out.println("Enter supplier's name:");
+        String name = sc.next();
+
+        System.out.println("Enter supplier's telephone number");
+        String phone = sc.next();
+
+        System.out.println("Enter supplier's email");
+        String email = sc.next();
+
+        return new Supplier(id, name, phone, email);
     }
 
     // <T> is a Generic type. i.e it creates (lists) without casting types.
