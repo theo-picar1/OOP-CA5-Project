@@ -48,7 +48,6 @@ public class MainApp {
             "Filter products",
             "Display all products as JSON",
             "Display product as JSON",
-            "Display supplier by ProductID",
         };
 
         Methods.menuOptions(options);
@@ -116,6 +115,7 @@ public class MainApp {
                     "Delete product by ID",
                     "Add supplier",
                     "Update supplier by ID",
+                    "Display supplier by ProductID",
                 };
 
                 System.out.println("***** CLIENT / SERVER APPLICATION *****");
@@ -193,7 +193,7 @@ public class MainApp {
                     JSONObject jsonObject = JunitTestMethods.turnCustomerIntoJson(customer);
                     out.println(jsonObject);
 
-                     // Take in response from server
+                    // Take in response from server
                     String response = in.readLine();
 
                     // Get message from JSONObject and print
@@ -260,6 +260,23 @@ public class MainApp {
                     JSONObject jsonResponse = new JSONObject(response);
                     String message = jsonResponse.getString("message");
                     System.out.println("Message from server: " + message);
+                }
+                // DISPLAY SUPPLIER BY PRODUCT ID
+                else if(request.equals("13")) {
+
+                    System.out.println("Enter product ID you want to search by");
+                    String id = sc.next();
+                    out.println(id);
+
+                    String response = in.readLine();
+
+                    if (response != null) {
+                        // Makes JSON string passed from Server into a Product object
+                        Supplier supplier = JunitTestMethods.makeSupplierFromJSON(new JSONObject(response));
+                        System.out.println("Client message: Response from server: \"" + supplier + "\"");
+                    } else {
+                        System.out.println("Supplier not found");
+                    }
                 }
                 else {
                     System.out.println("Command unknown. Try again.");

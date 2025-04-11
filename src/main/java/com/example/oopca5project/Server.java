@@ -398,7 +398,23 @@ class ClientHandler implements Runnable {
                     } catch (DaoException e) {
                         e.printStackTrace();
                     }
-                    
+                } 
+                // DISPLAY SUPPLIER BY PRODUCT ID
+                else if(request.equals("13")) { 
+                    Supplier supplier;
+
+                    try {
+                        supplier = ISupplierDao.getSupplierByProductId(socketReader.readLine());
+
+                        // Turn product into single json object and pass it back as a string to the client
+                        JSONObject message = JunitTestMethods.turnSupplierIntoJson(supplier);
+                        socketWriter.println(message.toString());
+
+                        socketWriter.println("Server message: ID has been passed to server passing back supplier");
+                    }
+                    catch (DaoException e) {
+                        e.printStackTrace();
+                    }
                 }
                 // INVALID COMMAND
                 else {
