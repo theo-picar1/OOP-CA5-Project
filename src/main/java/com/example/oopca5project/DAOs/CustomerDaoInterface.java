@@ -14,4 +14,6 @@ public interface CustomerDaoInterface {
     Customer getCustomerById(int id) throws DaoException;
 
     int deleteCustomerById(int customerId) throws DaoException;
+
+    int updateCustomer(int id, Customer c) throws DaoException;
 }

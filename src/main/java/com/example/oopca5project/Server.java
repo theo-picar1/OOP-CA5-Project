@@ -416,6 +416,49 @@ class ClientHandler implements Runnable {
                         e.printStackTrace();
                     }
                 }
+                // UPDATE CUSTOMER
+                else if (request.equals("14")) {
+                    // initialize variables
+                    Customer customer;
+                    int customerUpdated;
+                    String id = socketReader.readLine();
+                    String jsonString = socketReader.readLine();
+                    JSONObject jsonObject = new JSONObject(jsonString);
+
+                    // initialize messages
+                    JSONObject errorMessage = new JSONObject();
+                    errorMessage.put("status", "error");
+                    errorMessage.put("message", "An error occurred!!");
+
+                    JSONObject successMessage = new JSONObject();
+                    successMessage.put("status", "success");
+                    successMessage.put("message", jsonString);
+                    try {
+                        // check if Customer doesn't exist
+                        if (ICustomerDao.getCustomerById(Integer.parseInt(id)) != null) {
+
+                            // get and update Customer to database
+                            customer = JunitTestMethods.makeCustomerFromJSON(jsonObject);
+                            customerUpdated = ICustomerDao.updateCustomer(Integer.parseInt(id), customer);
+
+                            // check if Customer was updated
+                            if (customerUpdated == 1) {
+
+                                socketWriter.println(successMessage);
+
+                            } else {
+
+                                socketWriter.println(errorMessage);
+                            }
+                        } else {
+
+                            socketWriter.println(errorMessage);
+                        }
+
+                    } catch (DaoException e) {
+                        e.printStackTrace();
+                    }
+                } 
                 // INVALID COMMAND
                 else {
                     socketWriter.println("Error! I'm sorry I don't understand your request");

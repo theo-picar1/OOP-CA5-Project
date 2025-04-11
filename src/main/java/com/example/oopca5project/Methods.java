@@ -150,15 +150,12 @@ public class Methods {
     // Method that handles user input for getting Customer object
     public static Customer getCustomer() {
 
-        // Get rid of '\n' character
-        sc.nextLine();
-
         // initializing variables
         String name, email, phoneNo;
 
         // Get Customer variables
-        System.out.println("Enter customer name: ");
-        name = sc.nextLine();
+        System.out.println("Enter customer first name: ");
+        name = sc.next();
 
         System.out.println("Enter customer email: ");
         email = sc.next();
