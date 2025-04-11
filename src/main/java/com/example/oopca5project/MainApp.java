@@ -123,6 +123,7 @@ public class MainApp {
 
                 System.out.println("Please enter a command: ");
                 request = sc.next();
+                sc.nextLine();
 
                 // Passes the user's request to the server
                 out.println(request);
@@ -277,6 +278,23 @@ public class MainApp {
                     } else {
                         System.out.println("Supplier not found");
                     }
+                }
+                // UPDATE CUSTOMER
+                else if(request.equals("14")) {
+                    System.out.println("Please enter the id of the customer you wish to update:");
+                    int id = sc.nextInt();  
+                    sc.nextLine();
+
+                    Customer customer = Methods.getCustomer();
+                    JSONObject jsonObject = JunitTestMethods.turnCustomerIntoJson(customer);
+                    out.println(id);
+                    out.println(jsonObject);
+
+                    String response = in.readLine();
+
+                    JSONObject jsonResponse = new JSONObject(response);
+                    String message = jsonResponse.getString("message");
+                    System.out.println("Message from server: " + message);
                 }
                 else {
                     System.out.println("Command unknown. Try again.");

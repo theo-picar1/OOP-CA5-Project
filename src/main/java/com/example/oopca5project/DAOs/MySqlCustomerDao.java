@@ -198,4 +198,60 @@ public class MySqlCustomerDao extends MySqlDao implements CustomerDaoInterface {
 
         return rowsAffected;
     }
+
+    @Override
+    public int updateCustomer(int id, Customer c) throws DaoException {
+        // Initializing variables
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        int rowsAffected;
+
+        try {
+            if(c != null) {
+                // Get connection to database using MySqlDao method
+                connection = this.getConnection();
+
+                // Making query to update Customer
+                String query = "UPDATE Customers SET customer_name = ?, customer_email = ?, customer_address = ? WHERE customer_id = ?";
+
+                // Making the query into a prepared preparedStatement
+                preparedStatement = connection.prepareStatement(query);
+
+                // Initializing/Setting '?' in the prepared preparedStatement
+                preparedStatement.setString(1, c.getName());
+                preparedStatement.setString(2, c.getEmail());
+                preparedStatement.setString(3, c.getEmail());
+                preparedStatement.setInt(4, id);
+
+                // Getting the value of how many rows were affected
+                rowsAffected = preparedStatement.executeUpdate();
+            }else {
+                return 0;
+            }
+        } catch (SQLException e) {
+            // Throws DaoException
+            throw new DaoException("updateCustomerResultSet() " + e.getMessage());
+
+        } finally {
+            try {
+                // Closes prepared preparedStatement
+                if (preparedStatement != null) {
+                    preparedStatement.close();
+                }
+
+                // Frees up connection
+                if (connection != null) {
+                    freeConnection(connection);
+                }
+
+                // Catches SQLException
+            } catch (SQLException e) {
+                // Throws DaoException
+                throw new DaoException("updateCustomer() " + e.getMessage());
+
+            }
+        }
+
+        return rowsAffected;
+    }
 }
