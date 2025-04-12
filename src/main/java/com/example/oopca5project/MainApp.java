@@ -45,7 +45,6 @@ public class MainApp {
         String[] options = {
             "End application",
             "Start Server",
-            "Filter products",
             "Display all products as JSON",
             "Display product as JSON",
         };
@@ -54,7 +53,7 @@ public class MainApp {
 
         System.out.println("Enter choice: ");
 
-        int choice = Methods.validateRange(1, 6);
+        int choice = Methods.validateRange(1, 5);
 
         while (choice != 1) {
             try {
@@ -62,16 +61,13 @@ public class MainApp {
                     case 2:
                         client.start(); // Use the server class
                         break;
-                    case 3:
-                        filterProducts();
-                        break;
-                    case 4: // DISPLAY ALL PRODUCTS AS JSON ARRAY
+                    case 3: // DISPLAY ALL PRODUCTS AS JSON ARRAY
                         Product.productsListToJsonString(IProductDao.getAllProducts());
                         break;
-                    case 5: // DISPLAY PRODUCT AS JSON CASE
+                    case 4: // DISPLAY PRODUCT AS JSON CASE
                         productToJsonString();
                         break;
-                    case 6: // GET SUPPLIER THROUGH PRODUCT ID
+                    case 5: // GET SUPPLIER THROUGH PRODUCT ID
                         Methods.printObject(getSupplier());
                         break;
                     default:
@@ -116,6 +112,8 @@ public class MainApp {
                     "Add supplier",
                     "Update supplier by ID",
                     "Display supplier by ProductID",
+                    "Update customer",
+                    "Filter products lower than given price"
                 };
 
                 System.out.println("***** CLIENT / SERVER APPLICATION *****");
@@ -247,7 +245,8 @@ public class MainApp {
                     JSONObject jsonResponse = new JSONObject(response);
                     String message = jsonResponse.getString("message");
                     System.out.println("Message from server: " + message);
-                }else if(request.equals("12")) { // UPDATE SUPPLIER
+                }
+                else if(request.equals("12")) { // UPDATE SUPPLIER
                     System.out.println("Please enter the id of the supplier you wish to update:");
                     String id = sc.next();
                     out.println(id);
@@ -296,6 +295,18 @@ public class MainApp {
                     String message = jsonResponse.getString("message");
                     System.out.println("Message from server: " + message);
                 }
+                else if(request.equals("15")) {
+                    System.out.println("Please enter the price to filter products by:");
+                    double price = sc.nextDouble();
+                    out.println(String.valueOf(price));
+
+                    String response = in.readLine();
+                    JSONArray jsonArray = new JSONArray(response);
+
+                    System.out.println("Products below €" +price+ ":");
+                    ArrayList<Product> list = Product.makeProductListFromJSONArray(jsonArray); // Turn the jsonArray into a list of products
+                    Methods.printListOfObjects(list);
+                }
                 else {
                     System.out.println("Command unknown. Try again.");
                 }
@@ -307,87 +318,6 @@ public class MainApp {
         }
 
         System.out.println("The client is now terminating...");
-    }
-
-    // Question 3
-    public static void deleteProductById() {
-        try {
-            System.out.println("Please enter the id of the product you wish to delete:");
-            String id = sc.next();
-
-            System.out.println("Deleting product with given id...");
-            int rowsAffected = IProductDao.deleteProductById(id);
-
-            if (rowsAffected > 0) {
-                System.out.println("Successfully deleted product with id " + id);
-            } else {
-                System.out.println("An error occurred. Please check if your id exists in the database!");
-            }
-        } catch (DaoException e) {
-            e.printStackTrace();
-        }
-
-        System.out.println();
-
-    }
-
-    public static void addSupplier() {
-        try {
-            System.out.println("Please enter the id: (e.g. SupplierX)");
-            String id = sc.next();
-
-            System.out.println("Please enter the name of your supplier:");
-            String name = sc.next();
-
-            System.out.println("Please enter the Irish telephone number of your supplier:");
-            String phone = sc.next();
-
-            System.out.println("Please enter the email of your supplier:");
-            String email = sc.next();
-
-            Supplier supplier = new Supplier(id, name, phone, email);
-
-            int rowsAffected = ISupplierDao.addSupplier(supplier);
-
-            if (rowsAffected >= 1) {
-                System.out.println("Successfully added supplier");
-            } else {
-                System.err.println("Error! Supplier was not added");
-            }
-        } catch (DaoException e) {
-            e.printStackTrace();
-        }
-    }
-
-    // Question 6
-    public static void filterProducts() {
-        try {
-            // Initially get all products first so we can have something to filter
-            List<Product> products = IProductDao.getAllProducts();
-
-            if (products.isEmpty()) {
-                System.out.println("Products table is empty! Please add some data first.");
-            } else {
-                System.out.println("Please enter a price (e.g. 10.00) to filter products below that price");
-                double price = sc.nextDouble();
-
-                // Reference: https://stackoverflow.com/questions/66532091/java-8-streams-filter-by-a-property-of-an-object
-                List<Product> productsBelowCertainPrice = Product.filterProductsByPrice(price, products);
-
-                if (productsBelowCertainPrice.isEmpty()) {
-                    System.out.println("No product found that is below given price!");
-                } else {
-                    for (Product product : productsBelowCertainPrice) {
-                        System.out.println("{" + product.toString() + "}");
-                    }
-                }
-            }
-
-            System.out.println();
-
-        } catch (DaoException e) {
-            e.printStackTrace();
-        }
     }
 
     // Question 8
@@ -406,7 +336,8 @@ public class MainApp {
                 JSONObject jsonObject = Product.turnProductIntoJson(product);
 
                 System.out.println("Product as a JSON string:\n" + jsonObject);
-            } else {
+            }
+            else {
                 System.out.println("No product found with given id!");
             }
         } catch (DaoException e) {

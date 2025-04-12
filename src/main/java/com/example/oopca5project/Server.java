@@ -36,22 +36,22 @@ public class Server {
 
         try {
             serverSocket = new ServerSocket(SERVER_PORT);
-            System.out.println("Server: Server has started!");
+            System.out.println("SERVER HAS SUCCESSFULLY STARTED");
 
             int clientNumber = 0;
 
             while (true) {
-                System.out.println("Server: Waiting for any connections on port " + SERVER_PORT + "...");
+                System.out.println("WAITING FOR ANY CONNECTIONS ON PORT " + SERVER_PORT + "...");
                 clientSocket = serverSocket.accept();
                 clientNumber++;
 
-                System.out.println("Server: Client " + clientNumber + " has connected with port number " + clientSocket.getPort());
-                System.out.println("Server: Port number " + clientSocket.getLocalPort() + " is currently used to talk with the client");
+                System.out.println("\nCLIENT " + clientNumber + " HAS CONNECTED WITH PORT NUMBER " + clientSocket.getPort());
+                System.out.println("PORT " + clientSocket.getLocalPort() + " IS BEING USED TO COMMUNICATE WITH THE CLIENT");
 
                 Thread t = new Thread(new ClientHandler(clientSocket, clientNumber));
                 t.start();
 
-                System.out.println("Server: ClientHandler started in thread " + t.getName() + " for client " + clientNumber + ".");
+                System.out.println("CLIENTHANDLER STARTED IN THREAD " + t.getName() + " FOR CLIENT " + clientNumber + ".\n");
             }
         } catch (IOException e) {
             System.out.println(e);
@@ -72,7 +72,7 @@ public class Server {
             }
         }
 
-        System.out.println("Server: Server exiting, Goodbye!");
+        System.out.println("THE SERVER IS ENDING... DONE! GOODBYE.");
     }
 }
 
@@ -103,7 +103,7 @@ class ClientHandler implements Runnable {
 
         try {
             while ((request = socketReader.readLine()) != null) {
-                System.out.println("Server: (ClientHandler): Read command from client " + clientNumber + ": " + request);
+                System.out.println("READ COMMAND FROM CLIENT " + clientNumber + ": " + request);
 
                 // DISPLAY ALL PRODUCTS
                 if (request.equals("1")) {
@@ -289,7 +289,7 @@ class ClientHandler implements Runnable {
                 // TERMINATE CLIENT AND WAIT FOR NEW ONE
                 else if (request.equals("9")) {
                     socketWriter.println("Sorry to see you leaving. Goodbye.");
-                    System.out.println("Server message: Client has notified us that it is quitting.");
+                    System.out.println("CLIENT HAS NOTIFIED THAT IT IS QUITTING...");
                 }
                 else if(request.equals("10")) { // DELETE PRODUCT BY ID
                     String id = socketReader.readLine();
@@ -301,16 +301,16 @@ class ClientHandler implements Runnable {
 
                             if(rowsAffected > 0) {
                                 socketWriter.println("Product has successfully been deleted");
-                                System.out.println("Server: PRODUCT HAS SUCCESSFULLY BEEN DELETED");
+                                System.out.println("PRODUCT HAS SUCCESSFULLY BEEN DELETED");
                             }
                             else {
                                 socketWriter.println("Error: Product was not deleted!");
-                                System.out.println("Server: PRODUCT WAS NOT DELETED! CHECK FOR CODE ERRORS!");
+                                System.out.println("PRODUCT WAS NOT DELETED! CHECK FOR CODE ERRORS!");
                             }
                         }
                         else {
                             socketWriter.println("Product with given id does not exist in the table!");
-                            System.out.println("Server: NO PRODUCT FOUND WITH GIVEN ID");
+                            System.out.println("NO PRODUCT FOUND WITH GIVEN ID");
                         }
                     }
                     catch(DaoException e) {
@@ -349,7 +349,7 @@ class ClientHandler implements Runnable {
                             }
                         } else {
                             socketWriter.println(errorMessage);
-                            System.err.println("Server: SUPPLIER ALREADY EXISTS IN THE TABLE WITH PROVIDED ID!");
+                            System.err.println("SUPPLIER ALREADY EXISTS IN THE TABLE WITH PROVIDED ID!");
                         }
 
                     } catch (DaoException e) {
@@ -458,11 +458,42 @@ class ClientHandler implements Runnable {
                     } catch (DaoException e) {
                         e.printStackTrace();
                     }
-                } 
+                }
+                // FILTER PRODUCTS LOWER THAN GIVEN PRICE
+                else if(request.equals("15")) {
+                    try {
+                        // Initially get all products first so we can have something to filter
+                        List<Product> products = IProductDao.getAllProducts();
+
+                        if (products.isEmpty()) {
+                            socketWriter.println("I'm sorry, this request could not be done. Please add some data to the Products table first");
+                            System.out.println("PRODUCT TABLE IS EMPTY. ADD DATA BEFORE FILTERING");
+                        }
+                        else {
+                            String price = socketReader.readLine();
+
+                            // Reference: https://stackoverflow.com/questions/66532091/java-8-streams-filter-by-a-property-of-an-object
+                            List<Product> productsBelowCertainPrice = Product.filterProductsByPrice(Double.parseDouble(price), products);
+
+                            if (productsBelowCertainPrice.isEmpty()) {
+                                socketWriter.println("No products below the given price: €" +price);
+                                System.out.println("NO PRODUCTS THAT MATCHED FILTER");
+                            }
+                            else {
+                                JSONArray jsonArray = Product.productsListToJsonString(productsBelowCertainPrice);
+                                socketWriter.println(jsonArray);
+                                System.out.println("MATCHING PRODUCTS HAVE BEEN SENT TO THE CLIENT!");
+                            }
+                        }
+
+                    } catch (DaoException e) {
+                        e.printStackTrace();
+                    }
+                }
                 // INVALID COMMAND
                 else {
                     socketWriter.println("Error! I'm sorry I don't understand your request");
-                    System.out.println("Server message: Invalid request from client.");
+                    System.err.println("INVALID REQUEST MADE BY THE CLIENT");
                 }
             }
         }
@@ -479,7 +510,7 @@ class ClientHandler implements Runnable {
                 ex.printStackTrace();
             }
         }
-        System.out.println("Server: (ClientHandler): Handler for Client " + clientNumber + " is terminating .....");
+        System.out.println("Handler for Client " + clientNumber + " is terminating .....");
     }
 
     private void receiveFile(String fileName) throws Exception
@@ -488,13 +519,13 @@ class ClientHandler implements Runnable {
 
         // DataInputStream allows us to read Java primitive types from stream, such as readLong()
         long numberOfBytesRemaining = dataInputStream.readLong(); // bytes remaining to be read (initially equal to file size)
-        System.out.println("Server: file size in bytes = " + numberOfBytesRemaining);
+        System.out.println("file size in bytes = " + numberOfBytesRemaining);
 
         // create a buffer to receive the incoming image bytes from the socket
         // A buffer is an array that stores a certain amount of data temporarily.
         byte[] buffer = new byte[4 * 1024];
 
-        System.out.println("Server: Bytes remaining to be read from socket: ");
+        System.out.println("Bytes remaining to be read from socket: ");
         int numberOfBytesRead;    // number of bytes read from the socket
 
         // next, read the incoming bytes in chunks (of buffer size) that make up the image file
