@@ -225,7 +225,7 @@ class MainAppTest {
     void filterProductsTest1() {
         double price = 10.00;
         List<Product> products = new ArrayList<>();
-        List<Product> filteredProducts = JunitTestMethods.filterProductsByPrice(price, products);
+        List<Product> filteredProducts = Product.filterProductsByPrice(price, products);
 
         int expected = 0;
         int actual = filteredProducts.size();
@@ -242,7 +242,7 @@ class MainAppTest {
         products.add(new Product("", "", "", 8.10, ""));
         products.add(new Product("", "", "", 1.10, ""));
 
-        List<Product> filteredProducts = JunitTestMethods.filterProductsByPrice(price, products);
+        List<Product> filteredProducts = Product.filterProductsByPrice(price, products);
 
         int expected = products.size();
         int actual = filteredProducts.size();
@@ -259,7 +259,7 @@ class MainAppTest {
         products.add(new Product("", "", "", 8.10, ""));
         products.add(new Product("", "", "", 11.10, ""));
 
-        List<Product> filteredProducts = JunitTestMethods.filterProductsByPrice(price, products);
+        List<Product> filteredProducts = Product.filterProductsByPrice(price, products);
 
         int expected = 2;
         int actual = filteredProducts.size();
@@ -273,7 +273,7 @@ class MainAppTest {
     void productsListToJsonStringNullList() {
         List<Product> list = null;
 
-        assertNull(JunitTestMethods.productsListToJsonString(list));
+        assertNull(Product.productsListToJsonString(list));
     }
 
     @Test
@@ -289,7 +289,7 @@ class MainAppTest {
                         "{\"size\":\"medium\",\"product_id\":\"2\",\"product_description\":\"descrip\",\"unit_price\":4,\"supplier_id\":\"2\"}" +
                         "]");
 
-        assertEquals(jsonArray.toString(), JunitTestMethods.productsListToJsonString(list).toString());
+        assertEquals(jsonArray.toString(), Product.productsListToJsonString(list).toString());
     }
     // ************************************************************
 
@@ -299,7 +299,7 @@ class MainAppTest {
     void oneProductToJsonTest1() {
         Product product = null;
 
-        assertNull(JunitTestMethods.turnProductIntoJson(product));
+        assertNull(Product.turnProductIntoJson(product));
     }
 
     @Test
@@ -307,7 +307,7 @@ class MainAppTest {
     void oneProductToJsonTest2() {
         Product product = new Product("testProduct", "testDescription", "testSize", 20.25, "testSupplier");
 
-        assertNotNull(JunitTestMethods.turnProductIntoJson(product));
+        assertNotNull(Product.turnProductIntoJson(product));
     }
     // *******************************************************************
 }
