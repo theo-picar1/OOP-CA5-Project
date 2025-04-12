@@ -66,7 +66,7 @@ public class MainApp {
                         filterProducts();
                         break;
                     case 4: // DISPLAY ALL PRODUCTS AS JSON ARRAY
-                        JunitTestMethods.productsListToJsonString(IProductDao.getAllProducts());
+                        Product.productsListToJsonString(IProductDao.getAllProducts());
                         break;
                     case 5: // DISPLAY PRODUCT AS JSON CASE
                         productToJsonString();
@@ -134,7 +134,7 @@ public class MainApp {
                     String response = in.readLine();
                     JSONArray jsonArray = new JSONArray(response);
 
-                    ArrayList<Product> list = JunitTestMethods.makeProductListFromJSONArray(jsonArray); // Turn the jsonArray into a list of products
+                    ArrayList<Product> list = Product.makeProductListFromJSONArray(jsonArray); // Turn the jsonArray into a list of products
                     Methods.printListOfObjects(list); // Then print it
                 } 
                 // DISPLAY ALL SUPPLIERS
@@ -142,7 +142,7 @@ public class MainApp {
                     String response = in.readLine();
                     JSONArray jsonArray = new JSONArray(response);
 
-                    ArrayList<Supplier> list = JunitTestMethods.makeSupplierListFromJSONArray(jsonArray);
+                    ArrayList<Supplier> list = Supplier.makeSupplierListFromJSONArray(jsonArray);
                     Methods.printListOfObjects(list);
                 } 
                 // DISPLAY ALL CUSTOMERS
@@ -150,7 +150,7 @@ public class MainApp {
                     String response = in.readLine();
                     JSONArray jsonArray = new JSONArray(response);
 
-                    ArrayList<Customer> list = JunitTestMethods.makeCustomerListFromJSONArray(jsonArray);
+                    ArrayList<Customer> list = Customer.makeCustomerListFromJSONArray(jsonArray);
                     Methods.printListOfObjects(list);
                 } else if (request.equals("4")) {
                     System.out.println("Please enter the id of the product you wish to view:");
@@ -161,7 +161,7 @@ public class MainApp {
 
                     if (response != null) {
                         // Makes JSON string passed from Server into a Product object
-                        Product product = JunitTestMethods.makeProductFromJSON(new JSONObject(response));
+                        Product product = Product.makeProductFromJSON(new JSONObject(response));
                         System.out.println("Client message: Response from server: \"" + product + "\"");
                     } else {
                         System.out.println("Product not found");
@@ -171,7 +171,7 @@ public class MainApp {
                     String id = sc.next();
 
                     Product product = Methods.getProduct(id);
-                    JSONObject jsonObject = JunitTestMethods.turnProductIntoJson(product);
+                    JSONObject jsonObject = Product.turnProductIntoJson(product);
                     out.println(jsonObject);
 
                     String response = in.readLine();
@@ -191,7 +191,7 @@ public class MainApp {
 
                     // Get Customer object, turn it into a JSON string, and send to server
                     Customer customer = Methods.getCustomer();
-                    JSONObject jsonObject = JunitTestMethods.turnCustomerIntoJson(customer);
+                    JSONObject jsonObject = Customer.turnCustomerIntoJson(customer);
                     out.println(jsonObject);
 
                     // Take in response from server
@@ -210,7 +210,7 @@ public class MainApp {
 
                     // Get Product object, turn it into a JSON string, and send to server
                     Product product = Methods.getProduct(id);
-                    JSONObject jsonObject = JunitTestMethods.turnProductIntoJson(product);
+                    JSONObject jsonObject = Product.turnProductIntoJson(product);
                     out.println(jsonObject);
 
                     // Take in response from server
@@ -239,7 +239,7 @@ public class MainApp {
                     String id = sc.next();
 
                     Supplier supplier = Methods.createSupplier(id);
-                    JSONObject jsonObject = JunitTestMethods.turnSupplierIntoJson(supplier);
+                    JSONObject jsonObject = Supplier.turnSupplierIntoJson(supplier);
                     out.println(jsonObject);
 
                     String response = in.readLine();
@@ -253,7 +253,7 @@ public class MainApp {
                     out.println(id);
 
                     Supplier supplier = Methods.createSupplier(id);
-                    JSONObject jsonObject = JunitTestMethods.turnSupplierIntoJson(supplier);
+                    JSONObject jsonObject = Supplier.turnSupplierIntoJson(supplier);
                     out.println(jsonObject);
 
                     String response = in.readLine();
@@ -273,7 +273,7 @@ public class MainApp {
 
                     if (response != null) {
                         // Makes JSON string passed from Server into a Product object
-                        Supplier supplier = JunitTestMethods.makeSupplierFromJSON(new JSONObject(response));
+                        Supplier supplier = Supplier.makeSupplierFromJSON(new JSONObject(response));
                         System.out.println("Client message: Response from server: \"" + supplier + "\"");
                     } else {
                         System.out.println("Supplier not found");
@@ -286,7 +286,7 @@ public class MainApp {
                     sc.nextLine();
 
                     Customer customer = Methods.getCustomer();
-                    JSONObject jsonObject = JunitTestMethods.turnCustomerIntoJson(customer);
+                    JSONObject jsonObject = Customer.turnCustomerIntoJson(customer);
                     out.println(id);
                     out.println(jsonObject);
 
@@ -372,7 +372,7 @@ public class MainApp {
                 double price = sc.nextDouble();
 
                 // Reference: https://stackoverflow.com/questions/66532091/java-8-streams-filter-by-a-property-of-an-object
-                List<Product> productsBelowCertainPrice = JunitTestMethods.filterProductsByPrice(price, products);
+                List<Product> productsBelowCertainPrice = Product.filterProductsByPrice(price, products);
 
                 if (productsBelowCertainPrice.isEmpty()) {
                     System.out.println("No product found that is below given price!");
@@ -403,7 +403,7 @@ public class MainApp {
                 System.out.println("Product found!\n{" + product + "}\nTurning found product into a JSON string...");
 
                 // Refer to method productsListToJsonString() for explanation
-                JSONObject jsonObject = JunitTestMethods.turnProductIntoJson(product);
+                JSONObject jsonObject = Product.turnProductIntoJson(product);
 
                 System.out.println("Product as a JSON string:\n" + jsonObject);
             } else {
