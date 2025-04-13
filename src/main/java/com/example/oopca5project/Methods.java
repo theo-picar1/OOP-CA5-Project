@@ -3,9 +3,7 @@ package com.example.oopca5project;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-import com.example.oopca5project.DTOs.Customer;
-import com.example.oopca5project.DTOs.Product;
-import com.example.oopca5project.DTOs.Supplier;
+import com.example.oopca5project.DTOs.*;
 
 public class Methods {
     static Scanner sc = new Scanner(System.in);
@@ -178,6 +176,15 @@ public class Methods {
         String email = sc.next();
 
         return new Supplier(id, name, phone, email);
+    }
+
+    public static CustomersProducts getCustomersProducts(int customerId, String productId) {
+
+        System.out.println("Enter Quantity");
+        int quantity = sc.nextInt();
+        sc.nextLine();
+
+        return new CustomersProducts(customerId, productId, quantity);
     }
 
     // <T> is a Generic type. i.e. it creates (lists) without casting types.
