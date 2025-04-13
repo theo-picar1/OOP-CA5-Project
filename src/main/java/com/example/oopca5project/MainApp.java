@@ -112,6 +112,7 @@ public class MainApp {
                     "Update customer",
                     "Filter products lower than given price",
                     "Update customer products by Customer ID",
+                    "Delete supplier by ID"
                 };
 
                 System.out.println("***** CLIENT / SERVER APPLICATION *****");
@@ -325,6 +326,14 @@ public class MainApp {
                     JSONObject jsonResponse = new JSONObject(response);
                     String message = jsonResponse.getString("message");
                     System.out.println("Message from server: " + message);
+                }
+                else if(request.equals("17")) {
+                    System.out.println("Please enter the id of the supplier you wish to delete:");
+                    String id = sc.next();
+                    out.println(id);
+
+                    String response = in.readLine();
+                    System.out.println("Client: RESPONSE FROM SERVER '" +response+ "'");
                 }
                 else {
                     System.out.println("Command unknown. Try again.");

@@ -304,7 +304,7 @@ class ClientHandler implements Runnable {
                             }
                             else {
                                 socketWriter.println("Error: Product was not deleted!");
-                                System.out.println("PRODUCT WAS NOT DELETED! CHECK FOR CODE ERRORS!");
+                                System.out.println("PRODUCT WAS NOT DELETED! CHECK CODE FOR ERRORS!");
                             }
                         }
                         else {
@@ -531,6 +531,32 @@ class ClientHandler implements Runnable {
                         }
 
                     } catch (DaoException e) {
+                        e.printStackTrace();
+                    }
+                }
+                else if(request.equals("17")) { // DELETE SUPPLIER BY ID
+                    String id = socketReader.readLine();
+                    int rowsAffected;
+
+                    try {
+                        if(ISupplierDao.getSupplierById(id) != null) {
+                            rowsAffected = ISupplierDao.deleteSupplierById(id);
+
+                            if(rowsAffected > 0) {
+                                socketWriter.println("Supplier has successfully been deleted");
+                                System.out.println("SUPPLIER HAS SUCCESSFULLY BEEN DELETED");
+                            }
+                            else {
+                                socketWriter.println("Error: Supplier was not deleted!");
+                                System.err.println("SUPPLIER WAS NOT DELETED! CHECK CODE FOR ERRORS!");
+                            }
+                        }
+                        else {
+                            socketWriter.println("Supplier with given id does not exist in the table!");
+                            System.out.println("NO SUPPLIER FOUND WITH GIVEN ID");
+                        }
+                    }
+                    catch(DaoException e) {
                         e.printStackTrace();
                     }
                 }
