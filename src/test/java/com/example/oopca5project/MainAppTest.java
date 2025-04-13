@@ -1,6 +1,7 @@
 package com.example.oopca5project;
 
 import com.example.oopca5project.DAOs.*;
+import com.example.oopca5project.DTOs.Customer;
 import com.example.oopca5project.DTOs.Product;
 import com.example.oopca5project.DTOs.Supplier;
 import com.example.oopca5project.Exceptions.DaoException;
@@ -117,10 +118,10 @@ class MainAppTest {
     void addProductWasntAdded() throws DaoException {
         Product product = new Product("test1", "", "", 1, "");
 
-        int n = 0;
+        int actual = 0;
         try {
             IProductDao.addProduct(product);
-            n = IProductDao.addProduct(product);
+            actual = IProductDao.addProduct(product);
         } catch (DaoException ignored) {
 
         } catch (Exception e) {
@@ -128,7 +129,7 @@ class MainAppTest {
         } finally {
             IProductDao.deleteProductById("test1");
         }
-        assertEquals(0, n);
+        assertEquals(0, actual);
     }
 
     @Test
@@ -146,27 +147,27 @@ class MainAppTest {
     void addProductWasAdded() {
         Product product = new Product("test3", "", "", 1, "supplier1");
 
-        int n = 0;
+        int actual = 0;
         try {
-            n = IProductDao.addProduct(product);
+            actual = IProductDao.addProduct(product);
             IProductDao.deleteProductById("test3");
         } catch (Exception e) {
             e.printStackTrace();
         }
-        assertEquals(1, n);
+        assertEquals(1, actual);
     }
 
     @Test
     void addProductWasntAddedForeginKey() {
         Product product = new Product("test3", "j", "k", 1, "supp");
 
-        int n = 0;
+        int actual = 0;
         try {
-            n = IProductDao.addProduct(product);
+            actual = IProductDao.addProduct(product);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        assertEquals(0, n);
+        assertEquals(0, actual);
     }
 
     // ***************************
@@ -194,16 +195,16 @@ class MainAppTest {
 
     @Test
     void updateProductWasUpdated() {
-        int n = 0;
+        int actual = 0;
         Product p2 = new Product("test1", "", "", 1, "supplier1");
         try {
             Product p1 = IProductDao.getProductById("product3");
-            n = IProductDao.updateProduct("product1", p2);
+            actual = IProductDao.updateProduct("product1", p2);
             IProductDao.updateProduct("product1", p1);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        assertEquals(1, n);
+        assertEquals(1, actual);
     }
 
     // *************** FILTER PRODUCTS LESS THAN PRICE TEST ***************
@@ -336,6 +337,51 @@ class MainAppTest {
         finally {
             try {
                 ISupplierDao.deleteSupplierById("JunitTest");
+            }
+            catch (DaoException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    // ****************************************************
+
+    // *************** ADD CUSTOMER TESTS ********************
+    @Test
+    void addCustomerTest1() { // Tests to see if a new customer is successfully added
+        try {
+            Customer customer = new Customer(100000, "JunitCustomer", "JunitCustomer", "JunitCustomer");
+            int expected = 1;
+            int actual = ICustomerDao.addCustomer(customer);
+
+            assertEquals(expected, actual);
+        }
+        catch(DaoException e) {
+            e.printStackTrace();
+        }
+        finally {
+            try {
+                ICustomerDao.deleteCustomerById(100000);
+            } catch (DaoException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @Test
+    void addCustomerTest2() { // Tests to see if a customer will not be added if there is a duplicate supplier
+        try {
+            Customer customer = new Customer(100000, "JunitCustomer", "JunitCustomer", "JunitCustomer");
+            ICustomerDao.addCustomer(customer);
+            int expected = 0;
+            int actual = ICustomerDao.addCustomer(customer); // Try adding the customer again. Should not be added to the table
+            assertEquals(expected, actual);
+        }
+        catch (DaoException e) {
+            System.out.println("addCustomerTest2() successful!");
+        }
+        finally {
+            try {
+                ICustomerDao.deleteCustomerById(100000);
             }
             catch (DaoException e) {
                 e.printStackTrace();
