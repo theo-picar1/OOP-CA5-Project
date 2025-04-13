@@ -1,8 +1,5 @@
 package com.example.oopca5project.DAOs;
 
-import com.example.oopca5project.DTOs.CustomersProducts;
-import com.example.oopca5project.Exceptions.DaoException;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -10,7 +7,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MySqlCustomersProductsDao extends MySqlDao implements CustomersProductsInterface {
+import com.example.oopca5project.DTOs.CustomersProducts;
+import com.example.oopca5project.Exceptions.DaoException;
+
+public class MySqlCustomersProductsDao extends MySqlDao implements CustomersProductsDaoInterface {
 
     @Override
     public List<CustomersProducts> getAllCustomerProducts() throws DaoException {
@@ -55,5 +55,95 @@ public class MySqlCustomersProductsDao extends MySqlDao implements CustomersProd
             }
         }
         return customerProductList;
+    }
+
+    @Override
+    public CustomersProducts getCustomersProductsByIds(int customerID, String productID) throws DaoException {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        CustomersProducts CustomerP = null;
+
+        try {
+            connection = this.getConnection();
+            String query = "SELECT * FROM CustomersProducts WHERE Customer_id = ? AND product_id = ?";
+            preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1, customerID);
+            preparedStatement.setString(2, productID);
+
+            resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                int quantity = resultSet.getInt("quantity");
+
+                CustomerP = new CustomersProducts(customerID, productID, quantity);
+            }
+        } catch (SQLException e) {
+            throw new DaoException("Error retrieving CustomersProduct: " + e.getMessage());
+        } finally {
+            try {
+                if (resultSet != null) resultSet.close();
+                if (preparedStatement != null) preparedStatement.close();
+                if (connection != null) connection.close();
+            } catch (SQLException e) {
+                throw new DaoException("Error closing resources: " + e.getMessage());
+            }
+        }
+        return CustomerP;
+    }
+
+    @Override
+    public int updateCustomersProducts(int customerID, String productID, CustomersProducts cp) throws DaoException {
+        // Initializing variables
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        int rowsAffected;
+
+        try {
+            if(cp != null) {
+                // Get connection to database using MySqlDao method
+                connection = this.getConnection();
+
+                // Making query to update CustomersProducts
+                String query = "UPDATE CustomersProducts SET quantity = ? WHERE customer_ID = ? AND product_ID = ?";
+
+                // Making the query into a prepared preparedStatement
+                preparedStatement = connection.prepareStatement(query);
+
+                // Initializing/Setting '?' in the prepared preparedStatement
+                preparedStatement.setInt(1, cp.getQuantity());
+                preparedStatement.setInt(2, customerID);
+                preparedStatement.setString(3, productID);
+
+                // Getting the value of how many rows were affected
+                rowsAffected = preparedStatement.executeUpdate();
+            }else {
+                return 0;
+            }
+        } catch (SQLException e) {
+            // Throws DaoException
+            throw new DaoException("updateCustomersProductsByCustomerIdResultSet() " + e.getMessage());
+
+        } finally {
+            try {
+                // Closes prepared preparedStatement
+                if (preparedStatement != null) {
+                    preparedStatement.close();
+                }
+
+                // Frees up connection
+                if (connection != null) {
+                    freeConnection(connection);
+                }
+
+                // Catches SQLException
+            } catch (SQLException e) {
+                // Throws DaoException
+                throw new DaoException("updateCustomersProductsByCustomerId() " + e.getMessage());
+
+            }
+        }
+
+        return rowsAffected;
     }
 }

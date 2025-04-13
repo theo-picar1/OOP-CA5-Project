@@ -13,11 +13,10 @@ import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import com.example.oopca5project.DTOs.Customer;
-import com.example.oopca5project.DTOs.Product;
-import com.example.oopca5project.DTOs.Supplier;
+import com.example.oopca5project.DTOs.*;
 import com.example.oopca5project.Exceptions.DaoException;
 import static com.example.oopca5project.MainApp.ICustomerDao;
+import static com.example.oopca5project.MainApp.ICustomersProductsDao;
 import static com.example.oopca5project.MainApp.IProductDao;
 import static com.example.oopca5project.MainApp.ISupplierDao;
 
@@ -484,6 +483,51 @@ class ClientHandler implements Runnable {
                                 socketWriter.println(jsonArray);
                                 System.out.println("MATCHING PRODUCTS HAVE BEEN SENT TO THE CLIENT!");
                             }
+                        }
+
+                    } catch (DaoException e) {
+                        e.printStackTrace();
+                    }
+                }
+                // UPDATE CUSTOMERSPRODUCTS
+                else if (request.equals("16")) {
+                    // initialize variables
+                    CustomersProducts customerP;
+                    int customerPUpdated;
+                    String productID = socketReader.readLine();
+                    String customerID = socketReader.readLine();
+                    String jsonString = socketReader.readLine();
+                    JSONObject jsonObject = new JSONObject(jsonString);
+
+                    // initialize messages
+                    JSONObject errorMessage = new JSONObject();
+                    errorMessage.put("status", "error");
+                    errorMessage.put("message", "An error occurred!!");
+
+                    JSONObject successMessage = new JSONObject();
+                    successMessage.put("status", "success");
+                    successMessage.put("message", jsonString);
+
+                    try {
+                        // check if CustomersProduct doesn't exist
+                        if (ICustomersProductsDao.getCustomersProductsByIds(Integer.parseInt(customerID), productID) != null) {
+
+                            // get and update CustomersProduct to database
+                            customerP = CustomersProducts.makeCustomersProductsFromJSON(jsonObject);
+                            customerPUpdated = ICustomersProductsDao.updateCustomersProducts(Integer.parseInt(customerID), productID, customerP);
+
+                            // check if CustomersProduct was updated
+                            if (customerPUpdated == 1) {
+
+                                socketWriter.println(successMessage);
+
+                            } else {
+
+                                socketWriter.println(errorMessage);
+                            }
+                        } else {
+
+                            socketWriter.println(errorMessage);
                         }
 
                     } catch (DaoException e) {

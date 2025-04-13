@@ -36,7 +36,7 @@ create table Customers (
 );
 
 create table CustomersProducts (
-    customer_id int not null,
+    customer_id int not null auto_increment,
     product_id varchar(20) not null,
     quantity int not null,
     foreign key (customer_id) references Customers(customer_id),

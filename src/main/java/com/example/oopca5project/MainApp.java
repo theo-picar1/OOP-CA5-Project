@@ -9,21 +9,13 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import com.example.oopca5project.DAOs.CustomerDaoInterface;
-import com.example.oopca5project.DAOs.MySqlCustomerDao;
-import com.example.oopca5project.DAOs.MySqlProductDao;
-import com.example.oopca5project.DAOs.MySqlSupplierDao;
-import com.example.oopca5project.DAOs.ProductDaoInterface;
-import com.example.oopca5project.DAOs.SupplierDaoInterface;
-import com.example.oopca5project.DTOs.Customer;
-import com.example.oopca5project.DTOs.Product;
-import com.example.oopca5project.DTOs.Supplier;
+import com.example.oopca5project.DAOs.*;
+import com.example.oopca5project.DTOs.*;
 import com.example.oopca5project.Exceptions.DaoException;
 
 public class MainApp {
@@ -31,6 +23,11 @@ public class MainApp {
     static ProductDaoInterface IProductDao = new MySqlProductDao();
     static SupplierDaoInterface ISupplierDao = new MySqlSupplierDao();
     static CustomerDaoInterface ICustomerDao = new MySqlCustomerDao();
+    static CustomersProductsDaoInterface ICustomersProductsDao = new MySqlCustomersProductsDao();
+
+    //public static CustomersProductsDaoInterface ICustomersProductsDao = new MySqlCustomersProductsDao();
+
+    
 
     static Scanner sc = new Scanner(System.in);
 
@@ -113,7 +110,8 @@ public class MainApp {
                     "Update supplier by ID",
                     "Display supplier by ProductID",
                     "Update customer",
-                    "Filter products lower than given price"
+                    "Filter products lower than given price",
+                    "Update customer products by Customer ID",
                 };
 
                 System.out.println("***** CLIENT / SERVER APPLICATION *****");
@@ -306,6 +304,27 @@ public class MainApp {
                     System.out.println("Products below €" +price+ ":");
                     ArrayList<Product> list = Product.makeProductListFromJSONArray(jsonArray); // Turn the jsonArray into a list of products
                     Methods.printListOfObjects(list);
+                }
+                // UPDATE CUSTOMERS PRODUCTS
+                else if(request.equals("16")) {
+                    System.out.println("Please enter the Product id of the customers products you wish to update:");
+                    String productId = sc.next();
+                    out.println(productId);
+
+                    System.out.println("Please enter the corresponding customer id of the customers products you wish to update:");
+                    int customerId = sc.nextInt();
+                    sc.nextLine();
+                    out.println(customerId);
+
+                    CustomersProducts CustomersP = Methods.getCustomersProducts(customerId, productId);
+                    JSONObject jsonObject = CustomersProducts.turnCustomersProductsIntoJson(CustomersP);
+                    out.println(jsonObject);
+
+                    String response = in.readLine();
+
+                    JSONObject jsonResponse = new JSONObject(response);
+                    String message = jsonResponse.getString("message");
+                    System.out.println("Message from server: " + message);
                 }
                 else {
                     System.out.println("Command unknown. Try again.");
