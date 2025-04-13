@@ -9,7 +9,6 @@ public class Methods {
     static Scanner sc = new Scanner(System.in);
 
     public static void menuOptions(String[] options) {
-        System.out.println();
         for(int i = 0; i < options.length; i++) {
             System.out.println(i+1 + ". " + options[i]);
         }

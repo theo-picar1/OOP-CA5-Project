@@ -204,7 +204,7 @@ public class MySqlSupplierDao extends MySqlDao implements SupplierDaoInterface {
         Connection connection = null;
         PreparedStatement deleteProductsStmt = null;
         PreparedStatement deleteSupplierStmt = null;
-        int rowsAffected = 0;
+        int rowsAffected;
 
         try {
             // Get connection

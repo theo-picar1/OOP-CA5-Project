@@ -1,8 +1,8 @@
 package com.example.oopca5project;
 
-import com.example.oopca5project.DAOs.MySqlProductDao;
-import com.example.oopca5project.DAOs.ProductDaoInterface;
+import com.example.oopca5project.DAOs.*;
 import com.example.oopca5project.DTOs.Product;
+import com.example.oopca5project.DTOs.Supplier;
 import com.example.oopca5project.Exceptions.DaoException;
 import org.json.JSONArray;
 import org.junit.jupiter.api.Test;
@@ -15,16 +15,17 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class MainAppTest {
 
-    // ***** FEATURE 1 TESTS *****
+    static ProductDaoInterface IProductDao = new MySqlProductDao();
+    static SupplierDaoInterface ISupplierDao = new MySqlSupplierDao();
+    static CustomerDaoInterface ICustomerDao = new MySqlCustomerDao();
+    static CustomersProductsDaoInterface ICustomersProductsDao = new MySqlCustomersProductsDao();
 
     @Test
 // Tests if getAllProducts() returns an empty list (null check)
     void getAllProductsReturnsNull() {
-        ProductDaoInterface productDao = new MySqlProductDao();
-
         List<Product> products = null;
         try {
-            products = productDao.getAllProducts();
+            products = IProductDao.getAllProducts();
         } catch (DaoException e) {
             fail("DaoException occurred: " + e.getMessage());
         }
@@ -36,11 +37,9 @@ class MainAppTest {
     // Tests if getAllProducts() returns the expected products
     @Test
     void getAllProductsReturnsProducts() {
-        ProductDaoInterface productDao = new MySqlProductDao();
-
         List<Product> products = null;
         try {
-            products = productDao.getAllProducts();
+            products = IProductDao.getAllProducts();
         } catch (DaoException e) {
             fail("DaoException occurred: " + e.getMessage());
         }
@@ -54,12 +53,11 @@ class MainAppTest {
 
     @Test
     void getProductByIdReturnsProduct() {
-        ProductDaoInterface productDao = new MySqlProductDao();
         String validProductId = "product1"; // Use a valid product ID from the database
 
         Product product = null;
         try {
-            product = productDao.getProductById(validProductId);
+            product = IProductDao.getProductById(validProductId);
         } catch (DaoException e) {
             fail("DaoException occurred: " + e.getMessage());
         }
@@ -69,12 +67,11 @@ class MainAppTest {
 
     @Test
     void getProductByIdReturnsNullForInvalidId() {
-        ProductDaoInterface productDao = new MySqlProductDao();
         String invalidProductId = "product0";
 
         Product product = null;
         try {
-            product = productDao.getProductById(invalidProductId);
+            product = IProductDao.getProductById(invalidProductId);
         } catch (DaoException e) {
             fail("DaoException occurred: " + e.getMessage());
         }
@@ -87,12 +84,11 @@ class MainAppTest {
 
     @Test
     void deleteProductByIdDeletesProduct() {
-        ProductDaoInterface productDao = new MySqlProductDao();
         String validProductId = "product2";
 
         int rowsAffected = 0;
         try {
-            rowsAffected = productDao.deleteProductById(validProductId);
+            rowsAffected = IProductDao.deleteProductById(validProductId);
         } catch (DaoException e) {
             fail("DaoException occurred: " + e.getMessage());
         }
@@ -102,12 +98,11 @@ class MainAppTest {
 
     @Test
     void deleteProductByIdReturnsZeroForInvalidId() {
-        ProductDaoInterface productDao = new MySqlProductDao();
         String invalidProductId = "product0";
 
         int rowsAffected = 0;
         try {
-            rowsAffected = productDao.deleteProductById(invalidProductId);
+            rowsAffected = IProductDao.deleteProductById(invalidProductId);
         } catch (DaoException e) {
             fail("DaoException occurred: " + e.getMessage());
         }
@@ -120,19 +115,18 @@ class MainAppTest {
 
     @Test
     void addProductWasntAdded() throws DaoException {
-        ProductDaoInterface productAdd = new MySqlProductDao();
         Product product = new Product("test1", "", "", 1, "");
 
         int n = 0;
         try {
-            productAdd.addProduct(product);
-            n = productAdd.addProduct(product);
+            IProductDao.addProduct(product);
+            n = IProductDao.addProduct(product);
         } catch (DaoException ignored) {
 
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            productAdd.deleteProductById("test1");
+            IProductDao.deleteProductById("test1");
         }
         assertEquals(0, n);
     }
@@ -150,13 +144,12 @@ class MainAppTest {
 
     @Test
     void addProductWasAdded() {
-        ProductDaoInterface productAdd = new MySqlProductDao();
         Product product = new Product("test3", "", "", 1, "supplier1");
 
         int n = 0;
         try {
-            n = productAdd.addProduct(product);
-            productAdd.deleteProductById("test3");
+            n = IProductDao.addProduct(product);
+            IProductDao.deleteProductById("test3");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -165,12 +158,11 @@ class MainAppTest {
 
     @Test
     void addProductWasntAddedForeginKey() {
-        ProductDaoInterface productAdd = new MySqlProductDao();
         Product product = new Product("test3", "j", "k", 1, "supp");
 
         int n = 0;
         try {
-            n = productAdd.addProduct(product);
+            n = IProductDao.addProduct(product);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -182,11 +174,9 @@ class MainAppTest {
 
     @Test
     void updateProductWasntUpdatedAndIdNull() {
-        ProductDaoInterface productUpdate = new MySqlProductDao();
-
         try {
-            Product p = productUpdate.getProductById(null);
-            productUpdate.updateProduct(null, p);
+            Product p = IProductDao.getProductById(null);
+            IProductDao.updateProduct(null, p);
         } catch (Exception e) {
             assertTrue(true);
         }
@@ -194,11 +184,9 @@ class MainAppTest {
 
     @Test
     void updateProductWasntUpdatedAndIdWrong() {
-        ProductDaoInterface productUpdate = new MySqlProductDao();
-
         try {
-            Product p = productUpdate.getProductById("1");
-            productUpdate.updateProduct("1", p);
+            Product p = IProductDao.getProductById("1");
+            IProductDao.updateProduct("1", p);
         } catch (Exception e) {
             assertTrue(true);
         }
@@ -206,13 +194,12 @@ class MainAppTest {
 
     @Test
     void updateProductWasUpdated() {
-        ProductDaoInterface productUpdate = new MySqlProductDao();
         int n = 0;
         Product p2 = new Product("test1", "", "", 1, "supplier1");
         try {
-            Product p1 = productUpdate.getProductById("product3");
-            n = productUpdate.updateProduct("product1", p2);
-            productUpdate.updateProduct("product1", p1);
+            Product p1 = IProductDao.getProductById("product3");
+            n = IProductDao.updateProduct("product1", p2);
+            IProductDao.updateProduct("product1", p1);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -310,4 +297,50 @@ class MainAppTest {
         assertNotNull(Product.turnProductIntoJson(product));
     }
     // *******************************************************************
+
+    // *************** ADD SUPPLIER TESTS ********************
+    @Test
+    void addSupplierTest1() { // Tests to see if a new supplier is successfully added
+        try {
+            Supplier supplier = new Supplier("JunitSupplier", "JunitSupplier", "JunitSupplier", "JunitSupplier");
+            int expected = 1;
+            int actual = ISupplierDao.addSupplier(supplier);
+
+            assertEquals(expected, actual);
+        }
+        catch(DaoException e) {
+            e.printStackTrace();
+        }
+        // Delete the newly created supplier made by the test
+        finally {
+            try {
+                ISupplierDao.deleteSupplierById("JunitSupplier");
+            } catch (DaoException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @Test
+    void addSupplierTest2() { // Tests to see if a product will not be added if there is a duplicate supplier
+        try {
+            Supplier supplier = new Supplier("JunitSupplier", "JunitSupplier", "JunitSupplier", "JunitSupplier");
+            ISupplierDao.addSupplier(supplier);
+            int expected = 0;
+            int actual = ISupplierDao.addSupplier(supplier); // Try adding the supplier again. Shpuld not be added to the table
+            assertEquals(expected, actual);
+        }
+        catch (DaoException e) {
+            System.out.println("addSupplierTest2() successful!");
+        }
+        finally {
+            try {
+                ISupplierDao.deleteSupplierById("JunitTest");
+            }
+            catch (DaoException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    // ****************************************************
 }
