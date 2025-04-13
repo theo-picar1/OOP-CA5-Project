@@ -94,7 +94,7 @@ class MainAppTest {
             fail("DaoException occurred: " + e.getMessage());
         }
 
-        assertEquals(1, 1, rowsAffected);
+        assertEquals(1, rowsAffected, "Expected one row to be affected when deleting product by ID.");
     }
 
     @Test
@@ -108,7 +108,7 @@ class MainAppTest {
             fail("DaoException occurred: " + e.getMessage());
         }
 
-        assertEquals(0, 0, rowsAffected);
+        assertEquals(0, rowsAffected, "Expected 0 rows affected for invalid product ID.");
     }
 
     // ***************************
@@ -388,5 +388,36 @@ class MainAppTest {
             }
         }
     }
-    // ****************************************************
+    // **********************************************************
+
+    // *************** DISPLAY ALL SUPPLIERS TESTS **************
+
+    // Tests if getAllSuppliers() returns an empty list (null check)
+    @Test
+    void getAllSuppliersReturnsNull() {
+        List<Supplier> suppliers = null;
+        try {
+            suppliers = ISupplierDao.getAllSuppliers();
+        } catch (DaoException e) {
+            fail("DaoException occurred: " + e.getMessage());
+        }
+
+        assertNotNull(suppliers);
+        assertFalse(suppliers.isEmpty(), "Expected empty list but got: " + suppliers);
+    }
+
+    // Tests if getAllSuppliers() returns the expected suppliers
+    @Test
+    void getAllSuppliersReturnsSuppliers() {
+        List<Supplier> suppliers = null;
+        try {
+            suppliers = ISupplierDao.getAllSuppliers();
+        } catch (DaoException e) {
+            fail("DaoException occurred: " + e.getMessage());
+        }
+
+        assertNotNull(suppliers);
+        assertFalse(suppliers.isEmpty(), "Expected suppliers, but the list is empty");
+    }
+    // **********************************************************
 }
