@@ -420,4 +420,33 @@ class MainAppTest {
         assertFalse(suppliers.isEmpty(), "Expected suppliers, but the list is empty");
     }
     // **********************************************************
+
+    // **************** DISPLAY ALL CUSTOMERS TESTS **************
+
+    // Test if getAllCustomers() does not return null
+    @Test
+    void getAllCustomersReturnsNotNull() {
+        List<Customer> customers = null;
+        try {
+            customers = ICustomerDao.getAllCustomers();
+        } catch (DaoException e) {
+            fail("DaoException occurred: " + e.getMessage());
+        }
+
+        assertNotNull(customers, "getAllCustomers() returned null");
+    }
+
+    // Test if getAllCustomers() returns a non-empty list
+    @Test
+    void getAllCustomersReturnsCustomers() {
+        List<Customer> customers = null;
+        try {
+            customers = ICustomerDao.getAllCustomers();
+        } catch (DaoException e) {
+            fail("DaoException occurred: " + e.getMessage());
+        }
+
+        assertNotNull(customers);
+        assertFalse(customers.isEmpty(), "Expected customers, but the list is empty");
+    }
 }
