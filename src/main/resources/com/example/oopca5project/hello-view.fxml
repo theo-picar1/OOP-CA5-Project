@@ -1,16 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.VBox?>
 
-<?import javafx.scene.control.Button?>
-<VBox alignment="CENTER" spacing="20.0" xmlns:fx="http://javafx.com/fxml"
-      fx:controller="com.example.oopca5project.HelloController">
+<!--Practically the HTML file like in Full-Stack Development-->
+<VBox alignment="CENTER" spacing="15.0" xmlns="http://javafx.com/javafx/8"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.example.oopca5project.JavaFX.HelloController"
+      stylesheets="@styles.css">
     <padding>
-        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
+        <Insets top="20" right="20" bottom="20" left="20"/>
     </padding>
 
-    <Label fx:id="welcomeText"/>
-    <Button text="Hello!" onAction="#onHelloButtonClick"/>
+    <Label text="Home Page" style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
+    <Label fx:id="welcomeText" text="Welcome!" />
+
+    <Button text="Start" onAction="#onStartClick"/>
+    <Button text="Exit" onAction="#onExitClick"/>
 </VBox>
