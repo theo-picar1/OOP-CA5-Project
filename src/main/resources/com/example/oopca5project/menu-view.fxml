@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.VBox?>
+
+<!--Practically the HTML file like in Full-Stack Development-->
+<VBox alignment="CENTER" spacing="15.0" xmlns="http://javafx.com/javafx/8"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.example.oopca5project.JavaFX.MenuController"
+      stylesheets="@styles.css">
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <Label text="Main Menu" style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
+    <Label text="Choose which table you would like to use!"/>
+    <Label fx:id="menuText"/>
+
+    <Button text="Back" onAction="#onGoBackClick" />
+    <Button text="Products" onAction="#onProductsClick" />
+    <Button text="Suppliers" onAction="#onSuppliersClick" />
+    <Button text="Customers" onAction="#onCustomersClick" />
+    <Button text="CustomersProducts" onAction="#onCustomersProductsClick" />
+</VBox>
