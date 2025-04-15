@@ -2,6 +2,7 @@ package com.example.oopca5project.DTOs;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -115,6 +116,16 @@ public class CustomersProducts {
 
         // return initialized CustomersProducts
         return customerP;
+    }
+
+    public static CustomersProducts createCustomersProducts(int customerId, String productId) {
+        Scanner sc = new Scanner(System.in);
+
+        System.out.println("Enter Quantity");
+        int quantity = sc.nextInt();
+        sc.nextLine();
+
+        return new CustomersProducts(customerId, productId, quantity);
     }
 
     @Override

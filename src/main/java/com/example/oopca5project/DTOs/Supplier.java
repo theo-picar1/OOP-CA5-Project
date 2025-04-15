@@ -5,6 +5,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class Supplier {
     private String supplier_id;
@@ -94,6 +95,21 @@ public class Supplier {
 
         // return initialized Supplier list
         return list;
+    }
+
+    public static Supplier createSupplier(String id) {
+        Scanner sc = new Scanner(System.in);
+
+        System.out.println("Enter supplier's name:");
+        String name = sc.next();
+
+        System.out.println("Enter supplier's telephone number");
+        String phone = sc.next();
+
+        System.out.println("Enter supplier's email");
+        String email = sc.next();
+
+        return new Supplier(id, name, phone, email);
     }
 
     //  ***** NO TESTS CREATED YET *****

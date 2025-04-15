@@ -5,6 +5,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class Customer {
     private int customer_id;
@@ -115,6 +116,27 @@ public class Customer {
 
         // Returns newly created JSONObject
         return jsonObject;
+    }
+
+    // Method that handles user input for getting Customer object
+    public static Customer createCustomer() {
+        Scanner sc = new Scanner(System.in);
+
+        // initializing variables
+        String name, email, phoneNo;
+
+        // Get Customer variables
+        System.out.println("Enter customer first name: ");
+        name = sc.next();
+
+        System.out.println("Enter customer email: ");
+        email = sc.next();
+
+        System.out.println("Enter customer phone number: ");
+        phoneNo = sc.next();
+
+        // Return Customer object
+        return new Customer(name, email, phoneNo);
     }
 
     @Override
