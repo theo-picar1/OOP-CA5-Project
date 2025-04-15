@@ -104,25 +104,29 @@ class ClientHandler implements Runnable {
             while ((request = socketReader.readLine()) != null) {
                 System.out.println("READ COMMAND FROM CLIENT " + clientNumber + ": " + request);
 
-                // DISPLAY ALL PRODUCTS
+                // ******************** OTHER OPTIONS ********************
+
+                // TERMINATE CLIENT AND WAIT FOR NEW ONE
                 if (request.equals("1")) {
+                    socketWriter.println("Sorry to see you leaving. Goodbye.");
+                    System.out.println("CLIENT HAS NOTIFIED THAT IT IS QUITTING...");
+                }
+                // DOWNLOAD IMAGE
+                else if(request.equals("2")) {
+                    // Get input and output streams on the Socket to send/receive binary data
+                    dataInputStream = new DataInputStream(clientSocket.getInputStream());
+
+                    // call function to extract file data from the data input stream and write to file
+                    receiveFile("images/my-beautiful-staffordshire-bull-terrier-v0-czmj26cdl58c1-RECEIVED.jpg");
+                }
+
+                // ******************** PRODUCT OPTIONS ********************
+
+                // DISPLAY ALL PRODUCTS
+                if (request.equals("3")) {
                     // Get all objects from database, convert them to a jsonArray, then pass it back to the client.
                     List<Product> products = IProductDao.getAllProducts();
                     JSONArray jsonArray = Product.productsListToJsonString(products);
-
-                    socketWriter.println(jsonArray);
-                }
-                // DISPLAY ALL SUPPLIERS
-                else if(request.equals("2")) {
-                    List<Supplier> suppliers = ISupplierDao.getAllSuppliers();
-                    JSONArray jsonArray = Supplier.suppliersListToJsonString(suppliers);
-
-                    socketWriter.println(jsonArray);
-                }
-                // DISPLAYS ALL CUSTOMERS
-                else if(request.equals("3")) {
-                    List<Customer> customers = ICustomerDao.getAllCustomers();
-                    JSONArray jsonArray = Customer.customersListToJsonString(customers);
 
                     socketWriter.println(jsonArray);
                 }
@@ -143,8 +147,39 @@ class ClientHandler implements Runnable {
                         e.printStackTrace();
                     }
                 }
+                // FILTER PRODUCTS LOWER THAN GIVEN PRICE
+                else if(request.equals("5")) {
+                    try {
+                        // Initially get all products first so we can have something to filter
+                        List<Product> products = IProductDao.getAllProducts();
+
+                        if (products.isEmpty()) {
+                            socketWriter.println("I'm sorry, this request could not be done. Please add some data to the Products table first");
+                            System.out.println("PRODUCT TABLE IS EMPTY. ADD DATA BEFORE FILTERING");
+                        }
+                        else {
+                            String price = socketReader.readLine();
+
+                            // Reference: https://stackoverflow.com/questions/66532091/java-8-streams-filter-by-a-property-of-an-object
+                            List<Product> productsBelowCertainPrice = Product.filterProductsByPrice(Double.parseDouble(price), products);
+
+                            if (productsBelowCertainPrice.isEmpty()) {
+                                socketWriter.println("No products below the given price: €" +price);
+                                System.out.println("NO PRODUCTS THAT MATCHED FILTER");
+                            }
+                            else {
+                                JSONArray jsonArray = Product.productsListToJsonString(productsBelowCertainPrice);
+                                socketWriter.println(jsonArray);
+                                System.out.println("MATCHING PRODUCTS HAVE BEEN SENT TO THE CLIENT!");
+                            }
+                        }
+
+                    } catch (DaoException e) {
+                        e.printStackTrace();
+                    }
+                }
                 // ADD PRODUCT
-                else if (request.equals("5")) {
+                else if (request.equals("6")) {
 
                     // initialize variables
                     Product product;
@@ -188,59 +223,8 @@ class ClientHandler implements Runnable {
                         e.printStackTrace();
                     }
                 }
-                else if(request.equals("6")) {
-                    // Get input and output streams on the Socket to send/receive binary data
-                    dataInputStream = new DataInputStream(clientSocket.getInputStream());
-
-                    // call function to extract file data from the data input stream and write to file
-                    receiveFile("images/my-beautiful-staffordshire-bull-terrier-v0-czmj26cdl58c1-RECEIVED.jpg");
-                }
-                // ADD CUSTOMER
-                else if (request.equals("7")) {
-                    // initialize variables
-                    Customer customer;
-                    int customerAdded;
-                    String jsonString = socketReader.readLine();
-                    JSONObject jsonObject = new JSONObject(jsonString);
-                    int id = jsonObject.getInt("customer_id");
-
-                    // initialize messages
-                    JSONObject errorMessage = new JSONObject();
-                    errorMessage.put("status", "error");
-                    errorMessage.put("message", "An error occurred!!");
-
-                    JSONObject successMessage = new JSONObject();
-                    successMessage.put("status", "success");
-                    successMessage.put("message", jsonString);
-
-                    try {
-                        // check if Customer doesn't exist
-                        if (ICustomerDao.getCustomerById(id) == null) {
-
-                            // get and add Customer to database
-                            customer = Customer.makeCustomerFromJSON(jsonObject);
-                            customerAdded = ICustomerDao.addCustomer(customer);
-
-                            // check if Customer was added
-                            if (customerAdded == 1) {
-
-                                socketWriter.println(successMessage);
-
-                            } else {
-
-                                socketWriter.println(errorMessage);
-                            }
-                        } else {
-
-                            socketWriter.println(errorMessage);
-                        }
-
-                    } catch (DaoException e) {
-                        e.printStackTrace();
-                    }
-                }
                 // UPDATE PRODUCT
-                else if (request.equals("8")) {
+                else if (request.equals("7")) {
 
                     // initialize variables
                     Product product;
@@ -283,14 +267,9 @@ class ClientHandler implements Runnable {
                     } catch (DaoException e) {
                         e.printStackTrace();
                     }
-                    
                 }
-                // TERMINATE CLIENT AND WAIT FOR NEW ONE
-                else if (request.equals("9")) {
-                    socketWriter.println("Sorry to see you leaving. Goodbye.");
-                    System.out.println("CLIENT HAS NOTIFIED THAT IT IS QUITTING...");
-                }
-                else if(request.equals("10")) { // DELETE PRODUCT BY ID
+                // DELETE PRODUCT BY ID
+                else if(request.equals("8")) {
                     String id = socketReader.readLine();
                     int rowsAffected;
 
@@ -316,7 +295,39 @@ class ClientHandler implements Runnable {
                         e.printStackTrace();
                     }
                 }
-                else if (request.equals("11")) { // ADD SUPPLIER
+
+                // ******************** SUPPLIER OPTIONS ********************
+
+                // DISPLAY ALL SUPPLIERS
+                else if(request.equals("9")) {
+                    List<Supplier> suppliers = ISupplierDao.getAllSuppliers();
+                    JSONArray jsonArray = Supplier.suppliersListToJsonString(suppliers);
+
+                    socketWriter.println(jsonArray);
+                }
+                // FIND SUPPLIER BY ID
+                else if(request.equals("10")) {
+                    System.out.println("NOT IMPLEMENTED");
+                }
+                // DISPLAY SUPPLIER BY PRODUCT ID
+                else if(request.equals("11")) {
+                    Supplier supplier;
+
+                    try {
+                        supplier = ISupplierDao.getSupplierByProductId(socketReader.readLine());
+
+                        // Turn product into single json object and pass it back as a string to the client
+                        JSONObject message = Supplier.turnSupplierIntoJson(supplier);
+                        socketWriter.println(message.toString());
+
+                        socketWriter.println("Server message: ID has been passed to server passing back supplier");
+                    }
+                    catch (DaoException e) {
+                        e.printStackTrace();
+                    }
+                }
+                // ADD SUPPLIER
+                else if (request.equals("12")) {
                     Supplier supplier;
                     int rowsAffected;
                     String jsonString = socketReader.readLine();
@@ -353,10 +364,10 @@ class ClientHandler implements Runnable {
 
                     } catch (DaoException e) {
                         e.printStackTrace();
-                    }  
+                    }
                 }
                 // UPDATE SUPPLIER
-                else if (request.equals("12")) {
+                else if (request.equals("13")) {
                     // initialize variables
                     Supplier supplier;
                     int supplierUpdated;
@@ -385,6 +396,94 @@ class ClientHandler implements Runnable {
 
                                 socketWriter.println(successMessage);
 
+                            }
+                            else {
+
+                                socketWriter.println(errorMessage);
+                            }
+                        }
+                        else {
+
+                            socketWriter.println(errorMessage);
+                        }
+
+                    }
+                    catch (DaoException e) {
+                        e.printStackTrace();
+                    }
+                }
+                // DELETE SUPPLIER BY ID
+                else if(request.equals("14")) {
+                    String id = socketReader.readLine();
+                    int rowsAffected;
+
+                    try {
+                        if(ISupplierDao.getSupplierById(id) != null) {
+                            rowsAffected = ISupplierDao.deleteSupplierById(id);
+
+                            if(rowsAffected > 0) {
+                                socketWriter.println("Supplier has successfully been deleted");
+                                System.out.println("SUPPLIER HAS SUCCESSFULLY BEEN DELETED");
+                            }
+                            else {
+                                socketWriter.println("Error: Supplier was not deleted!");
+                                System.err.println("SUPPLIER WAS NOT DELETED! CHECK CODE FOR ERRORS!");
+                            }
+                        }
+                        else {
+                            socketWriter.println("Supplier with given id does not exist in the table!");
+                            System.out.println("NO SUPPLIER FOUND WITH GIVEN ID");
+                        }
+                    }
+                    catch(DaoException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                // ******************** CUSTOMER OPTIONS ********************
+
+                // DISPLAY ALL CUSTOMERS
+                else if(request.equals("15")) {
+                    List<Customer> customers = ICustomerDao.getAllCustomers();
+                    JSONArray jsonArray = Customer.customersListToJsonString(customers);
+
+                    socketWriter.println(jsonArray);
+                }
+                // FIND CUSTOMER BY ID
+                else if(request.equals("16")) {
+                    System.out.println("NOT IMPLEMENTED");
+                }
+                // ADD CUSTOMER
+                else if (request.equals("17")) {
+                    // initialize variables
+                    Customer customer;
+                    int customerAdded;
+                    String jsonString = socketReader.readLine();
+                    JSONObject jsonObject = new JSONObject(jsonString);
+                    int id = jsonObject.getInt("customer_id");
+
+                    // initialize messages
+                    JSONObject errorMessage = new JSONObject();
+                    errorMessage.put("status", "error");
+                    errorMessage.put("message", "An error occurred!!");
+
+                    JSONObject successMessage = new JSONObject();
+                    successMessage.put("status", "success");
+                    successMessage.put("message", jsonString);
+
+                    try {
+                        // check if Customer doesn't exist
+                        if (ICustomerDao.getCustomerById(id) == null) {
+
+                            // get and add Customer to database
+                            customer = Customer.makeCustomerFromJSON(jsonObject);
+                            customerAdded = ICustomerDao.addCustomer(customer);
+
+                            // check if Customer was added
+                            if (customerAdded == 1) {
+
+                                socketWriter.println(successMessage);
+
                             } else {
 
                                 socketWriter.println(errorMessage);
@@ -397,26 +496,9 @@ class ClientHandler implements Runnable {
                     } catch (DaoException e) {
                         e.printStackTrace();
                     }
-                } 
-                // DISPLAY SUPPLIER BY PRODUCT ID
-                else if(request.equals("13")) { 
-                    Supplier supplier;
-
-                    try {
-                        supplier = ISupplierDao.getSupplierByProductId(socketReader.readLine());
-
-                        // Turn product into single json object and pass it back as a string to the client
-                        JSONObject message = Supplier.turnSupplierIntoJson(supplier);
-                        socketWriter.println(message.toString());
-
-                        socketWriter.println("Server message: ID has been passed to server passing back supplier");
-                    }
-                    catch (DaoException e) {
-                        e.printStackTrace();
-                    }
                 }
                 // UPDATE CUSTOMER
-                else if (request.equals("14")) {
+                else if (request.equals("18")) {
                     // initialize variables
                     Customer customer;
                     int customerUpdated;
@@ -458,39 +540,27 @@ class ClientHandler implements Runnable {
                         e.printStackTrace();
                     }
                 }
-                // FILTER PRODUCTS LOWER THAN GIVEN PRICE
-                else if(request.equals("15")) {
-                    try {
-                        // Initially get all products first so we can have something to filter
-                        List<Product> products = IProductDao.getAllProducts();
-
-                        if (products.isEmpty()) {
-                            socketWriter.println("I'm sorry, this request could not be done. Please add some data to the Products table first");
-                            System.out.println("PRODUCT TABLE IS EMPTY. ADD DATA BEFORE FILTERING");
-                        }
-                        else {
-                            String price = socketReader.readLine();
-
-                            // Reference: https://stackoverflow.com/questions/66532091/java-8-streams-filter-by-a-property-of-an-object
-                            List<Product> productsBelowCertainPrice = Product.filterProductsByPrice(Double.parseDouble(price), products);
-
-                            if (productsBelowCertainPrice.isEmpty()) {
-                                socketWriter.println("No products below the given price: €" +price);
-                                System.out.println("NO PRODUCTS THAT MATCHED FILTER");
-                            }
-                            else {
-                                JSONArray jsonArray = Product.productsListToJsonString(productsBelowCertainPrice);
-                                socketWriter.println(jsonArray);
-                                System.out.println("MATCHING PRODUCTS HAVE BEEN SENT TO THE CLIENT!");
-                            }
-                        }
-
-                    } catch (DaoException e) {
-                        e.printStackTrace();
-                    }
+                // DELETE CUSTOMER
+                else if(request.equals("19")) {
+                    System.out.println("NOT IMPLEMENTED");
                 }
-                // UPDATE CUSTOMERSPRODUCTS
-                else if (request.equals("16")) {
+
+                // ******************** CUSTOMER PRODUCT OPTIONS ********************
+
+                // DISPLAY ALL CUSTOMER'S PRODUCTS
+                else if(request.equals("20")) {
+                    System.out.println("NOT IMPLEMENTED");
+                }
+                // FIND CUSTOMER'S PRODUCT BY PRODUCT ID AND CUSTOMER ID
+                else if(request.equals("21")) {
+                    System.out.println("NOT IMPLEMENTED");
+                }
+                // ADD CUSTOMER PRODUCT
+                else if (request.equals("22")) {
+                    System.out.println("NOT IMPLEMENTED");
+                }
+                // UPDATE CUSTOMERS PRODUCTS
+                else if (request.equals("23")) {
                     // initialize variables
                     CustomersProducts customerP;
                     int customerPUpdated;
@@ -530,35 +600,14 @@ class ClientHandler implements Runnable {
                             socketWriter.println(errorMessage);
                         }
 
-                    } catch (DaoException e) {
+                    }
+                    catch (DaoException e) {
                         e.printStackTrace();
                     }
                 }
-                else if(request.equals("17")) { // DELETE SUPPLIER BY ID
-                    String id = socketReader.readLine();
-                    int rowsAffected;
-
-                    try {
-                        if(ISupplierDao.getSupplierById(id) != null) {
-                            rowsAffected = ISupplierDao.deleteSupplierById(id);
-
-                            if(rowsAffected > 0) {
-                                socketWriter.println("Supplier has successfully been deleted");
-                                System.out.println("SUPPLIER HAS SUCCESSFULLY BEEN DELETED");
-                            }
-                            else {
-                                socketWriter.println("Error: Supplier was not deleted!");
-                                System.err.println("SUPPLIER WAS NOT DELETED! CHECK CODE FOR ERRORS!");
-                            }
-                        }
-                        else {
-                            socketWriter.println("Supplier with given id does not exist in the table!");
-                            System.out.println("NO SUPPLIER FOUND WITH GIVEN ID");
-                        }
-                    }
-                    catch(DaoException e) {
-                        e.printStackTrace();
-                    }
+                // DELETE CUSTOMER'S PRODUCT BY CUSTOMER AND PRODUCT ID
+                else if(request.equals("24")) {
+                    System.out.println("NOT IMPLEMENTED");
                 }
                 // INVALID COMMAND
                 else {

@@ -127,65 +127,6 @@ public class Methods {
         return new Product(id, product_description, size, unit_price, supplier_id);
     }
 
-    // Method that will print an object that was passed in. Method also checks to see if the object passed in is null or not.
-    public static void printObject(Object obj){
-
-        // checks if object is null
-        if(obj != null){
-
-            // Print object if not null
-            System.out.println(obj);
-
-        }else{
-
-            // Print error message
-            System.out.println("Object was not found");
-
-        }
-    }
-
-    // Method that handles user input for getting Customer object
-    public static Customer getCustomer() {
-
-        // initializing variables
-        String name, email, phoneNo;
-
-        // Get Customer variables
-        System.out.println("Enter customer first name: ");
-        name = sc.next();
-
-        System.out.println("Enter customer email: ");
-        email = sc.next();
-
-        System.out.println("Enter customer phone number: ");
-        phoneNo = sc.next();
-
-        // Return Customer object
-        return new Customer(name, email, phoneNo);
-    }
-
-    public static Supplier createSupplier(String id) {
-        System.out.println("Enter supplier's name:");
-        String name = sc.next();
-
-        System.out.println("Enter supplier's telephone number");
-        String phone = sc.next();
-
-        System.out.println("Enter supplier's email");
-        String email = sc.next();
-
-        return new Supplier(id, name, phone, email);
-    }
-
-    public static CustomersProducts getCustomersProducts(int customerId, String productId) {
-
-        System.out.println("Enter Quantity");
-        int quantity = sc.nextInt();
-        sc.nextLine();
-
-        return new CustomersProducts(customerId, productId, quantity);
-    }
-
     // <T> is a Generic type. i.e. it creates (lists) without casting types.
     // This allows for a list of Products, Suppliers, and Customers to be
     // Passed into this method without the need for overloading.

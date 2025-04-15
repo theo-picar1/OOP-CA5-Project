@@ -60,9 +60,6 @@ public class MainApp {
                     case 4: // DISPLAY PRODUCT AS JSON CASE
                         productToJsonString();
                         break;
-                    case 5: // GET SUPPLIER THROUGH PRODUCT ID
-                        Methods.printObject(getSupplier());
-                        break;
                     default:
                         System.out.println("Invalid option, please try again!");
                         break;
@@ -92,23 +89,30 @@ public class MainApp {
 
             while (true) {
                 String[] options = {
-                    "Display all Products",
-                    "Display all Suppliers",
-                    "Display all Customers",
-                    "Find product by ID",
-                    "Add product",
-                    "Choose image to display",
-                    "Add customer",
-                    "Update product by ID",
                     "Quit",
-                    "Delete product by ID",
-                    "Add supplier",
-                    "Update supplier by ID",
-                    "Display supplier by ProductID",
-                    "Update customer",
+                    "Download an image",
+                    "Display all Products",
+                    "Find product by ID",
                     "Filter products lower than given price",
-                    "Update customer products by Customer ID",
-                    "Delete supplier by ID"
+                    "Add product",
+                    "Update existing product by ID",
+                    "Delete product by ID",
+                    "Display all Suppliers",
+                    "Find supplier by ID -> NOT IMPLEMENTED",
+                    "Find supplier by ProductID",
+                    "Add supplier",
+                    "Update existing supplier by ID", 
+                    "Delete supplier by ID",
+                    "Display all Customers",
+                    "Find customer by ID -> NOT IMPLEMENTED",
+                    "Add customer", 
+                    "Update existing customer by ID",
+                    "Delete customer by ID -> NOT IMPLEMENTED",
+                    "Display all customer's products",
+                    "Find customer's product by product and customer ID -> NOT IMPLEMENTED",
+                    "Add customer product -> NOT IMPLEMENTED",
+                    "Update existing customer's product by product and customer ID",
+                    "Delete customer's product by product and customer ID -> NOT IMPLEMENTED",
                 };
 
                 System.out.println("***** CLIENT / SERVER APPLICATION *****");
@@ -121,31 +125,37 @@ public class MainApp {
                 // Passes the user's request to the server
                 out.println(request);
 
-                // DISPLAY ALL PRODUCTS
+                // ******************* OTHER OPTIONS *******************
+                // QUIT APPLICATION
                 if (request.equals("1")) {
+                    String response = in.readLine();
+                    System.out.println("Client message: Response from server: \"" + response + "\"");
+                    break;
+                }
+                // DOWNLOAD IMAGE
+                else if (request.equals("2")) {
+                    DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
+
+                    System.out.println("Sending the chosen file to the Server");
+                    // Call the method responsible for handling sending the file to the server
+                    sendFile("images/my-beautiful-staffordshire-bull-terrier-v0-czmj26cdl58c1.jpg", dataOutputStream);
+
+                    dataOutputStream.close();
+                }
+                
+                // ******************** PRODUCT OPTIONS ********************
+                
+                // DISPLAY ALL PRODUCTS
+                else if (request.equals("3")) {
                     // Reads in response from server. Same with all else statements
                     String response = in.readLine();
                     JSONArray jsonArray = new JSONArray(response);
 
                     ArrayList<Product> list = Product.makeProductListFromJSONArray(jsonArray); // Turn the jsonArray into a list of products
                     Methods.printListOfObjects(list); // Then print it
-                } 
-                // DISPLAY ALL SUPPLIERS
-                else if (request.equals("2")) {
-                    String response = in.readLine();
-                    JSONArray jsonArray = new JSONArray(response);
-
-                    ArrayList<Supplier> list = Supplier.makeSupplierListFromJSONArray(jsonArray);
-                    Methods.printListOfObjects(list);
-                } 
-                // DISPLAY ALL CUSTOMERS
-                else if (request.equals("3")) {
-                    String response = in.readLine();
-                    JSONArray jsonArray = new JSONArray(response);
-
-                    ArrayList<Customer> list = Customer.makeCustomerListFromJSONArray(jsonArray);
-                    Methods.printListOfObjects(list);
-                } else if (request.equals("4")) {
+                }
+                // FIND PRODUCT BY ID
+                else if (request.equals("4")) {
                     System.out.println("Please enter the id of the product you wish to view:");
                     String id = sc.next();
 
@@ -159,7 +169,22 @@ public class MainApp {
                     } else {
                         System.out.println("Product not found");
                     }
-                } else if (request.equals("5")) { // ADD PRODUCT
+                }
+                // FILTER PRODUCTS LOWER THAN PRICE
+                else if(request.equals("5")) {
+                    System.out.println("Please enter the price to filter products by:");
+                    double price = sc.nextDouble();
+                    out.println(String.valueOf(price));
+
+                    String response = in.readLine();
+                    JSONArray jsonArray = new JSONArray(response);
+
+                    System.out.println("Products below €" +price+ ":");
+                    ArrayList<Product> list = Product.makeProductListFromJSONArray(jsonArray); // Turn the jsonArray into a list of products
+                    Methods.printListOfObjects(list);
+                }
+                // ADD PRODUCT
+                else if (request.equals("6")) {
                     System.out.println("Please enter the id of the product you wish to add:");
                     String id = sc.next();
 
@@ -172,30 +197,9 @@ public class MainApp {
                     JSONObject jsonResponse = new JSONObject(response);
                     String message = jsonResponse.getString("message");
                     System.out.println("Message from server: " + message);
-                } else if (request.equals("6")) {
-                    DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
-
-                    System.out.println("Sending the chosen file to the Server");
-                    // Call the method responsible for handling sending the file to the server
-                    sendFile("images/my-beautiful-staffordshire-bull-terrier-v0-czmj26cdl58c1.jpg", dataOutputStream);
-
-                    dataOutputStream.close();
-                } else if (request.equals("7")) {
-
-                    // Get Customer object, turn it into a JSON string, and send to server
-                    Customer customer = Methods.getCustomer();
-                    JSONObject jsonObject = Customer.turnCustomerIntoJson(customer);
-                    out.println(jsonObject);
-
-                    // Take in response from server
-                    String response = in.readLine();
-
-                    // Get message from JSONObject and print
-                    JSONObject jsonResponse = new JSONObject(response);
-                    String message = jsonResponse.getString("message");
-                    System.out.println("Message from server: " + message);
-
-                } else if (request.equals("8")) {
+                }
+                // UPDATE EXISTING PRODUCT BY ID
+                else if (request.equals("7")) {
                     // Get ID of Product to update and send ID to server
                     System.out.println("Please enter the id of the product you wish to update:");
                     String id = sc.next();
@@ -214,12 +218,9 @@ public class MainApp {
                     String message = jsonResponse.getString("message");
                     System.out.println("Message from server: " + message);
 
-                } else if (request.equals("9")) { // QUIT APPLICATION
-                    String response = in.readLine();
-                    System.out.println("Client message: Response from server: \"" + response + "\"");
-                    break;
                 }
-                else if (request.equals("10")) { // DELETE PRODUCT BY ID
+                // DELETE PRODUCT BY ID
+                else if (request.equals("8")) {
                     System.out.println("Please enter the id of the product you wish to delete");
                     String id = sc.next();
                     out.println(id);
@@ -227,37 +228,23 @@ public class MainApp {
                     String response = in.readLine();
                     System.out.println("Client: RESPONSE FROM SERVER: '" +response+ "'");
                 }
-                else if(request.equals("11")) { // ADD SUPPLIER
-                    System.out.println("Please enter the id of the supplier you wish to add:");
-                    String id = sc.next();
-
-                    Supplier supplier = Methods.createSupplier(id);
-                    JSONObject jsonObject = Supplier.turnSupplierIntoJson(supplier);
-                    out.println(jsonObject);
-
+                
+                // ********************* SUPPLIER OPTIONS ***********************
+                
+                // DISPLAY ALL SUPPLIERS
+                else if (request.equals("9")) {
                     String response = in.readLine();
+                    JSONArray jsonArray = new JSONArray(response);
 
-                    JSONObject jsonResponse = new JSONObject(response);
-                    String message = jsonResponse.getString("message");
-                    System.out.println("Message from server: " + message);
+                    ArrayList<Supplier> list = Supplier.makeSupplierListFromJSONArray(jsonArray);
+                    Methods.printListOfObjects(list);
                 }
-                else if(request.equals("12")) { // UPDATE SUPPLIER
-                    System.out.println("Please enter the id of the supplier you wish to update:");
-                    String id = sc.next();
-                    out.println(id);
-
-                    Supplier supplier = Methods.createSupplier(id);
-                    JSONObject jsonObject = Supplier.turnSupplierIntoJson(supplier);
-                    out.println(jsonObject);
-
-                    String response = in.readLine();
-
-                    JSONObject jsonResponse = new JSONObject(response);
-                    String message = jsonResponse.getString("message");
-                    System.out.println("Message from server: " + message);
+                // DISPLAY SUPPLIER BY ID
+                else if (request.equals("10")) {
+                    System.out.println("NOT IMPLEMENTED");
                 }
                 // DISPLAY SUPPLIER BY PRODUCT ID
-                else if(request.equals("13")) {
+                else if(request.equals("11")) {
 
                     System.out.println("Enter product ID you want to search by");
                     String id = sc.next();
@@ -273,15 +260,13 @@ public class MainApp {
                         System.out.println("Supplier not found");
                     }
                 }
-                // UPDATE CUSTOMER
-                else if(request.equals("14")) {
-                    System.out.println("Please enter the id of the customer you wish to update:");
-                    int id = sc.nextInt();  
-                    sc.nextLine();
+                // ADD SUPPLIER
+                else if(request.equals("12")) {
+                    System.out.println("Please enter the id of the supplier you wish to add:");
+                    String id = sc.next();
 
-                    Customer customer = Methods.getCustomer();
-                    JSONObject jsonObject = Customer.turnCustomerIntoJson(customer);
-                    out.println(id);
+                    Supplier supplier = Supplier.createSupplier(id);
+                    JSONObject jsonObject = Supplier.turnSupplierIntoJson(supplier);
                     out.println(jsonObject);
 
                     String response = in.readLine();
@@ -290,20 +275,101 @@ public class MainApp {
                     String message = jsonResponse.getString("message");
                     System.out.println("Message from server: " + message);
                 }
-                else if(request.equals("15")) {
-                    System.out.println("Please enter the price to filter products by:");
-                    double price = sc.nextDouble();
-                    out.println(String.valueOf(price));
+                // UPDATE SUPPLIER
+                else if(request.equals("13")) {
+                    System.out.println("Please enter the id of the supplier you wish to update:");
+                    String id = sc.next();
+                    out.println(id);
 
+                    Supplier supplier = Supplier.createSupplier(id);
+                    JSONObject jsonObject = Supplier.turnSupplierIntoJson(supplier);
+                    out.println(jsonObject);
+
+                    String response = in.readLine();
+
+                    JSONObject jsonResponse = new JSONObject(response);
+                    String message = jsonResponse.getString("message");
+                    System.out.println("Message from server: " + message);
+                }
+                // DELETE SUPPLIER BY ID
+                else if(request.equals("14")) {
+                    System.out.println("Please enter the id of the supplier you wish to delete:");
+                    String id = sc.next();
+                    out.println(id);
+
+                    String response = in.readLine();
+                    System.out.println("Client: RESPONSE FROM SERVER '" +response+ "'");
+                }
+                
+                // ******************* CUSTOMER OPTIONS *******************
+                
+                // DISPLAY ALL CUSTOMERS
+                else if (request.equals("15")) {
                     String response = in.readLine();
                     JSONArray jsonArray = new JSONArray(response);
 
-                    System.out.println("Products below €" +price+ ":");
-                    ArrayList<Product> list = Product.makeProductListFromJSONArray(jsonArray); // Turn the jsonArray into a list of products
+                    ArrayList<Customer> list = Customer.makeCustomerListFromJSONArray(jsonArray);
                     Methods.printListOfObjects(list);
+                    System.out.println();
                 }
-                // UPDATE CUSTOMERS PRODUCTS
+                // FIND CUSTOMER BY ID
                 else if(request.equals("16")) {
+                    System.out.println("NOT IMPLEMENTED\n");
+                }
+                // ADD CUSTOMER
+                else if (request.equals("17")) {
+                    // Get Customer object, turn it into a JSON string, and send to server
+                    Customer customer = Customer.createCustomer();
+                    JSONObject jsonObject = Customer.turnCustomerIntoJson(customer);
+                    out.println(jsonObject);
+
+                    // Take in response from server
+                    String response = in.readLine();
+
+                    // Get message from JSONObject and print
+                    JSONObject jsonResponse = new JSONObject(response);
+                    String message = jsonResponse.getString("message");
+                    System.out.println("Message from server: " + message + "\n");
+
+                }
+                // UPDATE EXISTING CUSTOMER BY ID
+                else if(request.equals("18")) {
+                    System.out.println("Please enter the id of the customer you wish to update:");
+                    int id = sc.nextInt();  
+                    sc.nextLine();
+
+                    Customer customer = Customer.createCustomer();
+                    JSONObject jsonObject = Customer.turnCustomerIntoJson(customer);
+                    out.println(id);
+                    out.println(jsonObject);
+
+                    String response = in.readLine();
+
+                    JSONObject jsonResponse = new JSONObject(response);
+                    String message = jsonResponse.getString("message");
+                    System.out.println("Message from server: " + message +"\n");
+                }
+                // DELETE CUSTOMER 
+                else if(request.equals("19")) {
+                    System.out.println("NOT IMPLEMENTED\n");
+                }
+                
+                // ******************* CUSTOMER PRODUCTS OPTIONS *******************
+
+                // DISPLAY ALL CUSTOMER'S PRODUCTS
+                else if(request.equals("20")) {
+                    System.out.println("NOT IMPLEMENTED\n");
+                }
+                // FIND CUSTOMER'S PRODUCT BY PRODUCT ID AND CUSTOMER ID
+                else if(request.equals("21")) {
+                    System.out.println("NOT IMPLEMENTED\n");
+                }
+                // ADD CUSTOMER PRODUCT
+                else if (request.equals("22")) {
+                    System.out.println("NOT IMPLEMENTED\n");
+                }
+                // UPDATE CUSTOMERS PRODUCTS BY PRODUCT ID AND CUSTOMER ID
+                else if(request.equals("23")) {
                     System.out.println("Please enter the Product id of the customers products you wish to update:");
                     String productId = sc.next();
                     out.println(productId);
@@ -313,7 +379,7 @@ public class MainApp {
                     sc.nextLine();
                     out.println(customerId);
 
-                    CustomersProducts CustomersP = Methods.getCustomersProducts(customerId, productId);
+                    CustomersProducts CustomersP = CustomersProducts.createCustomersProducts(customerId, productId);
                     JSONObject jsonObject = CustomersProducts.turnCustomersProductsIntoJson(CustomersP);
                     out.println(jsonObject);
 
@@ -321,18 +387,15 @@ public class MainApp {
 
                     JSONObject jsonResponse = new JSONObject(response);
                     String message = jsonResponse.getString("message");
-                    System.out.println("Message from server: " + message);
+                    System.out.println("Message from server: " + message +"\n");
                 }
-                else if(request.equals("17")) {
-                    System.out.println("Please enter the id of the supplier you wish to delete:");
-                    String id = sc.next();
-                    out.println(id);
-
-                    String response = in.readLine();
-                    System.out.println("Client: RESPONSE FROM SERVER '" +response+ "'");
+                // DELETE CUSTOMER'S PRODUCT BY CUSTOMER AND PRODUCT ID 
+                else if(request.equals("24")) {
+                    System.out.println("NOT IMPLEMENTED\n");
                 }
+                // UNKNOWN COMMAND
                 else {
-                    System.out.println("Command unknown. Try again.");
+                    System.out.println("Command unknown. Try again.\n");
                 }
             }
         } catch (IOException e) {

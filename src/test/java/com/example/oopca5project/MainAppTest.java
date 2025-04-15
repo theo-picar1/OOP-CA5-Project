@@ -21,6 +21,7 @@ class MainAppTest {
     static CustomerDaoInterface ICustomerDao = new MySqlCustomerDao();
     static CustomersProductsDaoInterface ICustomersProductsDao = new MySqlCustomersProductsDao();
 
+    // *************** GET ALL PRODUCTS TESTS ***************
     @Test
 // Tests if getAllProducts() returns an empty list (null check)
     void getAllProductsReturnsNull() {
@@ -50,8 +51,8 @@ class MainAppTest {
     }
 
     // ***************************
-    // ***** FEATURE 2 TESTS *****
 
+    // // *************** GET PRODUCT BY ID TESTS ***************
     @Test
     void getProductByIdReturnsProduct() {
         String validProductId = "product1"; // Use a valid product ID from the database
@@ -79,10 +80,9 @@ class MainAppTest {
 
         assertNull(product, "Expected null when product is not found");
     }
+    // ************************************************************
 
-    // ***************************
-    // ***** FEATURE 3 TESTS *****
-
+    // *************** DELETE PRODUCT BY ID TESTS ***************
     @Test
     void deleteProductByIdDeletesProduct() {
         String validProductId = "product2";
@@ -110,10 +110,9 @@ class MainAppTest {
 
         assertEquals(0, rowsAffected, "Expected 0 rows affected for invalid product ID.");
     }
-
     // ***************************
-    // ***** FEATURE 4 TESTS *****
 
+    // *************** ADD PRODUCT TESTS ***************
     @Test
     void addProductWasntAdded() throws DaoException {
         Product product = new Product("test1", "", "", 1, "");
@@ -169,10 +168,9 @@ class MainAppTest {
         }
         assertEquals(0, actual);
     }
+    // *********************************************************
 
-    // ***************************
-    // ***** FEATURE 5 TESTS *****
-
+    // // *************** UPDATE PRODUCT TESTS ***************
     @Test
     void updateProductWasntUpdatedAndIdNull() {
         try {
