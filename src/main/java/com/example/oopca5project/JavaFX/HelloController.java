@@ -18,7 +18,7 @@ public class HelloController {
         // Below is code logic to change the current view of the GUI when the user clicks the corresponding button
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/example/oopca5project/menu-view.fxml"));
-            Scene scene = new Scene(fxmlLoader.load(), 320, 300);
+            Scene scene = new Scene(fxmlLoader.load(), 720, 480);
 
             Stage stage = (Stage) welcomeText.getScene().getWindow();
 

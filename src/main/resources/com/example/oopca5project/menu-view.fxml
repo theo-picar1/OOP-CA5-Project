@@ -17,6 +17,7 @@
     <Label text="Main Menu" style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
     <Label text="Choose which table you would like to use!"/>
     <Label fx:id="menuText"/>
+    <Label fx:id="menuOptions"/>
 
     <Button text="Back" onAction="#onGoBackClick" />
     <Button text="Products" onAction="#onProductsClick" />

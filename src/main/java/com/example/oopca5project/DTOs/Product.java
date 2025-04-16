@@ -1,10 +1,12 @@
 package com.example.oopca5project.DTOs;
 
+import com.example.oopca5project.Methods;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 import java.util.stream.Collectors;
 
 public class Product {
@@ -149,6 +151,37 @@ public class Product {
 
         // return initialized Product list
         return list;
+    }
+
+    // Method that handles user input for
+    public static Product createProduct(String id) {
+        // initializing variables
+        Scanner sc = new Scanner(System.in);
+        String product_description, size, supplier_id;
+        double unit_price;
+
+        // getting product description
+        System.out.println("Enter product description: ");
+        // Clear the leftover line if there was any. Stops it from printing out product size prompt
+        if (sc.hasNextLine()) {
+            sc.nextLine();
+        }
+        product_description = sc.nextLine();
+
+        // getting product size
+        System.out.println("Enter product size: ");
+        size = sc.next();
+
+        // getting product unit price
+        System.out.println("Enter product unit price: ");
+        unit_price = Methods.validateDoubleRange(0);
+
+        // getting product supplier id
+        System.out.println("Enter product supplier id (e.g. 'supplier1', 'supplier2'): ");
+        supplier_id = sc.next();
+
+        // returns newly made product object
+        return new Product(id, product_description, size, unit_price, supplier_id);
     }
 
     @Override

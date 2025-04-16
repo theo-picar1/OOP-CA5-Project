@@ -9,7 +9,7 @@ import java.io.IOException;
 
 // ***** ADD COMMENTS. THIS IS SO WE ALL UNDERSTAND EACH OTHER'S CODE *****
 
-// This is where we actually run the GUI. This class sets up the stage and scene of the GUI
+// This is where we actually run the GUI. This class sets up the stage and scene of the GUI.
 public class HelloApplication extends Application {
     @Override
     public void start(Stage stage) throws IOException {

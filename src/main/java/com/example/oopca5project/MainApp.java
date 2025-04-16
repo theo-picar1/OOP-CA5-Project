@@ -188,7 +188,7 @@ public class MainApp {
                     System.out.println("Please enter the id of the product you wish to add:");
                     String id = sc.next();
 
-                    Product product = Methods.getProduct(id);
+                    Product product = Product.createProduct(id);
                     JSONObject jsonObject = Product.turnProductIntoJson(product);
                     out.println(jsonObject);
 
@@ -206,7 +206,7 @@ public class MainApp {
                     out.println(id);
 
                     // Get Product object, turn it into a JSON string, and send to server
-                    Product product = Methods.getProduct(id);
+                    Product product = Product.createProduct(id);
                     JSONObject jsonObject = Product.turnProductIntoJson(product);
                     out.println(jsonObject);
 
