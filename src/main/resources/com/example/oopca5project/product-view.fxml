@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<!--Practically the HTML file like in Full-Stack Development-->
+<?import javafx.scene.text.Text?>
+<VBox alignment="CENTER" spacing="15.0" xmlns="http://javafx.com/javafx/8"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.example.oopca5project.JavaFX.ModelsController"
+      stylesheets="@styles.css">
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <Label text="Product Page" style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
+    <Label fx:id="modelText" text="Welcome to the Product section! Choose one of the following" />
+
+    <Button text="Display all products" onAction="#displayAllProductsClick"/>
+
+    <!-- This is where all the products will be displayed when clicking the above button -->
+    <VBox prefHeight="200.0" prefWidth="100.0">
+        <ListView id="productListView"
+                  fx:id="productListView"
+                  minHeight="-Infinity"
+                  prefHeight="200.0"
+                  prefWidth="250.0">
+            <padding>
+                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0"/>
+            </padding>
+        </ListView>
+    </VBox>
+
+    <Button text="Back" onAction="#onGoBackClick"/>
+</VBox>
