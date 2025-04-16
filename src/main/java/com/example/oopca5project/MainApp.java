@@ -110,7 +110,7 @@ public class MainApp {
                     "Delete customer by ID -> NOT IMPLEMENTED",
                     "Display all customer's products",
                     "Find customer's product by product and customer ID -> NOT IMPLEMENTED",
-                    "Add customer product -> NOT IMPLEMENTED",
+                    "Add customer product",
                     "Update existing customer's product by product and customer ID",
                     "Delete customer's product by product and customer ID -> NOT IMPLEMENTED",
                 };
@@ -366,7 +366,27 @@ public class MainApp {
                 }
                 // ADD CUSTOMER PRODUCT
                 else if (request.equals("22")) {
-                    System.out.println("NOT IMPLEMENTED\n");
+                    System.out.println("Please enter the Product id of the customers products you wish to Add:");
+                    String productId = sc.next();
+                    out.println(productId);
+
+                    System.out.println("Please enter the corresponding customer id of the customers products you wish to update:");
+                    int customerId = sc.nextInt();
+                    sc.nextLine();
+                    out.println(customerId);
+
+                    // Get Customer Product object, turn it into a JSON string, and send to server
+                    CustomersProducts CustomersP = CustomersProducts.createCustomersProducts(customerId, productId);
+                    JSONObject jsonObject = CustomersProducts.turnCustomersProductsIntoJson(CustomersP);
+                    out.println(jsonObject);
+
+                    // Take in response from server
+                    String response = in.readLine();
+
+                    // Get message from JSONObject and print
+                    JSONObject jsonResponse = new JSONObject(response);
+                    String message = jsonResponse.getString("message");
+                    System.out.println("Message from server: " + message + "\n");
                 }
                 // UPDATE CUSTOMERS PRODUCTS BY PRODUCT ID AND CUSTOMER ID
                 else if(request.equals("23")) {
@@ -456,29 +476,29 @@ public class MainApp {
         fileInputStream.close();
     }
 
-    public static Supplier getSupplier() {
+    // public static Supplier getSupplier() {
 
-        // Asks for Product ID input
-        System.out.println("Enter product ID you want to search by");
+    //     // Asks for Product ID input
+    //     System.out.println("Enter product ID you want to search by");
 
-        // Takes in input
-        String ProductId = sc.next();
+    //     // Takes in input
+    //     String ProductId = sc.next();
 
-        // initializes variables
-        Supplier supplier = null;
+    //     // initializes variables
+    //     Supplier supplier = null;
 
-        try {
+    //     try {
 
-            // Gets Supplier object from db using product ID
-            supplier = ISupplierDao.getSupplierByProductId(ProductId);
+    //         // Gets Supplier object from db using product ID
+    //         supplier = ISupplierDao.getSupplierByProductId(ProductId);
 
-        } catch (Exception e) {
+    //     } catch (Exception e) {
 
-            // Prints error
-            e.printStackTrace();
-        }
+    //         // Prints error
+    //         e.printStackTrace();
+    //     }
 
-        // returns Supplier
-        return supplier;
-    }
+    //     // returns Supplier
+    //     return supplier;
+    // }
 }

@@ -11,4 +11,6 @@ public interface CustomersProductsDaoInterface {
     CustomersProducts getCustomersProductsByIds(int customerId, String productId) throws DaoException;
 
     int updateCustomersProducts(int customerID, String productId, CustomersProducts cp) throws DaoException;
+
+    int addCustomersProducts(CustomersProducts cp) throws DaoException;
 }
