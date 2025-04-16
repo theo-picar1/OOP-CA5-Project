@@ -557,7 +557,49 @@ class ClientHandler implements Runnable {
                 }
                 // ADD CUSTOMER PRODUCT
                 else if (request.equals("22")) {
-                    System.out.println("NOT IMPLEMENTED");
+                     // initialize variables
+                     CustomersProducts customerP;
+                     int customerPAdded;
+                     String productID = socketReader.readLine();
+                     String customerID = socketReader.readLine();
+                     String jsonString = socketReader.readLine();
+                     JSONObject jsonObject = new JSONObject(jsonString);
+ 
+                     // initialize messages
+                     JSONObject errorMessage = new JSONObject();
+                     errorMessage.put("status", "error");
+                     errorMessage.put("message", "An error occurred!!");
+ 
+                     JSONObject successMessage = new JSONObject();
+                     successMessage.put("status", "success");
+                     successMessage.put("message", jsonString);
+ 
+                     try {
+                         // check if CustomersProduct doesn't exist
+                         if (ICustomersProductsDao.getCustomersProductsByIds(Integer.parseInt(customerID), productID) == null) {
+ 
+                             // get and add CustomersProduct to database
+                             customerP = CustomersProducts.makeCustomersProductsFromJSON(jsonObject);
+                             customerPAdded = ICustomersProductsDao.addCustomersProducts(customerP);
+ 
+                             // check if CustomersProduct was added
+                             if (customerPAdded == 1) {
+ 
+                                 socketWriter.println(successMessage);
+ 
+                             } else {
+ 
+                                 socketWriter.println(errorMessage);
+                             }
+                         } else {
+ 
+                             socketWriter.println(errorMessage);
+                         }
+ 
+                     }
+                     catch (DaoException e) {
+                         e.printStackTrace();
+                     }
                 }
                 // UPDATE CUSTOMERS PRODUCTS
                 else if (request.equals("23")) {
@@ -579,7 +621,7 @@ class ClientHandler implements Runnable {
                     successMessage.put("message", jsonString);
 
                     try {
-                        // check if CustomersProduct doesn't exist
+                        // check if CustomersProduct does exist
                         if (ICustomersProductsDao.getCustomersProductsByIds(Integer.parseInt(customerID), productID) != null) {
 
                             // get and update CustomersProduct to database
