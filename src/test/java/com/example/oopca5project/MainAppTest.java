@@ -85,10 +85,11 @@ class MainAppTest {
     // *************** DELETE PRODUCT BY ID TESTS ***************
     @Test
     void deleteProductByIdDeletesProduct() {
-        String validProductId = "product2";
+        String validProductId = "product123";
 
         int rowsAffected = 0;
         try {
+            IProductDao.addProduct(new Product("Product123", "", "", 1, "Supplier2"));
             rowsAffected = IProductDao.deleteProductById(validProductId);
         } catch (DaoException e) {
             fail("DaoException occurred: " + e.getMessage());
@@ -144,7 +145,7 @@ class MainAppTest {
 
     @Test
     void addProductWasAdded() {
-        Product product = new Product("test3", "", "", 1, "supplier1");
+        Product product = new Product("test3", "", "", 1, "Supplier2");
 
         int actual = 0;
         try {
@@ -194,11 +195,12 @@ class MainAppTest {
     @Test
     void updateProductWasUpdated() {
         int actual = 0;
-        Product p2 = new Product("test1", "", "", 1, "supplier1");
+        Product originalProduct = new Product("test1", "", "", 1, "Supplier2");
+        Product updatedProduct = new Product("test1", "desc", "size", 1, "Supplier2");
         try {
-            Product p1 = IProductDao.getProductById("product3");
-            actual = IProductDao.updateProduct("product1", p2);
-            IProductDao.updateProduct("product1", p1);
+            IProductDao.addProduct(originalProduct);
+            actual = IProductDao.updateProduct("test1", updatedProduct);
+            IProductDao.deleteProductById("test1");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -334,7 +336,7 @@ class MainAppTest {
         }
         finally {
             try {
-                ISupplierDao.deleteSupplierById("JunitTest");
+                ISupplierDao.deleteSupplierById("JunitSupplier");
             }
             catch (DaoException e) {
                 e.printStackTrace();
@@ -447,4 +449,35 @@ class MainAppTest {
         assertNotNull(customers);
         assertFalse(customers.isEmpty(), "Expected customers, but the list is empty");
     }
+
+    // *************** DELETE SUPPLIER BY ID TESTS ***************
+    @Test
+    void deleteSupplierByIdDeletesSupplier() {
+        String validProductId = "Supplier123";
+
+        int rowsAffected = 0;
+        try {
+            ISupplierDao.addSupplier(new Supplier(validProductId, "Supplier123", "1", "1"));
+            rowsAffected = ISupplierDao.deleteSupplierById(validProductId);
+        } catch (DaoException e) {
+            fail("DaoException occurred: " + e.getMessage());
+        }
+
+        assertEquals(1, rowsAffected, "Expected one row to be affected when deleting supplier by ID.");
+    }
+
+    @Test
+    void deleteSupplierByIdReturnsZeroForInvalidId() {
+        String invalidProductId = "Supplier0";
+
+        int rowsAffected = 0;
+        try {
+            rowsAffected = IProductDao.deleteProductById(invalidProductId);
+        } catch (DaoException e) {
+            fail("DaoException occurred: " + e.getMessage());
+        }
+
+        assertEquals(0, rowsAffected, "Expected 0 rows affected for invalid supplier ID.");
+    }
+    // ********************************************************
 }
