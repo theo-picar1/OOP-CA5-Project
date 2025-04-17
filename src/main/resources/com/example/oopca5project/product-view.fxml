@@ -18,11 +18,13 @@
             <Label text="Products Page" style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
             <Label fx:id="modelText" text="Welcome to the Product section! Choose one of the following" />
 
+            <!-- All the table options are in here -->
             <HBox spacing="10" alignment="CENTER_LEFT">
-                <Button text="Find product by ID" onAction="#findProductByIdClick"/>
+                <Button text="Find product by ID" onAction="#showFindProductByIdFields"/>
                 <Button text="Add new product" onAction="#addProductClick"/>
                 <Button text="Edit product by ID" onAction="#editProductClick"/>
                 <Button text="Delete product by ID" onAction="#deleteProductClick"/>
+                <Button text="Display all products" />
                 <Button text="Back" onAction="#onGoBackClick"/>
             </HBox>
 
@@ -56,7 +58,12 @@
                 </HBox>
             </GridPane>
 
+            <HBox>
+                <Button fx:id="submitButton" text="Submit"/>
+                <Button text="Reset" onAction="#displayAllProductsClick"/>
+            </HBox>
 
+            <!-- All the product data will go into this table -->
             <TableView fx:id="productTableView" prefWidth="800">
                 <columns>
                     <TableColumn fx:id="idColumn" text="product_id" prefWidth="60"/>

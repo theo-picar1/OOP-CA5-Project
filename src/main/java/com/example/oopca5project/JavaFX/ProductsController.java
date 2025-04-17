@@ -31,13 +31,19 @@ public class ProductsController {
     @FXML private TableColumn<Product, Double> priceColumn;
     @FXML private TableColumn<Product, String> supplierIdColumn;
 
-    // These are the input fields. This is for disappearing/appearing purposes depending on the button chosen
+    // These are the input field containers (HBox). This is for disappearing/appearing purposes depending on the button chosen
     @FXML private List<HBox> inputFields;
     @FXML private HBox idInputField;
     @FXML private HBox descriptionInputField;
     @FXML private HBox sizeInputField;
     @FXML private HBox priceInputField;
     @FXML private HBox supplierIdInputField;
+
+    @FXML private Button submitButton;
+
+    // These are the actually input fields. We will get the data from them using getText();
+    @FXML
+    private TextField idField;
 
     public ProductsController() {
         this.productModel = new ProductModel();
@@ -71,6 +77,12 @@ public class ProductsController {
         productTableView.setItems(productModel.getObservableProductList());
     }
 
+    // Method that displays all products again. Acts as a reset button if a user is searching or filtering
+    @FXML
+    protected void displayAllProductsClick() {
+        productModel.reloadProductListModel();
+    }
+
     // Method that will return the user to the main menu (where they can choose table)
     @FXML
     protected void onGoBackClick() {
@@ -90,8 +102,9 @@ public class ProductsController {
     }
     
     @FXML 
-    protected void findProductByIdClick() {
+    protected void showFindProductByIdFields() {
         inputAreaText.setText("Please enter the product_id you wish to find below:");
+        submitButton.setOnAction(e -> sendFindProductByIdClick());
 
         // Make all the fields and their labels invisible, not including the ID field
         for(HBox field : inputFields) {
@@ -103,6 +116,22 @@ public class ProductsController {
                 field.setVisible(false);
                 field.setManaged(false);
             }
+        }
+    }
+
+    // Method tha will send the text (if any) of the id input field and call the findProductById method
+    @FXML
+    protected void findProductByIdClick() {
+        String id = idField.getText();
+
+        // Make sure that the user is entering something. Otherwise, tell them.
+        if( id==null || id.isEmpty() ) {
+            return;
+        }
+        // Otherwise fill the table with just the single product
+        else {
+            productModel.getSingleProductById(id);
+            productTableView.setItems(productModel.getObservableProductList());
         }
     }
     
