@@ -7,7 +7,10 @@ module com.example.oopca5project {
     requires org.json;
 
     opens com.example.oopca5project to javafx.fxml;
+    opens com.example.oopca5project.JavaFX to javafx.fxml;
+    opens com.example.oopca5project.DTOs to javafx.base;
+
     exports com.example.oopca5project;
     exports com.example.oopca5project.JavaFX;
-    opens com.example.oopca5project.JavaFX to javafx.fxml;
+    exports com.example.oopca5project.DTOs;
 }

@@ -20,7 +20,7 @@ public class MenuController {
         // Below is code logic to change the current view of the GUI when the user clicks the corresponding button
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/example/oopca5project/product-view.fxml"));
-            Scene scene = new Scene(fxmlLoader.load(), 320, 300);
+            Scene scene = new Scene(fxmlLoader.load(), 1340, 620);
 
             Stage stage = (Stage) menuText.getScene().getWindow();
 
