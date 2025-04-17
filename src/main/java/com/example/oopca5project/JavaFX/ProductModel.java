@@ -37,6 +37,22 @@ public class ProductModel {
         }
     }
 
+    // Below method is responsible for getting a product that matches the user's passed in product_id
+    public void getSingleProductById(String productId) {
+        try {
+            Product product = IProductDao.getProductById(productId);
+
+            // If a matching product is found, clear the observable list and add only the matching product
+            if(product != null) {
+                this.observableProductList.clear();
+                this.observableProductList.add(product);
+            }
+        }
+        catch(DaoException e) {
+            e.printStackTrace();
+        }
+    }
+
     // Getter for list of products
     public ObservableList<Product> getObservableProductList() {
         return this.observableProductList;
