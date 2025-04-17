@@ -6,14 +6,18 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 public class ProductsController {
     private ProductModel productModel;
 
     @FXML private Label modelText;
+    @FXML private Label inputAreaText;
 
 
     /// References: [...](https://openjfx.io/javadoc/22/javafx.controls/javafx/scene/control/TableView.html)
@@ -27,6 +31,14 @@ public class ProductsController {
     @FXML private TableColumn<Product, Double> priceColumn;
     @FXML private TableColumn<Product, String> supplierIdColumn;
 
+    // These are the input fields. This is for disappearing/appearing purposes depending on the button chosen
+    @FXML private List<HBox> inputFields;
+    @FXML private HBox idInputField;
+    @FXML private HBox descriptionInputField;
+    @FXML private HBox sizeInputField;
+    @FXML private HBox priceInputField;
+    @FXML private HBox supplierIdInputField;
+
     public ProductsController() {
         this.productModel = new ProductModel();
     }
@@ -36,6 +48,14 @@ public class ProductsController {
         modelText.setText("All products have been successfully loaded!");
 
         productModel.reloadProductListModel();
+
+        // I add all the fields to the inputFields list to be able to loop through all of them at once
+        inputFields = Arrays.asList(idInputField, descriptionInputField, sizeInputField, priceInputField, supplierIdInputField);
+        // Then loop through the field so that I can set everything to initially be invisible
+        for(HBox row : inputFields) {
+            row.setVisible(false);
+            row.setManaged(false); // Same as display: none. With just setVisible it will be like visibility = "hidden" in CSS
+        }
 
         // Logic to put field data into their corresponding columns
         // For some reason, this needs to match the getter method and not the actual DTO fields. i.e, getId() would = "id", getSupplierId = "supplierId"
@@ -51,6 +71,7 @@ public class ProductsController {
         productTableView.setItems(productModel.getObservableProductList());
     }
 
+    // Method that will return the user to the main menu (where they can choose table)
     @FXML
     protected void onGoBackClick() {
         // Below is code logic to change the current view of the GUI when the user clicks the corresponding button
@@ -65,6 +86,63 @@ public class ProductsController {
         }
         catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+    
+    @FXML 
+    protected void findProductByIdClick() {
+        inputAreaText.setText("Please enter the product_id you wish to find below:");
+
+        // Make all the fields and their labels invisible, not including the ID field
+        for(HBox field : inputFields) {
+            if(field == idInputField) {
+                field.setVisible(true);
+                field.setManaged(true);
+            }
+            else {
+                field.setVisible(false);
+                field.setManaged(false);
+            }
+        }
+    }
+    
+    @FXML 
+    protected void addProductClick() {
+        inputAreaText.setText("Please enter the details of your new product below:");
+
+        setFieldsVisibilityTrue();
+    }
+
+    @FXML
+    protected void editProductClick() {
+        inputAreaText.setText("Please enter the details of your edited product below:");
+
+        setFieldsVisibilityTrue();
+    }
+
+    @FXML
+    protected void deleteProductClick() {
+        inputAreaText.setText("Please enter the product_id you wish to delete below:");
+
+        // Make all the fields and their labels invisible, not including the ID field
+        for(HBox field : inputFields) {
+            if(field == idInputField) {
+                field.setVisible(true);
+                field.setManaged(true);
+            }
+            else {
+                field.setVisible(false);
+                field.setManaged(false);
+            }
+        }
+    }
+    
+    // Method that makes all the fields and their labels visible
+    @FXML
+    protected void setFieldsVisibilityTrue() {
+        for(HBox field : inputFields) {
+            field.setVisible(true);
+            field.setManaged(true);
         }
     }
 }
