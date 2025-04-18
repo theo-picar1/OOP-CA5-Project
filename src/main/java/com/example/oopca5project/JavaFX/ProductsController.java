@@ -41,9 +41,12 @@ public class ProductsController {
 
     @FXML private Button submitButton;
 
-    // These are the actually input fields. We will get the data from them using getText();
-    @FXML
-    private TextField idField;
+    // These are the actual input fields. We will get the data from them using getText();
+    @FXML private TextField idField;
+    @FXML private TextField descriptionField;
+    @FXML private TextField sizeField;
+    @FXML private TextField priceField;
+    @FXML private TextField supplierIdField;
 
     public ProductsController() {
         this.productModel = new ProductModel();
@@ -134,12 +137,36 @@ public class ProductsController {
             productTableView.setItems(productModel.getObservableProductList());
         }
     }
-    
+
+    // Method to show the corresponding fields for adding a new product
     @FXML 
-    protected void addProductClick() {
+    protected void showAddProductFields() {
         inputAreaText.setText("Please enter the details of your new product below:");
+        submitButton.setOnAction(e -> addNewProductClick());
 
         setFieldsVisibilityTrue();
+    }
+
+    // Method that will send the details from the TextFields and add the new product with those details
+    @FXML
+    protected void addNewProductClick() {
+        String id = idField.getText();
+        String description = descriptionField.getText();
+        String size = sizeField.getText();
+        String price = priceField.getText();
+        String supplierId = supplierIdField.getText();
+
+        double convertedPrice = Double.parseDouble(price);
+        Product product = new Product(id, description, size, convertedPrice, supplierId);
+
+        // Make sure that the user is at the bare minimum entering a supplier id and a product id to their new product
+        if( (id==null || id.isEmpty()) && (supplierId==null || supplierId.isEmpty()) ) {
+            return;
+        }
+        else {
+            productModel.addNewProduct(product);
+            productTableView.setItems(productModel.getObservableProductList());
+        }
     }
 
     @FXML

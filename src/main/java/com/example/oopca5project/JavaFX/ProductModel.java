@@ -53,6 +53,21 @@ public class ProductModel {
         }
     }
 
+    // Below method will call the DAO method to add a new product to the database and show the new product list in JavaFX
+    public void addNewProduct(Product product) {
+        try {
+            int rowsAffected = IProductDao.addProduct(product);
+
+            // If the new product was added, refresh the product database
+            if(rowsAffected == 1) {
+                reloadProductListModel();
+            }
+        }
+        catch(DaoException e) {
+            e.printStackTrace();
+        }
+    }
+
     // Getter for list of products
     public ObservableList<Product> getObservableProductList() {
         return this.observableProductList;

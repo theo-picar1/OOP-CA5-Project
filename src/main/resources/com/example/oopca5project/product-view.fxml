@@ -21,7 +21,7 @@
             <!-- All the table options are in here -->
             <HBox spacing="10" alignment="CENTER_LEFT">
                 <Button text="Find product by ID" onAction="#showFindProductByIdFields"/>
-                <Button text="Add new product" onAction="#addProductClick"/>
+                <Button text="Add new product" onAction="#showAddProductFields"/>
                 <Button text="Edit product by ID" onAction="#editProductClick"/>
                 <Button text="Delete product by ID" onAction="#deleteProductClick"/>
                 <Button text="Display all products" />
