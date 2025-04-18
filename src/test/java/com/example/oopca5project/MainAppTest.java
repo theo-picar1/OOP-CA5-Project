@@ -308,8 +308,7 @@ class MainAppTest {
             int actual = ISupplierDao.addSupplier(supplier);
 
             assertEquals(expected, actual);
-        }
-        catch(DaoException e) {
+        } catch (DaoException e) {
             e.printStackTrace();
         }
         // Delete the newly created supplier made by the test
@@ -330,15 +329,12 @@ class MainAppTest {
             int expected = 0;
             int actual = ISupplierDao.addSupplier(supplier); // Try adding the supplier again. Shpuld not be added to the table
             assertEquals(expected, actual);
-        }
-        catch (DaoException e) {
+        } catch (DaoException e) {
             System.out.println("addSupplierTest2() successful!");
-        }
-        finally {
+        } finally {
             try {
                 ISupplierDao.deleteSupplierById("JunitSupplier");
-            }
-            catch (DaoException e) {
+            } catch (DaoException e) {
                 e.printStackTrace();
             }
         }
@@ -354,11 +350,9 @@ class MainAppTest {
             int actual = ICustomerDao.addCustomer(customer);
 
             assertEquals(expected, actual);
-        }
-        catch(DaoException e) {
+        } catch (DaoException e) {
             e.printStackTrace();
-        }
-        finally {
+        } finally {
             try {
                 ICustomerDao.deleteCustomerById(100000);
             } catch (DaoException e) {
@@ -375,15 +369,12 @@ class MainAppTest {
             int expected = 0;
             int actual = ICustomerDao.addCustomer(customer); // Try adding the customer again. Should not be added to the table
             assertEquals(expected, actual);
-        }
-        catch (DaoException e) {
+        } catch (DaoException e) {
             System.out.println("addCustomerTest2() successful!");
-        }
-        finally {
+        } finally {
             try {
                 ICustomerDao.deleteCustomerById(100000);
-            }
-            catch (DaoException e) {
+            } catch (DaoException e) {
                 e.printStackTrace();
             }
         }
@@ -450,6 +441,8 @@ class MainAppTest {
         assertFalse(customers.isEmpty(), "Expected customers, but the list is empty");
     }
 
+    // **********************************************************
+
     // *************** DELETE SUPPLIER BY ID TESTS ***************
     @Test
     void deleteSupplierByIdDeletesSupplier() {
@@ -479,5 +472,37 @@ class MainAppTest {
 
         assertEquals(0, rowsAffected, "Expected 0 rows affected for invalid supplier ID.");
     }
-    // ********************************************************
+
+    // **********************************************************
+
+    // *************** DELETE CUSTOMER BY ID TESTS ***************
+
+    @Test
+    void deleteCustomerByIdDeletesCustomer() {
+        int validCustomerId = 10001;
+
+        int rowsAffected = 0;
+        try {
+            ICustomerDao.addCustomer(new Customer(validCustomerId, "CustomerName", "email@example.com", "Some Address"));
+            rowsAffected = ICustomerDao.deleteCustomerById(validCustomerId);
+        } catch (DaoException e) {
+            fail("DaoException occurred: " + e.getMessage());
+        }
+
+        assertEquals(1, rowsAffected, "Expected one row to be affected when deleting customer by ID.");
+    }
+
+    @Test
+    void deleteCustomerByIdReturnsZeroForInvalidId() {
+        int invalidCustomerId = 0;
+
+        int rowsAffected = 0;
+        try {
+            rowsAffected = ICustomerDao.deleteCustomerById(invalidCustomerId);
+        } catch (DaoException e) {
+            fail("DaoException occurred: " + e.getMessage());
+        }
+
+        assertEquals(0, rowsAffected, "Expected 0 rows affected for invalid customer ID.");
+    }
 }
