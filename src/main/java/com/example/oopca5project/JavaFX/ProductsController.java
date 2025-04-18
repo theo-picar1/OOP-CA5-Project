@@ -104,7 +104,7 @@ public class ProductsController {
     @FXML 
     protected void showFindProductByIdFields() {
         inputAreaText.setText("Please enter the product_id you wish to find below:");
-        submitButton.setOnAction(e -> sendFindProductByIdClick());
+        submitButton.setOnAction(e -> findProductByIdClick());
 
         // Make all the fields and their labels invisible, not including the ID field
         for(HBox field : inputFields) {
