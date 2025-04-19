@@ -8,7 +8,7 @@
 <!--Practically the HTML file like in Full-Stack Development-->
 <VBox alignment="CENTER" spacing="15.0" xmlns="http://javafx.com/javafx/8"
       xmlns:fx="http://javafx.com/fxml"
-      fx:controller="com.example.oopca5project.JavaFX.MenuController"
+      fx:controller="com.example.oopca5project.JavaFX.Controllers.MenuController"
       stylesheets="@styles.css">
     <padding>
         <Insets top="20" right="20" bottom="20" left="20"/>
