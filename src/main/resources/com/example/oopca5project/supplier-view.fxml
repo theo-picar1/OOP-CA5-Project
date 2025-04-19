@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/8"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.example.oopca5project.JavaFX.SuppliersMC.SuppliersController"
+            stylesheets="@styles.css">
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <center>
+        <VBox spacing="20" alignment="CENTER_LEFT">
+            <Label text="Suppliers Page" style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
+            <Label fx:id="modelText" text="Welcome to the Supplier section! Choose one of the following" />
+
+            <!-- All the table options are in here -->
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <Button text="Find supplier by ID" onAction="#showFindSupplierByIdFields"/>
+                <Button text="Add new supplier" onAction="#showAddSupplierFields"/>
+                <Button text="Edit supplier by ID" onAction="#editSupplierClick"/>
+                <Button text="Delete supplier by ID" onAction="#deleteSupplierClick"/>
+                <Button text="Display all suppliers" />
+                <Button text="Back" onAction="#onGoBackClick"/>
+            </HBox>
+
+            <!-- Reference: https://docs.oracle.com/javase/8/javafx/api/javafx/scene/layout/GridPane.html -->
+            <!-- Works the same as grid-template-columns in Web Development -->
+            <Label fx:id="inputAreaText" text="Corresponding inputs will go here. Please choose an option above!"/>
+            <GridPane hgap="10" vgap="10">
+                <HBox fx:id="idInputField" spacing="10" alignment="CENTER_LEFT" GridPane.rowIndex="0" GridPane.columnIndex="0">
+                    <Label text="ID:" />
+                    <TextField fx:id="idField"/>
+                </HBox>
+
+                <HBox fx:id="nameInputField" spacing="10" alignment="CENTER_LEFT" GridPane.rowIndex="1" GridPane.columnIndex="0">
+                    <Label text="Name:" />
+                    <TextField fx:id="nameField"/>
+                </HBox>
+
+                <HBox fx:id="phoneNoInputField" spacing="10" alignment="CENTER_LEFT" GridPane.rowIndex="2" GridPane.columnIndex="0">
+                    <Label text="Phone No:" />
+                    <TextField fx:id="phoneNoField"/>
+                </HBox>
+
+                <HBox fx:id="emailInputField" spacing="10" alignment="CENTER_LEFT" GridPane.rowIndex="3" GridPane.columnIndex="0">
+                    <Label text="Email:" />
+                    <TextField fx:id="emailField"/>
+                </HBox>
+
+                
+            </GridPane>
+
+            <HBox>
+                <Button fx:id="submitButton" text="Submit"/>
+                <Button text="Reset" onAction="#displayAllSuppliersClick"/>
+            </HBox>
+
+            <!-- All the supplier data will go into this table -->
+            <TableView fx:id="supplierTableView" prefWidth="800">
+                <columns>
+                    <TableColumn fx:id="idColumn" text="supplier_id" prefWidth="60"/>
+                    <TableColumn fx:id="nameColumn" text="supplier_description" prefWidth="150"/>
+                    <TableColumn fx:id="phoneNoColumn" text="size" prefWidth="80"/>
+                    <TableColumn fx:id="emailColumn" text="unit_price" prefWidth="80"/>
+                </columns>
+            </TableView>
+
+        </VBox>
+    </center>
+</BorderPane>
