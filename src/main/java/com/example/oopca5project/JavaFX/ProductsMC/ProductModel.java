@@ -68,6 +68,21 @@ public class ProductModel {
         }
     }
 
+    // Below method takes in a product id and deletes the corresponding product with that id using a DAO method
+    public void deleteProductById(String id) {
+        try {
+            int rowsAffected = IProductDao.deleteProductById(id);
+
+            // If the product was deleted, refresh the product database
+            if(rowsAffected == 1) {
+                reloadProductListModel();
+            }
+        }
+        catch (DaoException e) {
+            e.printStackTrace();
+        }
+    }
+
     // Getter for list of products
     public ObservableList<Product> getObservableProductList() {
         return this.observableProductList;

@@ -182,8 +182,9 @@ public class ProductsController {
     }
 
     @FXML
-    protected void deleteProductClick() {
+    protected void showdeleteProductFields() {
         inputAreaText.setText("Please enter the product_id you wish to delete below:");
+        submitButton.setOnAction(e -> deleteProductClick());
 
         // Make all the fields and their labels invisible, not including the ID field
         for(HBox field : inputFields) {
@@ -195,6 +196,21 @@ public class ProductsController {
                 field.setVisible(false);
                 field.setManaged(false);
             }
+        }
+    }
+
+    // Below method sends a product id to be deleted by another method within ProductsModel
+    @FXML
+    protected void deleteProductClick() {
+        String id = idField.getText();
+
+        // Make sure that the user is at the bare minimum entering a supplier id and a product id to their new product
+        if(id==null || id.isEmpty()) {
+            return;
+        }
+        else {
+            productModel.deleteProductById(id);
+            productTableView.setItems(productModel.getObservableProductList());
         }
     }
     

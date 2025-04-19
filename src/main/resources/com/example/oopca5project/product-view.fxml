@@ -23,7 +23,7 @@
                 <Button text="Find product by ID" onAction="#showFindProductByIdFields"/>
                 <Button text="Add new product" onAction="#showAddProductFields"/>
                 <Button text="Edit product by ID" onAction="#editProductClick"/>
-                <Button text="Delete product by ID" onAction="#deleteProductClick"/>
+                <Button text="Delete product by ID" onAction="#showdeleteProductFields"/>
                 <Button text="Display all products" />
                 <Button text="Back" onAction="#onGoBackClick"/>
             </HBox>
