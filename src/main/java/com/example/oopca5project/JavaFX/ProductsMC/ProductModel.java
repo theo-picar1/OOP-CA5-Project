@@ -1,4 +1,4 @@
-package com.example.oopca5project.JavaFX;
+package com.example.oopca5project.JavaFX.ProductsMC;
 
 import com.example.oopca5project.DAOs.MySqlProductDao;
 import com.example.oopca5project.DAOs.ProductDaoInterface;

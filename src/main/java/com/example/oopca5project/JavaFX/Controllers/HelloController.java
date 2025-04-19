@@ -1,12 +1,12 @@
-package com.example.oopca5project.JavaFX;
+package com.example.oopca5project.JavaFX.Controllers;
+
+import java.io.IOException;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
-
-import java.io.IOException;
 
 // This class handles interaction logic like button clicks. i.e what will the button do when clicked
 public class HelloController {
