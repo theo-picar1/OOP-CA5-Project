@@ -36,11 +36,11 @@ create table Customers (
 );
 
 create table CustomersProducts (
-    customer_id int not null auto_increment,
+    customer_id int not null,
     product_id varchar(20) not null,
     quantity int not null,
-    foreign key (customer_id) references Customers(customer_id),
-    foreign key (product_id) references Products(product_id)
+    foreign key (customer_id) references Customers(customer_id) ON DELETE CASCADE,
+    foreign key (product_id) references Products(product_id) ON DELETE CASCADE
 );
 
 insert into Suppliers(supplier_id, supplier_name, supplier_phone_no, supplier_email) values
