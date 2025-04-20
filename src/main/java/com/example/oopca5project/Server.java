@@ -553,7 +553,20 @@ class ClientHandler implements Runnable {
                 }
                 // FIND CUSTOMER'S PRODUCT BY PRODUCT ID AND CUSTOMER ID
                 else if(request.equals("21")) {
-                    System.out.println("NOT IMPLEMENTED");
+                    CustomersProducts cp;
+
+                    try {
+                        cp = ICustomersProductsDao.getCustomersProductsByIds(Integer.parseInt(socketReader.readLine()), socketReader.readLine());
+
+                        // Turn product into single json object and pass it back as a string to the client
+                        JSONObject message = CustomersProducts.turnCustomersProductsIntoJson(cp);
+                        socketWriter.println(message.toString());
+
+                        socketWriter.println("Server message: ID has been passed to server passing back product");
+                    }
+                    catch (DaoException e) {
+                        e.printStackTrace();
+                    }
                 }
                 // ADD CUSTOMER PRODUCT
                 else if (request.equals("22")) {
@@ -649,7 +662,48 @@ class ClientHandler implements Runnable {
                 }
                 // DELETE CUSTOMER'S PRODUCT BY CUSTOMER AND PRODUCT ID
                 else if(request.equals("24")) {
-                    System.out.println("NOT IMPLEMENTED");
+                    String productid = socketReader.readLine();
+                    String customerid = socketReader.readLine();
+                    int rowsAffected;
+
+
+                    // initialize messages
+                    JSONObject errorMessage = new JSONObject();
+                    errorMessage.put("status", "error");
+
+                    JSONObject successMessage = new JSONObject();
+                    successMessage.put("status", "success");
+                    successMessage.put("message", "Supplier has successfully been deleted");
+
+                    try {
+                        if(ICustomersProductsDao.getCustomersProductsByIds(Integer.parseInt(customerid),productid) != null) {
+                            rowsAffected = ICustomersProductsDao.deleteCustomersProductsByIds(Integer.parseInt(customerid),productid);
+
+                            if(rowsAffected > 0) {
+                                socketWriter.println(successMessage);
+
+                                System.out.println("SUPPLIER HAS SUCCESSFULLY BEEN DELETED");
+                            }
+                            else {
+                                errorMessage.put("message", "Supplier was not deleted!");
+                                socketWriter.println(errorMessage);
+                                
+                                System.err.println("SUPPLIER WAS NOT DELETED! CHECK CODE FOR ERRORS!");
+                            }
+                        }
+                        else {
+                            errorMessage.put("message", "Supplier with given id does not exist in the table!");
+                            socketWriter.println(errorMessage);
+
+                            System.out.println("NO SUPPLIER FOUND WITH GIVEN ID");
+                        }
+                    }
+                    catch(DaoException e) {
+                        
+                        System.out.println(e);
+                        errorMessage.put("message", "inside catch!");
+                        socketWriter.println(errorMessage);
+                    }
                 }
                 // INVALID COMMAND
                 else {

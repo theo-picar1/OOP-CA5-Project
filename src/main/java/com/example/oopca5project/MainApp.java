@@ -362,7 +362,25 @@ public class MainApp {
                 }
                 // FIND CUSTOMER'S PRODUCT BY PRODUCT ID AND CUSTOMER ID
                 else if(request.equals("21")) {
-                    System.out.println("NOT IMPLEMENTED\n");
+                    System.out.println("Please enter the id of the customer you wish to view:");
+                    String id = sc.next();
+
+                    out.println(id);
+
+                    System.out.println("Please enter the id of the product you wish to view:");
+                    id = sc.next();
+
+                    out.println(id);
+
+                    String response = in.readLine();
+
+                    if (response != null) {
+                        // Makes JSON string passed from Server into a CustomersProducts object
+                        CustomersProducts cp = CustomersProducts.makeCustomersProductsFromJSON(new JSONObject(response));
+                        System.out.println("Client message: Response from server: \"" + cp + "\"");
+                    } else {
+                        System.out.println("CustomersProducts not found");
+                    }
                 }
                 // ADD CUSTOMER PRODUCT
                 else if (request.equals("22")) {
@@ -411,7 +429,23 @@ public class MainApp {
                 }
                 // DELETE CUSTOMER'S PRODUCT BY CUSTOMER AND PRODUCT ID 
                 else if(request.equals("24")) {
-                    System.out.println("NOT IMPLEMENTED\n");
+                    System.out.println("Please enter the product id you wish to delete:");
+                    String id = sc.next();
+
+                    out.println(id);
+
+                    System.out.println("Please enter the customer id you wish to delete:");
+                    id = sc.next();
+
+                    out.println(id);
+
+                    String response = in.readLine();
+
+                    System.out.println(response);
+
+                    JSONObject jsonResponse = new JSONObject(response);
+                    String message = jsonResponse.getString("message");
+                    System.out.println("Message from server: " + message +"\n");
                 }
                 // UNKNOWN COMMAND
                 else {
