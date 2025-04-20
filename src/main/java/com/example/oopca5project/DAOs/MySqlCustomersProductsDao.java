@@ -197,4 +197,38 @@ public class MySqlCustomersProductsDao extends MySqlDao implements CustomersProd
         }
         return rowsAffected;
     }
+
+    @Override
+    public int deleteCustomersProductsByIds(int customerId, String productId) throws DaoException {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        int rowsAffected;
+
+        try {
+            connection = this.getConnection();
+
+            String deleteQuery = "DELETE FROM CustomersProducts WHERE product_id = ? AND customer_id = ?";
+            preparedStatement = connection.prepareStatement(deleteQuery);
+
+            preparedStatement.setString(1, productId);
+            preparedStatement.setInt(2, customerId);
+
+            rowsAffected = preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new DaoException("deleteCustomersProductsByIds() error! " + e.getMessage());
+        } finally {
+            try {
+                if (preparedStatement != null) {
+                    preparedStatement.close();
+                }
+                if (connection != null) {
+                    freeConnection(connection);
+                }
+            } catch (SQLException e) {
+                throw new DaoException("deleteCustomersProductsByIds() error!" + e.getMessage());
+            }
+        }
+
+        return rowsAffected;
+    }
 }
