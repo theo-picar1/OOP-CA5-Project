@@ -23,7 +23,7 @@ class MainAppTest {
 
     // *************** GET ALL PRODUCTS TESTS ***************
     @Test
-// Tests if getAllProducts() returns an empty list (null check)
+    // Tests if getAllProducts() returns an empty list (null check)
     void getAllProductsReturnsNull() {
         List<Product> products = null;
         try {
@@ -494,15 +494,56 @@ class MainAppTest {
 
     @Test
     void deleteCustomerByIdReturnsZeroForInvalidId() {
-        int invalidCustomerId = 0;
-
-        int rowsAffected = 0;
+        int invalidCustomerId = -1;
+        int actual = 0;
+        
         try {
-            rowsAffected = ICustomerDao.deleteCustomerById(invalidCustomerId);
-        } catch (DaoException e) {
+            actual = ICustomerDao.deleteCustomerById(invalidCustomerId);
+        }
+        catch (DaoException e) {
             fail("DaoException occurred: " + e.getMessage());
         }
 
-        assertEquals(0, rowsAffected, "Expected 0 rows affected for invalid customer ID.");
+        assertEquals(0, actual);
     }
+
+    // **********************************************************
+
+    // ******************** GET SUPPLIER BY ID TESTS ********************
+
+    // Tests to see if a supplier is returned with the matching id
+    @Test
+    void getSupplierByIdTest1() {
+        String expected = "supplier1"; // Use a valid supplier ID from the database
+        String actual = "";
+        Supplier supplier;
+
+        try {
+            supplier = ISupplierDao.getSupplierById(expected);
+            actual = supplier.getId();
+        }
+        catch (DaoException e) {
+            fail("DaoException occurred: " + e.getMessage());
+        }
+
+        assertEquals("supplier1", actual);
+    }
+
+    // Tests to see if supplier is null when sending an id that does not exist
+    @Test
+    void getSupplierByIdTest2() {
+        String invalidId = "invalidId";
+        Supplier supplier = null;
+
+        try {
+            supplier = ISupplierDao.getSupplierById(invalidId);
+        }
+        catch (DaoException e) {
+            fail("DaoException occurred: " + e.getMessage());
+        }
+
+        assertNull(supplier);
+    }
+
+    // **********************************************************
 }
