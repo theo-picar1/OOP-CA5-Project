@@ -1,9 +1,7 @@
 package com.example.oopca5project;
 
 import com.example.oopca5project.DAOs.*;
-import com.example.oopca5project.DTOs.Customer;
-import com.example.oopca5project.DTOs.Product;
-import com.example.oopca5project.DTOs.Supplier;
+import com.example.oopca5project.DTOs.*;
 import com.example.oopca5project.Exceptions.DaoException;
 import org.json.JSONArray;
 import org.junit.jupiter.api.Test;
@@ -505,4 +503,75 @@ class MainAppTest {
 
         assertEquals(0, rowsAffected, "Expected 0 rows affected for invalid customer ID.");
     }
+
+    // **********************************************************
+
+    // *************** DELETE CUSTOMERSPRODUCTS BY ID TESTS ***************
+
+    @Test
+    void deleteCustomersProductsByIdsDeletesCustomer() {
+        int validCustomerId = 101;
+        String validProductId = "Product123";
+
+        int rowsAffected = 0;
+        try {
+            ICustomersProductsDao.addCustomersProducts(new CustomersProducts(validCustomerId, validProductId,0));
+            rowsAffected = ICustomerDao.deleteCustomerById(validCustomerId);
+        } catch (DaoException e) {
+            fail("DaoException occurred: " + e.getMessage());
+        }
+
+        assertEquals(1, rowsAffected, "Expected one row to be affected when deleting customers Products by IDs.");
+    }
+
+    @Test
+    void deleteCustomerProductsByIdsReturnsZeroForInvalidIds() {
+        int invalidCustomerId = 0;
+        String invalidProductId = "Product0";
+
+        int rowsAffected = 0;
+        try {
+            rowsAffected = ICustomersProductsDao.deleteCustomersProductsByIds(invalidCustomerId,invalidProductId);
+        } catch (DaoException e) {
+            fail("DaoException occurred: " + e.getMessage());
+        }
+
+        assertEquals(0, rowsAffected, "Expected 0 rows affected for invalid customer products IDs.");
+    }
+
+    // **********************************************************
+
+    // *************** GET CUSTOMER BY ID TESTS  *****************
+
+    @Test
+    void getCustomerByIdReturnsProduct() {
+        int validCustomerId = 10001; // Use a valid product ID from the database
+
+        Customer customer = null;
+        try {
+            customer = ICustomerDao.getCustomerById(validCustomerId);
+        } catch (DaoException e) {
+            fail("DaoException occurred: " + e.getMessage());
+        }
+
+        assertEquals(10001, customer.getId(), "Expected customer with ID " + validCustomerId);
+    }
+
+    @Test
+    void getCustomerByIdReturnsNullForInvalidId() {
+        int invalidCustomerId = 0;
+
+        Customer customer = null;
+        try {
+            customer = ICustomerDao.getCustomerById(invalidCustomerId);
+        } catch (DaoException e) {
+            fail("DaoException occurred: " + e.getMessage());
+        }
+
+        assertNull(customer, "Expected null when customer is not found");
+    }
+
+    // **********************************************************
+
+    // *************** WORDS *****************
 }
