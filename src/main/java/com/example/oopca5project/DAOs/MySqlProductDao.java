@@ -193,18 +193,16 @@ public class MySqlProductDao extends MySqlDao implements ProductDaoInterface {
                 connection = this.getConnection();
 
                 // Making query to update product
-                String query = "UPDATE Products SET Product_id = ?, Product_Description = ?, Size = ?, Unit_Price = ?, Supplier_id = ? WHERE Product_id = ?";
+                String query = "UPDATE Products SET Product_Description = ?, Size = ?, Unit_Price = ?, Supplier_id = ? WHERE Product_id = ?";
 
                 // Making the query into a prepared preparedStatement
                 preparedStatement = connection.prepareStatement(query);
 
-                // Initializing/Setting '?' in the prepared preparedStatement
-                preparedStatement.setString(1, id);
-                preparedStatement.setString(2, p.getDescription());
-                preparedStatement.setString(3, p.getSize());
-                preparedStatement.setDouble(4, p.getPrice());
-                preparedStatement.setString(5, p.getSupplierId());
-                preparedStatement.setString(6, id);
+                preparedStatement.setString(1, p.getDescription());
+                preparedStatement.setString(2, p.getSize());
+                preparedStatement.setDouble(3, p.getPrice());
+                preparedStatement.setString(4, p.getSupplierId());
+                preparedStatement.setString(5, id);
 
                 // Getting the value of how many rows were affected
                 rowsAffected = preparedStatement.executeUpdate();

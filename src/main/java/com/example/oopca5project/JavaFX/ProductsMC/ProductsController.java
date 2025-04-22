@@ -176,9 +176,32 @@ public class ProductsController {
 
     @FXML
     protected void editProductClick() {
-        inputAreaText.setText("Please enter the details of your edited product below:");
+        inputAreaText.setText("Please enter the changes of your new product below:");
+        submitButton.setOnAction(e -> updateProductClick());
 
         setFieldsVisibilityTrue();
+    }
+
+    // Method that will send the details from the TextFields and add the new product with those details
+    @FXML
+    protected void updateProductClick() {
+        String id = idField.getText();
+        String description = descriptionField.getText();
+        String size = sizeField.getText();
+        String price = priceField.getText();
+        String supplierId = supplierIdField.getText();
+
+        double convertedPrice = Double.parseDouble(price);
+        Product product = new Product(id, description, size, convertedPrice, supplierId);
+
+        // Make sure that the user is at the bare minimum entering a supplier id and a product id to their new product
+        if( (id==null || id.isEmpty()) && (supplierId==null || supplierId.isEmpty()) ) {
+            return;
+        }
+        else {
+            productModel.updateProduct(product);
+            productTableView.setItems(productModel.getObservableProductList());
+        }
     }
 
     @FXML

@@ -83,6 +83,23 @@ public class ProductModel {
         }
     }
 
+    // Below method takes in a product object and overwrites an existing product with a matching id
+    public void updateProduct(Product product) {
+        try {
+            String id = product.getId();
+
+            int rowsAffected = IProductDao.updateProduct(id, product);
+
+            // If the product was successfully updated, refresh the product database
+            if(rowsAffected == 1) {
+                reloadProductListModel();
+            }
+        }
+        catch(DaoException e) {
+            e.printStackTrace();
+        }
+    }
+
     // Getter for list of products
     public ObservableList<Product> getObservableProductList() {
         return this.observableProductList;
