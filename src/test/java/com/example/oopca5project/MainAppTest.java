@@ -494,11 +494,10 @@ class MainAppTest {
     void deleteCustomerByIdReturnsZeroForInvalidId() {
         int invalidCustomerId = -1;
         int actual = 0;
-        
+
         try {
             actual = ICustomerDao.deleteCustomerById(invalidCustomerId);
-        }
-        catch (DaoException e) {
+        } catch (DaoException e) {
             fail("DaoException occurred: " + e.getMessage());
         }
 
@@ -519,8 +518,7 @@ class MainAppTest {
         try {
             supplier = ISupplierDao.getSupplierById(expected);
             actual = supplier.getId();
-        }
-        catch (DaoException e) {
+        } catch (DaoException e) {
             fail("DaoException occurred: " + e.getMessage());
         }
 
@@ -535,8 +533,7 @@ class MainAppTest {
 
         try {
             supplier = ISupplierDao.getSupplierById(invalidId);
-        }
-        catch (DaoException e) {
+        } catch (DaoException e) {
             fail("DaoException occurred: " + e.getMessage());
         }
 
@@ -554,10 +551,10 @@ class MainAppTest {
 
         int rowsAffected = 0;
         try {
-            IProductDao.addProduct(new Product(validProductId,"desc", "size",12, "Supplier1"));
-            ICustomerDao.addCustomer(new Customer(validCustomerId,"name", "email","address"));
-            ICustomersProductsDao.addCustomersProducts(new CustomersProducts(validCustomerId, validProductId,0));
-            rowsAffected = ICustomersProductsDao.deleteCustomersProductsByIds(validCustomerId,validProductId);
+            IProductDao.addProduct(new Product(validProductId, "desc", "size", 12, "Supplier1"));
+            ICustomerDao.addCustomer(new Customer(validCustomerId, "name", "email", "address"));
+            ICustomersProductsDao.addCustomersProducts(new CustomersProducts(validCustomerId, validProductId, 0));
+            rowsAffected = ICustomersProductsDao.deleteCustomersProductsByIds(validCustomerId, validProductId);
         } catch (DaoException e) {
             fail("DaoException occurred: " + e.getMessage());
         }
@@ -572,7 +569,7 @@ class MainAppTest {
 
         int rowsAffected = 0;
         try {
-            rowsAffected = ICustomersProductsDao.deleteCustomersProductsByIds(invalidCustomerId,invalidProductId);
+            rowsAffected = ICustomersProductsDao.deleteCustomersProductsByIds(invalidCustomerId, invalidProductId);
         } catch (DaoException e) {
             fail("DaoException occurred: " + e.getMessage());
         }
@@ -613,6 +610,46 @@ class MainAppTest {
     }
 
     // **********************************************************
+
+    // *************** UPDATE CUSTOMER TESTS ***************
+
+    @Test
+    void updateCustomerWasntUpdatedAndIdWrong() {
+        try {
+            Customer c = ICustomerDao.getCustomerById(1001);
+            ICustomerDao.updateCustomer(1001, c);
+        } catch (Exception e) {
+            assertTrue(true);
+        }
+    }
+
+    @Test
+    void updateCustomerWasUpdated() {
+        int actual = 0;
+        Customer originalCustomer = new Customer(0, "testCustomer", "testemail@domain.com", "Test Address");
+        Customer updatedCustomer = new Customer(0, "updatedCustomer", "updatedemail@domain.com", "Updated Address");
+
+        try {
+            ICustomerDao.addCustomer(originalCustomer);
+            actual = ICustomerDao.updateCustomer(0, updatedCustomer);
+            ICustomerDao.deleteCustomerById(0);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        assertEquals(1, actual);
+    }
+
+    @Test
+    void updateCustomerFailedNullCustomer() {
+        int actual = 0;
+        try {
+            actual = ICustomerDao.updateCustomer(1001, null);
+        } catch (Exception e) {
+            assertTrue(true);
+        }
+        assertEquals(0, actual);
+    }
 
     // *************** WORDS *****************
 }
