@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.example.oopca5project.DAOs.MySqlSupplierDao;
 import com.example.oopca5project.DAOs.SupplierDaoInterface;
+import com.example.oopca5project.DTOs.Product;
 import com.example.oopca5project.DTOs.Supplier;
 import com.example.oopca5project.Exceptions.DaoException;
 
@@ -59,6 +60,23 @@ public class SupplierModel {
             int rowsAffected = ISupplierDao.addSupplier(supplier);
 
             // If the new supplier was added, refresh the supplier database
+            if(rowsAffected == 1) {
+                reloadSupplierListModel();
+            }
+        }
+        catch(DaoException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Below method takes in a supplier object and overwrites an existing supplier with a matching id
+    public void updateSupplier(Supplier supplier) {
+        try {
+            String id = supplier.getId();
+
+            int rowsAffected = ISupplierDao.updateSupplier(id, supplier);
+
+            // If the product was successfully updated, refresh the product database
             if(rowsAffected == 1) {
                 reloadSupplierListModel();
             }

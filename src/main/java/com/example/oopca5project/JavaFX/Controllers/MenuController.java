@@ -34,16 +34,6 @@ public class MenuController {
 
     @FXML
     protected void onSuppliersClick() {
-        // menuText.setText("You chose the Suppliers table! Choose one of the following");
-
-        // menuOptions.setText(
-        //     "1. Display all suppliers\n" +
-        //     "2. Find supplier by ID\n" +
-        //     "3. Find supplier by product ID\n" +
-        //     "4. Add new supplier\n" +
-        //     "5. Update existing supplier by ID\n" +
-        //     "6. Delete supplier by ID\n"
-        // );
         // Below is code logic to change the current view of the GUI when the user clicks the corresponding button
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/example/oopca5project/supplier-view.fxml"));
@@ -61,15 +51,19 @@ public class MenuController {
 
     @FXML
     protected void onCustomersClick() {
-        menuText.setText("You chose the Customers table! Choose one of the following");
+        // Below is code logic to change the current view of the GUI when the user clicks the corresponding button
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/example/oopca5project/customer-view.fxml"));
+            Scene scene = new Scene(fxmlLoader.load(), 1340, 620);
 
-        menuOptions.setText(
-            "1. Display all customers\n" +
-            "2. Find customer by ID\n" +
-            "3. Add new customer\n" +
-            "4. Update existing customer by ID\n" +
-            "5. Delete customer by ID\n"
-        );
+            Stage stage = (Stage) menuText.getScene().getWindow();
+
+            stage.setScene(scene);
+            stage.show();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML

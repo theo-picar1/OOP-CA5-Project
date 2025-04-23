@@ -1,11 +1,10 @@
-package com.example.oopca5project.JavaFX.SuppliersMC;
+package com.example.oopca5project.JavaFX.CustomersMC;
 
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
-import com.example.oopca5project.DTOs.Product;
-import com.example.oopca5project.DTOs.Supplier;
+import com.example.oopca5project.DTOs.Customer;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -19,8 +18,8 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
-public class SuppliersController {
-    private SupplierModel supplierModel;
+public class CustomersController {
+    private CustomerModel customerModel;
 
     @FXML private Label modelText;
     @FXML private Label inputAreaText;
@@ -28,41 +27,41 @@ public class SuppliersController {
 
     /// References: [...](https://openjfx.io/javadoc/22/javafx.controls/javafx/scene/control/TableView.html)
     ///             [...](https://www.tutorialspoint.com/javafx/javafx_tableview.htm)
-    @FXML private TableView<Supplier> supplierTableView; // This is where the suppliers will show up
+    @FXML private TableView<Customer> customerTableView; // This is where the products will show up
 
     // Below are the columns where the corresponding field data will go into
-    @FXML private TableColumn<Supplier, String> idColumn;
-    @FXML private TableColumn<Supplier, String> nameColumn;
-    @FXML private TableColumn<Supplier, String> phoneNoColumn;
-    @FXML private TableColumn<Supplier, String> emailColumn;
+    @FXML private TableColumn<Customer, Integer> idColumn;
+    @FXML private TableColumn<Customer, String> nameColumn;
+    @FXML private TableColumn<Customer, String> emailColumn;
+    @FXML private TableColumn<Customer, Double> addressColumn;
 
     // These are the input field containers (HBox). This is for disappearing/appearing purposes depending on the button chosen
     @FXML private List<HBox> inputFields;
     @FXML private HBox idInputField;
     @FXML private HBox nameInputField;
-    @FXML private HBox phoneNoInputField;
     @FXML private HBox emailInputField;
+    @FXML private HBox addressInputField;
 
     @FXML private Button submitButton;
 
     // These are the actual input fields. We will get the data from them using getText();
     @FXML private TextField idField;
     @FXML private TextField nameField;
-    @FXML private TextField phoneNoField;
     @FXML private TextField emailField;
+    @FXML private TextField addressField;
 
-    public SuppliersController() {
-        this.supplierModel = new SupplierModel();
+    public CustomersController() {
+        this.customerModel = new CustomerModel();
     }
 
     @FXML
     protected void initialize() {
-        modelText.setText("All suppliers have been successfully loaded!");
+        modelText.setText("All products have been successfully loaded!");
 
-        supplierModel.reloadSupplierListModel();
+        customerModel.reloadCustomerListModel();
 
         // I add all the fields to the inputFields list to be able to loop through all of them at once
-        inputFields = Arrays.asList(idInputField, nameInputField, phoneNoInputField, emailInputField);
+        inputFields = Arrays.asList(idInputField, nameInputField, emailInputField, addressInputField);
         // Then loop through the field so that I can set everything to initially be invisible
         for(HBox row : inputFields) {
             row.setVisible(false);
@@ -70,22 +69,22 @@ public class SuppliersController {
         }
 
         // Logic to put field data into their corresponding columns
-        // For some reason, this needs to match the getter method and not the actual DTO fields. i.e, getId() would = "id"
+        // For some reason, this needs to match the getter method and not the actual DTO fields. i.e, getId() would = "id", getSupplierId = "supplierId"
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
-        phoneNoColumn.setCellValueFactory(new PropertyValueFactory<>("phoneNo"));
         emailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
+        addressColumn.setCellValueFactory(new PropertyValueFactory<>("address"));
 
         /// Reference: https://stackoverflow.com/questions/12933918/tableview-has-more-columns-than-specified
-        supplierTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY); // This is to get rid of the extra columns that JavaFX decides to randomly add
+        customerTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY); // This is to get rid of the extra columns that JavaFX decides to randomly add
 
-        supplierTableView.setItems(supplierModel.getObservableSupplierList());
+        customerTableView.setItems(customerModel.getObservableCustomerList());
     }
 
-    // Method that displays all suppliers again. Acts as a reset button if a user is searching or filtering
+    // Method that displays all products again. Acts as a reset button if a user is searching or filtering
     @FXML
-    protected void displayAllSuppliersClick() {
-        supplierModel.reloadSupplierListModel();
+    protected void displayAllCustomersClick() {
+        customerModel.reloadCustomerListModel();
     }
 
     // Method that will return the user to the main menu (where they can choose table)
@@ -105,11 +104,11 @@ public class SuppliersController {
             e.printStackTrace();
         }
     }
-    
-    @FXML 
-    protected void showFindSupplierByIdFields() {
-        inputAreaText.setText("Please enter the supplier_id you wish to find below:");
-        submitButton.setOnAction(e -> findSupplierByIdClick());
+
+    @FXML
+    protected void showFindCustomerByIdFields() {
+        inputAreaText.setText("Please enter the id of the customer you wish to find below:");
+        submitButton.setOnAction(e -> findCustomerByIdClick());
 
         // Make all the fields and their labels invisible, not including the ID field
         for(HBox field : inputFields) {
@@ -124,76 +123,75 @@ public class SuppliersController {
         }
     }
 
-    // Method tha will send the text (if any) of the id input field and call the findSupplierById method
+    // Method tha will send the text (if any) of the id input field and call the findCustomerById method
     @FXML
-    protected void findSupplierByIdClick() {
+    protected void findCustomerByIdClick() {
         String id = idField.getText();
+
+        int convertedId = Integer.parseInt(id);
 
         // Make sure that the user is entering something. Otherwise, tell them.
         if( id==null || id.isEmpty() ) {
             return;
         }
-        // Otherwise fill the table with just the single supplier
+        // Otherwise fill the table with just the single product
         else {
-            supplierModel.getSingleSupplierById(id);
-            supplierTableView.setItems(supplierModel.getObservableSupplierList());
+            customerModel.getSingleCustomerById(convertedId);
+            customerTableView.setItems(customerModel.getObservableCustomerList());
         }
     }
 
-    // Method to show the corresponding fields for adding a new supplier
-    @FXML 
-    protected void showAddSupplierFields() {
-        inputAreaText.setText("Please enter the details of your new supplier below:");
-        submitButton.setOnAction(e -> addNewSupplierClick());
-
-        setFieldsVisibilityTrue();
-    }
-
-    // Method that will send the details from the TextFields and add the new supplier with those details
+    // Method to show the corresponding fields for adding a new product
     @FXML
-    protected void addNewSupplierClick() {
-        String id = idField.getText();
-        String name = nameField.getText();
-        String phoneNo = phoneNoField.getText();
-        String email = emailField.getText();
-
-        Supplier supplier = new Supplier(id, name, phoneNo, email);
-
-        // Make sure that the user is at the bare minimum entering an id to their new supplier
-        if( (id==null || id.isEmpty())) {
-            return;
-        }
-        else {
-            supplierModel.addNewSupplier(supplier);
-            supplierTableView.setItems(supplierModel.getObservableSupplierList());
-        }
-    }
-
-    @FXML
-    protected void showEditSupplierFields() {
-        inputAreaText.setText("Please enter the id of the supplier you wish to update below:");
-        submitButton.setOnAction(e -> editSupplierClick());
+    protected void showAddCustomerFields() {
+        inputAreaText.setText("Please enter the details of your new customer below:");
+        submitButton.setOnAction(e -> addNewCustomerClick());
 
         setFieldsVisibilityTrue();
     }
 
     // Method that will send the details from the TextFields and add the new product with those details
     @FXML
-    protected void editSupplierClick() {
+    protected void addNewCustomerClick() {
         String id = idField.getText();
         String name = nameField.getText();
-        String phoneNo = phoneNoField.getText();
-        String email = emailField.getText();
+        String email = emailColumn.getText();
+        String address = addressField.getText();
 
-        Supplier supplier = new Supplier(id, name, phoneNo, email);
+        int convertedId = Integer.parseInt(id);
+        Customer customer = new Customer(convertedId, name, email, address);
 
-        supplierModel.updateSupplier(supplier);
-        supplierTableView.setItems(supplierModel.getObservableSupplierList());
+        customerModel.addNewCustomer(customer);
+        customerTableView.setItems(customerModel.getObservableCustomerList());
     }
 
     @FXML
-    protected void deleteSupplierClick() {
-        inputAreaText.setText("Please enter the supplier_id you wish to delete below:");
+    protected void editCustomerClick() {
+        inputAreaText.setText("Please enter the changes of your new customer below:");
+        submitButton.setOnAction(e -> updateCustomerClick());
+
+        setFieldsVisibilityTrue();
+    }
+
+    // Method that will send the details from the TextFields and add the new product with those details
+    @FXML
+    protected void updateCustomerClick() {
+        String id = idField.getText();
+        String name = nameField.getText();
+        String email = emailColumn.getText();
+        String address = addressField.getText();
+
+        int convertedId = Integer.parseInt(id);
+        Customer customer = new Customer(convertedId, name, email, address);
+
+        customerModel.updateCustomer(customer);
+        customerTableView.setItems(customerModel.getObservableCustomerList());
+    }
+
+    @FXML
+    protected void showDeleteCustomerFields() {
+        inputAreaText.setText("Please enter the id of the customer you wish to delete below:");
+        submitButton.setOnAction(e -> deleteCustomerClick());
 
         // Make all the fields and their labels invisible, not including the ID field
         for(HBox field : inputFields) {
@@ -207,7 +205,17 @@ public class SuppliersController {
             }
         }
     }
-    
+
+    // Below method sends a product id to be deleted by another method within CustomersModel
+    @FXML
+    protected void deleteCustomerClick() {
+        String id = idField.getText();
+        int convertedId = Integer.parseInt(id);
+
+        customerModel.deleteCustomerById(convertedId);
+        customerTableView.setItems(customerModel.getObservableCustomerList());
+    }
+
     // Method that makes all the fields and their labels visible
     @FXML
     protected void setFieldsVisibilityTrue() {

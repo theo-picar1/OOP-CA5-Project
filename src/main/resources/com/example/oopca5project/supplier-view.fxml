@@ -8,7 +8,7 @@
 <BorderPane xmlns="http://javafx.com/javafx/8"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.example.oopca5project.JavaFX.SuppliersMC.SuppliersController"
-            stylesheets="@styles.css">
+            >
     <padding>
         <Insets top="20" right="20" bottom="20" left="20"/>
     </padding>
@@ -22,7 +22,7 @@
             <HBox spacing="10" alignment="CENTER_LEFT">
                 <Button text="Find supplier by ID" onAction="#showFindSupplierByIdFields"/>
                 <Button text="Add new supplier" onAction="#showAddSupplierFields"/>
-                <Button text="Edit supplier by ID" onAction="#editSupplierClick"/>
+                <Button text="Edit supplier by ID" onAction="#showEditSupplierFields"/>
                 <Button text="Delete supplier by ID" onAction="#deleteSupplierClick"/>
                 <Button text="Display all suppliers" />
                 <Button text="Back" onAction="#onGoBackClick"/>
