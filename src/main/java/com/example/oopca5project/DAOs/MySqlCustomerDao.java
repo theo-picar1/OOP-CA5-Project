@@ -121,7 +121,7 @@ public class MySqlCustomerDao extends MySqlDao implements CustomerDaoInterface {
                 customer = new Customer(id, name, email, address);
             }
         } catch (SQLException e) {
-            throw new DaoException("Error retrieving product: " + e.getMessage());
+            throw new DaoException("Error retrieving Customer: " + e.getMessage());
         } finally {
             try {
                 if (resultSet != null) {
@@ -170,7 +170,7 @@ public class MySqlCustomerDao extends MySqlDao implements CustomerDaoInterface {
                     // Getting the value of how many rows were affected
                     rowsAffected = preparedStatement.executeUpdate();
                 } else {
-                    throw new DaoException("addProduct() error! " + "Product already exists!");
+                    throw new DaoException("addCustomer() error! " + "Customer already exists!");
                 }
             } else {
                 return 0;
@@ -191,7 +191,7 @@ public class MySqlCustomerDao extends MySqlDao implements CustomerDaoInterface {
                 // Catches SQLException
             } catch (SQLException e) {
                 // Throws DaoException
-                throw new DaoException("addProduct() " + e.getMessage());
+                throw new DaoException("addCustomer() " + e.getMessage());
 
             }
         }

@@ -169,7 +169,7 @@ class MainAppTest {
     }
     // *********************************************************
 
-    // // *************** UPDATE PRODUCT TESTS ***************
+    // *************** UPDATE PRODUCT TESTS ***************
     @Test
     void updateProductWasntUpdatedAndIdNull() {
         try {
@@ -555,6 +555,8 @@ class MainAppTest {
             ICustomerDao.addCustomer(new Customer(validCustomerId, "name", "email", "address"));
             ICustomersProductsDao.addCustomersProducts(new CustomersProducts(validCustomerId, validProductId, 0));
             rowsAffected = ICustomersProductsDao.deleteCustomersProductsByIds(validCustomerId, validProductId);
+            IProductDao.deleteProductById(validProductId);
+            ICustomerDao.deleteCustomerById(validCustomerId);
         } catch (DaoException e) {
             fail("DaoException occurred: " + e.getMessage());
         }
@@ -626,13 +628,13 @@ class MainAppTest {
     @Test
     void updateCustomerWasUpdated() {
         int actual = 0;
-        Customer originalCustomer = new Customer(0, "testCustomer", "testemail@domain.com", "Test Address");
         Customer updatedCustomer = new Customer(0, "updatedCustomer", "updatedemail@domain.com", "Updated Address");
+        int id = 10002;
 
         try {
-            ICustomerDao.addCustomer(originalCustomer);
-            actual = ICustomerDao.updateCustomer(0, updatedCustomer);
-            ICustomerDao.deleteCustomerById(0);
+            Customer originalCustomer = ICustomerDao.getCustomerById(id);
+            actual = ICustomerDao.updateCustomer(id, updatedCustomer);
+            ICustomerDao.updateCustomer(id, originalCustomer);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -651,5 +653,70 @@ class MainAppTest {
         assertEquals(0, actual);
     }
 
-    // *************** WORDS *****************
+    // *************** UPDATE SUPPLIER TESTS ********************
+
+    @Test
+    void updateSupplierWasntUpdatedAndIdNull() {
+        try {
+            Supplier s = ISupplierDao.getSupplierById(null);
+            ISupplierDao.updateSupplier(null, s);
+        } catch (Exception e) {
+            assertTrue(true);
+        }
+    }
+
+    @Test
+    void updateSupplierWasntUpdatedAndIdWrong() {
+        try {
+            Supplier s = ISupplierDao.getSupplierById("1");
+            ISupplierDao.updateSupplier("1", s);
+        } catch (Exception e) {
+            assertTrue(true);
+        }
+    }
+
+    @Test
+    void updateSupplierWasUpdated() {
+        int actual = 0;
+        Supplier originalSupplier = new Supplier("test1", "", "", "");
+        Supplier updatedSupplier = new Supplier("test1", "name", "phone", "email");
+        try {
+            ISupplierDao.addSupplier(originalSupplier);
+            actual = ISupplierDao.updateSupplier("test1", updatedSupplier);
+            ISupplierDao.deleteSupplierById("test1");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        assertEquals(1, actual);
+    }
+
+     // **********************************************************
+
+      // *************** UPDATE CUSTOMERPRODUCTS TESTS ********************
+    @Test
+    void updateCustomersProductsWasntUpdatedAndIdWrong() {
+        try {
+            CustomersProducts c = ICustomersProductsDao.getCustomersProductsByIds(0,"1");
+            ICustomersProductsDao.updateCustomersProducts(0, "1", c);
+        } catch (Exception e) {
+            assertTrue(true);
+        }
+    }
+
+    @Test
+    void updateCustomersProductsWasUpdated() {
+        int actual = 0;
+
+        CustomersProducts updatedSupplier = new CustomersProducts(0, "name", 1);
+        try {
+            CustomersProducts originalSupplier = ICustomersProductsDao.getCustomersProductsByIds(10004,"product9");
+            actual = ICustomersProductsDao.updateCustomersProducts(10004,"product9", updatedSupplier);
+            ICustomersProductsDao.updateCustomersProducts(10004,"product9", originalSupplier);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        assertEquals(1, actual);
+    }
+
+     // **********************************************************
 }
