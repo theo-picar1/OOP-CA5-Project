@@ -68,15 +68,19 @@ public class MenuController {
 
     @FXML
     protected void onCustomersProductsClick() {
-        menuText.setText("You chose the CustomersProducts table! Choose one of the following");
+        // Below is code logic to change the current view of the GUI when the user clicks the corresponding button
+        try {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/example/oopca5project/customersProducts-view.fxml"));
+            Scene scene = new Scene(fxmlLoader.load(), 1340, 620);
 
-        menuOptions.setText(
-            "1. Display all customer's products\n" +
-            "2. Find customer's product by customer and product ID\n" +
-            "3. Add new customer product\n" +
-            "4. Update existing customer by customer and product ID\n" +
-            "5. Delete customer by customer and product ID\n"
-        );
+            Stage stage = (Stage) menuText.getScene().getWindow();
+
+            stage.setScene(scene);
+            stage.show();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
