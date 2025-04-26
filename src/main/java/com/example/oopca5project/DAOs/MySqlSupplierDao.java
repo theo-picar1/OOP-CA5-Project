@@ -26,14 +26,19 @@ public class MySqlSupplierDao extends MySqlDao implements SupplierDaoInterface {
 
             resultSet = preparedStatement.executeQuery();
 
-            while (resultSet.next()) {
-                String supplierId = resultSet.getString("supplier_id");
-                String supplierName = resultSet.getString("supplier_name");
-                String supplierPhoneNo = resultSet.getString("supplier_phone_no");
-                String supplierEmail = resultSet.getString("supplier_email");
+            if(resultSet.next()) {
+                do {
+                    String supplierId = resultSet.getString("supplier_id");
+                    String supplierName = resultSet.getString("supplier_name");
+                    String supplierPhoneNo = resultSet.getString("supplier_phone_no");
+                    String supplierEmail = resultSet.getString("supplier_email");
 
-                Supplier supplier = new Supplier(supplierId, supplierName, supplierPhoneNo, supplierEmail);
-                supplierList.add(supplier);
+                    Supplier supplier = new Supplier(supplierId, supplierName, supplierPhoneNo, supplierEmail);
+                    supplierList.add(supplier);
+                } while (resultSet.next());
+            }
+            else {
+                return null;
             }
         } catch (SQLException e) {
             throw new DaoException("getAllSuppliers() error! " + e.getMessage());
@@ -84,8 +89,9 @@ public class MySqlSupplierDao extends MySqlDao implements SupplierDaoInterface {
 
                 // Set up Supplier object
                 supplier = new Supplier(supplierId, supplierName, supplierPhoneNo, supplierEmail);
-            } else {
-                System.out.println("\nNo supplier found for productId: " + productId + "\n");
+            }
+            else {
+                return null;
             }
 
             // catch Exceptions
