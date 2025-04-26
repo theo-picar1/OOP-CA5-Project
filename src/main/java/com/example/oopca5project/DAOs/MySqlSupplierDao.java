@@ -183,6 +183,9 @@ public class MySqlSupplierDao extends MySqlDao implements SupplierDaoInterface {
 
                 supplier = new Supplier(supplierId, name, phone_no, email);
             }
+            else {
+                return null;
+            }
         }
         catch (SQLException e) {
             throw new DaoException("Error retrieving product: " + e.getMessage());
