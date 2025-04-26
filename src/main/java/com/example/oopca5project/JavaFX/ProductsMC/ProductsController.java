@@ -272,7 +272,7 @@ public class ProductsController {
         }
     }
 
-    // Below 4 methods will hide and show an error/success message to the user in the GUI
+    // Helper method to set the label errorSuccessMessage with either a success or error message
     @FXML
     protected void setErrorSuccessMessage(String message, boolean error) {
         if(error) {
@@ -285,13 +285,6 @@ public class ProductsController {
         errorSuccessMessage.setText(message);
         errorSuccessMessage.setVisible(true);
         errorSuccessMessage.setManaged(true);
-    }
-
-    @FXML
-    protected void hideErrorSuccessMessage() {
-        errorSuccessMessage.setText("");
-        errorSuccessMessage.setVisible(false);
-        errorSuccessMessage.setManaged(false);
     }
 
     // Helper function that user enters a valid double, since text fields allows strings
@@ -323,7 +316,11 @@ public class ProductsController {
     @FXML 
     protected boolean allFieldsValid(String id, String description, String size, String supplierId) {
         if(id.length() > 20) {
-            setErrorSuccessMessage("Product id cannot be longer than 20 characters!", true);
+            setErrorSuccessMessage("Product id cannot be longer than 20 characters and must follow default format!", true);
+            return false;
+        }
+        else if(!id.matches("^Product\\d+$")) {
+            setErrorSuccessMessage("Product id must follow default format!", true);
             return false;
         }
         else if(description.length() > 30) {
