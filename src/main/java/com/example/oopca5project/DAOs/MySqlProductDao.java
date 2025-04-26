@@ -27,15 +27,22 @@ public class MySqlProductDao extends MySqlDao implements ProductDaoInterface {
 
             resultSet = preparedStatement.executeQuery();
 
-            while (resultSet.next()) {
-                String productId = resultSet.getString("product_id");
-                String description = resultSet.getString("product_description");
-                String size = resultSet.getString("size");
-                double unitPrice = resultSet.getDouble("unit_price");
-                String supplierId = resultSet.getString("supplier_id");
+            // Check if there were any results. If not, return null
+            if(resultSet.next()) {
+                // Need to change to do-while as the if block will already process the first row, causing the while-loop to just go the second row
+                do {
+                    String productId = resultSet.getString("product_id");
+                    String description = resultSet.getString("product_description");
+                    String size = resultSet.getString("size");
+                    double unitPrice = resultSet.getDouble("unit_price");
+                    String supplierId = resultSet.getString("supplier_id");
 
-                Product product = new Product(productId, description, size, unitPrice, supplierId);
-                productList.add(product);
+                    Product product = new Product(productId, description, size, unitPrice, supplierId);
+                    productList.add(product);
+                } while (resultSet.next());
+            }
+            else {
+                return null;
             }
         } catch (SQLException e) {
             throw new DaoException("getAllProducts() error! " + e.getMessage());
@@ -73,6 +80,9 @@ public class MySqlProductDao extends MySqlDao implements ProductDaoInterface {
                 String supplierId = resultSet.getString("supplier_id");
 
                 product = new Product(productId, description, size, unitPrice, supplierId);
+            }
+            else {
+                return null; // Return null to let the user know nothing is being returned
             }
         } catch (SQLException e) {
             throw new DaoException("Error retrieving product: " + e.getMessage());

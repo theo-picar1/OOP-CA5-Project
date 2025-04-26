@@ -23,7 +23,7 @@ public class ProductsController {
 
     @FXML private Label modelText;
     @FXML private Label inputAreaText;
-
+    @FXML private Label errorSuccessMessage;
 
     /// References: [...](https://openjfx.io/javadoc/22/javafx.controls/javafx/scene/control/TableView.html)
     ///             [...](https://www.tutorialspoint.com/javafx/javafx_tableview.htm)
@@ -47,6 +47,7 @@ public class ProductsController {
     @FXML private Button submitButton;
 
     // These are the actual input fields. We will get the data from them using getText();
+    @FXML private List<TextField> fields; // Error checking purposes
     @FXML private TextField idField;
     @FXML private TextField descriptionField;
     @FXML private TextField sizeField;
@@ -54,7 +55,7 @@ public class ProductsController {
     @FXML private TextField supplierIdField;
 
     public ProductsController() {
-        this.productModel = new ProductModel();
+        this.productModel = new ProductModel(this);
     }
 
     @FXML
@@ -70,6 +71,12 @@ public class ProductsController {
             row.setVisible(false);
             row.setManaged(false); // Same as display: none. With just setVisible it will be like visibility = "hidden" in CSS
         }
+
+        errorSuccessMessage.setVisible(false);
+        errorSuccessMessage.setManaged(false);
+
+        // Adding textFields to List. This is for error checking to see if user is filling in all textFields
+        fields = Arrays.asList(idField, descriptionField, sizeField, priceField, supplierIdField);
 
         // Logic to put field data into their corresponding columns
         // For some reason, this needs to match the getter method and not the actual DTO fields. i.e, getId() would = "id", getSupplierId = "supplierId"
@@ -130,17 +137,16 @@ public class ProductsController {
     // Method tha will send the text (if any) of the id input field and call the findProductById method
     @FXML
     protected void findProductByIdClick() {
-        String id = idField.getText();
-
         // Make sure that the user is entering something. Otherwise, tell them.
-        if( id==null || id.isEmpty() ) {
+        if( idField.getText().isEmpty() ) {
+            setErrorSuccessMessage("Please enter an id in the provided field!", true);
             return;
         }
-        // Otherwise fill the table with just the single product
-        else {
-            productModel.getSingleProductById(id);
-            productTableView.setItems(productModel.getObservableProductList());
-        }
+
+        String id = idField.getText();
+
+        productModel.getSingleProductById(id);
+        productTableView.setItems(productModel.getObservableProductList());
     }
 
     // Method to show the corresponding fields for adding a new product
@@ -160,18 +166,30 @@ public class ProductsController {
         String size = sizeField.getText();
         String price = priceField.getText();
         String supplierId = supplierIdField.getText();
+        
+        if(!allFieldsValid(id, description, size, supplierId)) {
+            return;
+        }
+        
+        if(description.length() > 30) {
+            setErrorSuccessMessage("Description cannot be longer than 30 characters!", true);
+        }
+
+        if(!allFieldsFilled()) {
+            setErrorSuccessMessage("Please enter values for all the fields provided!", true);
+            return;
+        }
+
+        if(!validateDouble(price)) {
+            setErrorSuccessMessage("You did not enter a valid price number. Please try again!", true);
+            return;
+        }
 
         double convertedPrice = Double.parseDouble(price);
         Product product = new Product(id, description, size, convertedPrice, supplierId);
 
-        // Make sure that the user is at the bare minimum entering a supplier id and a product id to their new product
-        if( (id==null || id.isEmpty()) && (supplierId==null || supplierId.isEmpty()) ) {
-            return;
-        }
-        else {
-            productModel.addNewProduct(product);
-            productTableView.setItems(productModel.getObservableProductList());
-        }
+        productModel.addNewProduct(product);
+        productTableView.setItems(productModel.getObservableProductList());
     }
 
     @FXML
@@ -191,21 +209,30 @@ public class ProductsController {
         String price = priceField.getText();
         String supplierId = supplierIdField.getText();
 
+        if(!allFieldsValid(id, description, size, supplierId)) {
+            return;
+        }
+
+        if(!allFieldsFilled()) {
+            setErrorSuccessMessage("Please enter values for all the fields provided!", true);
+            return;
+        }
+
+        if(!validateDouble(price)) {
+            setErrorSuccessMessage("You did not enter a valid price number. Please try again!", true
+            );
+            return;
+        }
+
         double convertedPrice = Double.parseDouble(price);
         Product product = new Product(id, description, size, convertedPrice, supplierId);
 
-        // Make sure that the user is at the bare minimum entering a supplier id and a product id to their new product
-        if( (id==null || id.isEmpty()) && (supplierId==null || supplierId.isEmpty()) ) {
-            return;
-        }
-        else {
-            productModel.updateProduct(product);
-            productTableView.setItems(productModel.getObservableProductList());
-        }
+        productModel.updateProduct(product);
+        productTableView.setItems(productModel.getObservableProductList());
     }
 
     @FXML
-    protected void showdeleteProductFields() {
+    protected void showDeleteProductFields() {
         inputAreaText.setText("Please enter the product_id you wish to delete below:");
         submitButton.setOnAction(e -> deleteProductClick());
 
@@ -225,16 +252,15 @@ public class ProductsController {
     // Below method sends a product id to be deleted by another method within ProductsModel
     @FXML
     protected void deleteProductClick() {
-        String id = idField.getText();
-
-        // Make sure that the user is at the bare minimum entering a supplier id and a product id to their new product
-        if(id==null || id.isEmpty()) {
+        if(idField.getText().isEmpty()) {
+            setErrorSuccessMessage("Please enter an id to delete!", true);
             return;
         }
-        else {
-            productModel.deleteProductById(id);
-            productTableView.setItems(productModel.getObservableProductList());
-        }
+
+        String id = idField.getText();
+
+        productModel.deleteProductById(id);
+        productTableView.setItems(productModel.getObservableProductList());
     }
     
     // Method that makes all the fields and their labels visible
@@ -244,5 +270,75 @@ public class ProductsController {
             field.setVisible(true);
             field.setManaged(true);
         }
+    }
+
+    // Below 4 methods will hide and show an error/success message to the user in the GUI
+    @FXML
+    protected void setErrorSuccessMessage(String message, boolean error) {
+        if(error) {
+            errorSuccessMessage.setStyle("-fx-text-fill: red;");
+        }
+        else {
+            errorSuccessMessage.setStyle("-fx-text-fill: green;");
+        }
+
+        errorSuccessMessage.setText(message);
+        errorSuccessMessage.setVisible(true);
+        errorSuccessMessage.setManaged(true);
+    }
+
+    @FXML
+    protected void hideErrorSuccessMessage() {
+        errorSuccessMessage.setText("");
+        errorSuccessMessage.setVisible(false);
+        errorSuccessMessage.setManaged(false);
+    }
+
+    // Helper function that user enters a valid double, since text fields allows strings
+    /// Reference: [...](https://stackoverflow.com/questions/3543729/how-to-check-that-a-string-is-parseable-to-a-double)
+    @FXML
+    protected boolean validateDouble(String number) {
+        try {
+            Double.parseDouble(number);
+            return true;
+        }
+        catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
+    // Helper method to see if user entered all the provided fields
+    @FXML
+    protected boolean allFieldsFilled() {
+        for(TextField input : fields) {
+            if(input.getText().isEmpty()) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+    
+    // Helper mthod to check if all the values provided, besides double,  are formatted correctly before proceeding
+    @FXML 
+    protected boolean allFieldsValid(String id, String description, String size, String supplierId) {
+        if(id.length() > 20) {
+            setErrorSuccessMessage("Product id cannot be longer than 20 characters!", true);
+            return false;
+        }
+        else if(description.length() > 30) {
+            setErrorSuccessMessage("Description cannot be longer than 30 characters!", true);
+            return false;
+        }
+        else if(!size.matches("\\d+cmx\\d+cm")) {
+            setErrorSuccessMessage("Size must follow the format '10cmx10cm', with cm only being allowed as dimensions!", true);
+            return false;
+        }
+        else if(supplierId.length() > 25) {
+            setErrorSuccessMessage("Product id cannot be longer than 25 characters!", true);
+            return false;
+        }
+
+        return true;
     }
 }
