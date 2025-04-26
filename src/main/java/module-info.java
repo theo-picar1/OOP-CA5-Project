@@ -13,6 +13,7 @@ module com.example.oopca5project {
     opens com.example.oopca5project.JavaFX.ProductsMC to javafx.fxml;
     opens com.example.oopca5project.JavaFX.SuppliersMC to javafx.fxml;
     opens com.example.oopca5project.JavaFX.CustomersMC to javafx.fxml;
+    opens com.example.oopca5project.JavaFX.CustomersProductsMC to javafx.fxml;
 
     exports com.example.oopca5project;
     exports com.example.oopca5project.JavaFX;
@@ -21,4 +22,6 @@ module com.example.oopca5project {
     exports com.example.oopca5project.JavaFX.ProductsMC;
     exports com.example.oopca5project.JavaFX.SuppliersMC;
     exports com.example.oopca5project.JavaFX.CustomersMC;
+    exports com.example.oopca5project.JavaFX.CustomersProductsMC;
+
 }

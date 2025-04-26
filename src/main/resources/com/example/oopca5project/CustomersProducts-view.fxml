@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/8"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.example.oopca5project.JavaFX.CustomersProductsMC.CustomersProductsController"
+            >
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <center>
+        <VBox spacing="20" alignment="CENTER_LEFT">
+            <Label text="CustomersProductss Page" style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
+            <Label fx:id="modelText" text="Welcome to the CustomersProducts section! Choose one of the following" />
+
+            <!-- All the table options are in here -->
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <Button text="Find customersProducts by ID" onAction="#showFindCustomersProductsByIdFields"/>
+                <Button text="Add new customersProducts" onAction="#showAddCustomersProductsFields"/>
+                <Button text="Edit customersProducts by ID" onAction="#showEditCustomersProductsFields"/>
+                <Button text="Delete customersProducts by ID" onAction="#deleteCustomersProductsClick"/>
+                <Button text="Display all customersProducts" />
+                <Button text="Back" onAction="#onGoBackClick"/>
+            </HBox>
+
+            <!-- Reference: https://docs.oracle.com/javase/8/javafx/api/javafx/scene/layout/GridPane.html -->
+            <!-- Works the same as grid-template-columns in Web Development -->
+            <Label fx:id="inputAreaText" text="Corresponding inputs will go here. Please choose an option above!"/>
+            <GridPane hgap="10" vgap="10">
+                <HBox fx:id="productIdInputField" spacing="10" alignment="CENTER_LEFT" GridPane.rowIndex="0" GridPane.columnIndex="0">
+                    <Label text="Product ID:" />
+                    <TextField fx:id="productIdField"/>
+                </HBox>
+
+                <HBox fx:id="customerIdInputField" spacing="10" alignment="CENTER_LEFT" GridPane.rowIndex="1" GridPane.columnIndex="0">
+                    <Label text="Customer ID:" />
+                    <TextField fx:id="customerIdField"/>
+                </HBox>
+
+                <HBox fx:id="quantityInputField" spacing="10" alignment="CENTER_LEFT" GridPane.rowIndex="2" GridPane.columnIndex="0">
+                    <Label text="Quantity:" />
+                    <TextField fx:id="quantityField"/>
+                </HBox>
+                
+            </GridPane>
+
+            <HBox>
+                <Button fx:id="submitButton" text="Submit"/>
+                <Button text="Reset" onAction="#displayAllCustomersProductsClick"/>
+            </HBox>
+
+            <!-- All the customersProducts data will go into this table -->
+            <TableView fx:id="customersProductsTableView" prefWidth="800">
+                <columns>
+                    <TableColumn fx:id="productIdColumn" text="customersProducts_id" prefWidth="60"/>
+                    <TableColumn fx:id="customerIdColumn" text="customersProducts_description" prefWidth="150"/>
+                    <TableColumn fx:id="quantityColumn" text="quantity" prefWidth="80"/>
+                </columns>
+            </TableView>
+
+        </VBox>
+    </center>
+</BorderPane>
