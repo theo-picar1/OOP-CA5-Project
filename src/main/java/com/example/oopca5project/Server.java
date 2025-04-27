@@ -307,7 +307,20 @@ class ClientHandler implements Runnable {
                 }
                 // FIND SUPPLIER BY ID
                 else if(request.equals("10")) {
-                    System.out.println("NOT IMPLEMENTED");
+                    Supplier supplier;
+
+                    try {
+                        supplier = ISupplierDao.getSupplierById(socketReader.readLine());
+
+                        // Turn supplier into single json object and pass it back as a string to the client
+                        JSONObject message = Supplier.turnSupplierIntoJson(supplier);
+                        socketWriter.println(message.toString());
+
+                        socketWriter.println("Server message: ID has been passed to server passing back supplier");
+                    }
+                    catch (DaoException e) {
+                        e.printStackTrace();
+                    }
                 }
                 // DISPLAY SUPPLIER BY PRODUCT ID
                 else if(request.equals("11")) {
@@ -451,7 +464,20 @@ class ClientHandler implements Runnable {
                 }
                 // FIND CUSTOMER BY ID
                 else if(request.equals("16")) {
-                    System.out.println("NOT IMPLEMENTED");
+                    Customer customer;
+
+                    try {
+                        customer = ICustomerDao.getCustomerById(Integer.parseInt(socketReader.readLine()));
+
+                        // Turn supplier into single json object and pass it back as a string to the client
+                        JSONObject message = Customer.turnCustomerIntoJson(customer);
+                        socketWriter.println(message.toString());
+
+                        socketWriter.println("Server message: ID has been passed to server passing back supplier");
+                    }
+                    catch (DaoException e) {
+                        e.printStackTrace();
+                    }
                 }
                 // ADD CUSTOMER
                 else if (request.equals("17")) {
@@ -542,14 +568,41 @@ class ClientHandler implements Runnable {
                 }
                 // DELETE CUSTOMER
                 else if(request.equals("19")) {
-                    System.out.println("NOT IMPLEMENTED");
+                    int id = Integer.parseInt(socketReader.readLine());
+                    int rowsAffected;
+                    
+                    try {
+                        if(ICustomerDao.getCustomerById(id) != null) {
+                            rowsAffected = ICustomerDao.deleteCustomerById(id);
+
+                            if(rowsAffected > 0) {
+                                socketWriter.println("Customer has successfully been deleted");
+                                System.out.println("CUSTOMER HAS SUCCESSFULLY BEEN DELETED");
+                            }
+                            else {
+                                socketWriter.println("Error: Customer was not deleted!");
+                                System.err.println("CUSTOMER WAS NOT DELETED! CHECK CODE FOR ERRORS!");
+                            }
+                        }
+                        else {
+                            socketWriter.println("Customer with given id does not exist in the table!");
+                            System.out.println("NO CUSTOMER FOUND WITH GIVEN ID");
+
+                        }
+                    }
+                    catch(DaoException e) {
+                        e.printStackTrace();
+                    }
                 }
 
                 // ******************** CUSTOMER PRODUCT OPTIONS ********************
 
                 // DISPLAY ALL CUSTOMER'S PRODUCTS
                 else if(request.equals("20")) {
-                    System.out.println("NOT IMPLEMENTED");
+                    List<CustomersProducts> customersProducts = ICustomersProductsDao.getAllCustomerProducts();
+                    JSONArray jsonArray = CustomersProducts.customersProductsListToJsonString(customersProducts);
+
+                    socketWriter.println(jsonArray);
                 }
                 // FIND CUSTOMER'S PRODUCT BY PRODUCT ID AND CUSTOMER ID
                 else if(request.equals("21")) {
@@ -560,6 +613,7 @@ class ClientHandler implements Runnable {
 
                         // Turn product into single json object and pass it back as a string to the client
                         JSONObject message = CustomersProducts.turnCustomersProductsIntoJson(cp);
+                        System.out.println(message);
                         socketWriter.println(message.toString());
 
                         socketWriter.println("Server message: ID has been passed to server passing back product");
@@ -688,7 +742,7 @@ class ClientHandler implements Runnable {
                                 errorMessage.put("message", "Supplier was not deleted!");
                                 socketWriter.println(errorMessage);
                                 
-                                System.err.println("SUPPLIER WAS NOT DELETED! CHECK CODE FOR ERRORS!");
+                                System.err.println("SUPPLIER WAS NOT DELETED!");
                             }
                         }
                         else {
