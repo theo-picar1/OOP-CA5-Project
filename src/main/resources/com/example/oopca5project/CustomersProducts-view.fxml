@@ -59,8 +59,8 @@
             <!-- All the customersProducts data will go into this table -->
             <TableView fx:id="customersProductsTableView" prefWidth="800">
                 <columns>
-                    <TableColumn fx:id="productIdColumn" text="customersProducts_id" prefWidth="60"/>
-                    <TableColumn fx:id="customerIdColumn" text="customersProducts_description" prefWidth="150"/>
+                    <TableColumn fx:id="productIdColumn" text="products_id" prefWidth="60"/>
+                    <TableColumn fx:id="customerIdColumn" text="customer_id" prefWidth="150"/>
                     <TableColumn fx:id="quantityColumn" text="quantity" prefWidth="80"/>
                 </columns>
             </TableView>
