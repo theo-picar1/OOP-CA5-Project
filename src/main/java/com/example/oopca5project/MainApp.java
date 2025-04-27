@@ -55,7 +55,10 @@ public class MainApp {
                         client.start(); // Use the server class
                         break;
                     case 3: // DISPLAY ALL PRODUCTS AS JSON ARRAY
-                        Product.productsListToJsonString(IProductDao.getAllProducts());
+                        JSONArray list = Product.productsListToJsonString(IProductDao.getAllProducts());
+                        for(int i = 0; i < list.length(); i++) {
+                            System.out.println(list.get(i));
+                        }
                         break;
                     case 4: // DISPLAY PRODUCT AS JSON CASE
                         productToJsonString();

@@ -60,6 +60,7 @@ public class Methods {
                 }
                 else {
 
+                    sc.nextLine();
                     // input is correct -> break out of loop
                     break;
 
@@ -70,7 +71,7 @@ public class Methods {
                 System.out.println("Please enter a valid number");
 
                 // get rid of stray \n (new line) character
-                sc.next();
+                sc.nextLine();
             }
         }
 
@@ -85,6 +86,7 @@ public class Methods {
         while(true) {
             if(sc.hasNextInt()) {
                 input = sc.nextInt();
+                sc.nextLine();
 
                 break;
             }

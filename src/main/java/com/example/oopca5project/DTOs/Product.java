@@ -162,10 +162,6 @@ public class Product {
 
         // getting product description
         System.out.println("Enter product description: ");
-        // Clear the leftover line if there was any. Stops it from printing out product size prompt
-        if (sc.hasNextLine()) {
-            sc.nextLine();
-        }
         product_description = sc.nextLine();
 
         // getting product size
