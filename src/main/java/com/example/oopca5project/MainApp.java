@@ -98,21 +98,21 @@ public class MainApp {
                     "Update existing product by ID",
                     "Delete product by ID",
                     "Display all Suppliers",
-                    "Find supplier by ID -> NOT IMPLEMENTED",
+                    "Find supplier by ID",
                     "Find supplier by ProductID",
                     "Add supplier",
                     "Update existing supplier by ID", 
                     "Delete supplier by ID",
                     "Display all Customers",
-                    "Find customer by ID -> NOT IMPLEMENTED",
+                    "Find customer by ID",
                     "Add customer", 
                     "Update existing customer by ID",
-                    "Delete customer by ID -> NOT IMPLEMENTED",
+                    "Delete customer by ID",
                     "Display all customer's products",
-                    "Find customer's product by product and customer ID -> NOT IMPLEMENTED",
+                    "Find customer's product by product and customer ID",
                     "Add customer product",
                     "Update existing customer's product by product and customer ID",
-                    "Delete customer's product by product and customer ID -> NOT IMPLEMENTED",
+                    "Delete customer's product by product and customer ID",
                 };
 
                 System.out.println("***** CLIENT / SERVER APPLICATION *****");
@@ -241,11 +241,22 @@ public class MainApp {
                 }
                 // DISPLAY SUPPLIER BY ID
                 else if (request.equals("10")) {
-                    System.out.println("NOT IMPLEMENTED");
+                    System.out.println("Please enter the id of the supplier you wish to view:");
+                    String id = sc.next();
+
+                    out.println(id);
+                    String response = in.readLine();
+
+                    if (response != null) {
+                        // Makes JSON string passed from Server into a Supplier object
+                        Supplier supplier = Supplier.makeSupplierFromJSON(new JSONObject(response));
+                        System.out.println("Client message: Response from server: \"" + supplier + "\"");
+                    } else {
+                        System.out.println("Supplier not found");
+                    }
                 }
                 // DISPLAY SUPPLIER BY PRODUCT ID
                 else if(request.equals("11")) {
-
                     System.out.println("Enter product ID you want to search by");
                     String id = sc.next();
                     out.println(id);
@@ -314,7 +325,19 @@ public class MainApp {
                 }
                 // FIND CUSTOMER BY ID
                 else if(request.equals("16")) {
-                    System.out.println("NOT IMPLEMENTED\n");
+                    System.out.println("Enter Customer ID you want to search by");
+                    int id = Methods.validateInt();
+                    out.println(id);
+
+                    String response = in.readLine();
+
+                    if (response != null) {
+                        // Makes JSON string passed from Server into a Customer object
+                        Customer customer = Customer.makeCustomerFromJSON(new JSONObject(response));
+                        System.out.println("Client message: Response from server: \"" + customer + "\"");
+                    } else {
+                        System.out.println("Customer not found");
+                    }
                 }
                 // ADD CUSTOMER
                 else if (request.equals("17")) {
@@ -335,8 +358,7 @@ public class MainApp {
                 // UPDATE EXISTING CUSTOMER BY ID
                 else if(request.equals("18")) {
                     System.out.println("Please enter the id of the customer you wish to update:");
-                    int id = sc.nextInt();  
-                    sc.nextLine();
+                    int id = Methods.validateInt();  
 
                     Customer customer = Customer.createCustomer();
                     JSONObject jsonObject = Customer.turnCustomerIntoJson(customer);
@@ -351,26 +373,35 @@ public class MainApp {
                 }
                 // DELETE CUSTOMER 
                 else if(request.equals("19")) {
-                    System.out.println("NOT IMPLEMENTED\n");
+                    System.out.println("Please enter the id of the Customer you wish to delete:");
+                    int id = Methods.validateInt();  
+                    out.println(id);
+
+                    String response = in.readLine();
+                    System.out.println("Client: RESPONSE FROM SERVER '" +response+ "'");
                 }
                 
                 // ******************* CUSTOMER PRODUCTS OPTIONS *******************
 
                 // DISPLAY ALL CUSTOMER'S PRODUCTS
                 else if(request.equals("20")) {
-                    System.out.println("NOT IMPLEMENTED\n");
+                    String response = in.readLine();
+                    JSONArray jsonArray = new JSONArray(response);
+
+                    ArrayList<CustomersProducts> list = CustomersProducts.makeCustomersProductsListFromJSONArray(jsonArray);
+                    Methods.printListOfObjects(list);
                 }
                 // FIND CUSTOMER'S PRODUCT BY PRODUCT ID AND CUSTOMER ID
                 else if(request.equals("21")) {
                     System.out.println("Please enter the id of the customer you wish to view:");
-                    String id = sc.next();
+                    int customerId = Methods.validateInt();
 
-                    out.println(id);
+                    out.println(customerId);
 
                     System.out.println("Please enter the id of the product you wish to view:");
-                    id = sc.next();
+                    String productId = sc.next();
 
-                    out.println(id);
+                    out.println(productId);
 
                     String response = in.readLine();
 
@@ -389,8 +420,8 @@ public class MainApp {
                     out.println(productId);
 
                     System.out.println("Please enter the corresponding customer id of the customers products you wish to update:");
-                    int customerId = sc.nextInt();
-                    sc.nextLine();
+                    int customerId = Methods.validateInt();
+
                     out.println(customerId);
 
                     // Get Customer Product object, turn it into a JSON string, and send to server
@@ -413,8 +444,8 @@ public class MainApp {
                     out.println(productId);
 
                     System.out.println("Please enter the corresponding customer id of the customers products you wish to update:");
-                    int customerId = sc.nextInt();
-                    sc.nextLine();
+                    int customerId = Methods.validateInt();
+                    
                     out.println(customerId);
 
                     CustomersProducts CustomersP = CustomersProducts.createCustomersProducts(customerId, productId);
@@ -440,8 +471,6 @@ public class MainApp {
                     out.println(id);
 
                     String response = in.readLine();
-
-                    System.out.println(response);
 
                     JSONObject jsonResponse = new JSONObject(response);
                     String message = jsonResponse.getString("message");

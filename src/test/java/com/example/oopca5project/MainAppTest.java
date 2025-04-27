@@ -477,7 +477,7 @@ class MainAppTest {
 
     @Test
     void deleteCustomerByIdDeletesCustomer() {
-        int validCustomerId = 10001;
+        int validCustomerId = 100;
 
         int rowsAffected = 0;
         try {
@@ -594,7 +594,7 @@ class MainAppTest {
             fail("DaoException occurred: " + e.getMessage());
         }
 
-        assertNull(customer);
+        assertNotNull(customer);
     }
 
     @Test
