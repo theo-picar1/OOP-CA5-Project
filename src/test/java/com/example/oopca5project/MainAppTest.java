@@ -690,13 +690,13 @@ class MainAppTest {
         assertEquals(1, actual);
     }
 
-     // **********************************************************
+    // **********************************************************
 
-      // *************** UPDATE CUSTOMERPRODUCTS TESTS ********************
+    // *************** UPDATE CUSTOMERPRODUCTS TESTS ********************
     @Test
     void updateCustomersProductsWasntUpdatedAndIdWrong() {
         try {
-            CustomersProducts c = ICustomersProductsDao.getCustomersProductsByIds(0,"1");
+            CustomersProducts c = ICustomersProductsDao.getCustomersProductsByIds(0, "1");
             ICustomersProductsDao.updateCustomersProducts(0, "1", c);
         } catch (Exception e) {
             assertTrue(true);
@@ -709,14 +709,82 @@ class MainAppTest {
 
         CustomersProducts updatedSupplier = new CustomersProducts(0, "name", 1);
         try {
-            CustomersProducts originalSupplier = ICustomersProductsDao.getCustomersProductsByIds(10004,"product9");
-            actual = ICustomersProductsDao.updateCustomersProducts(10004,"product9", updatedSupplier);
-            ICustomersProductsDao.updateCustomersProducts(10004,"product9", originalSupplier);
+            CustomersProducts originalSupplier = ICustomersProductsDao.getCustomersProductsByIds(10004, "product9");
+            actual = ICustomersProductsDao.updateCustomersProducts(10004, "product9", updatedSupplier);
+            ICustomersProductsDao.updateCustomersProducts(10004, "product9", originalSupplier);
         } catch (Exception e) {
             e.printStackTrace();
         }
         assertEquals(1, actual);
     }
 
-     // **********************************************************
+    // **********************************************************
+
+    // ********** DISPLAY ALL CUSTOMERS-PRODUCTS TESTS ***********
+
+    @Test
+    void getAllCustomersProductsReturnsNotNull() {
+        List<CustomersProducts> customerProducts = null;
+
+        try {
+            customerProducts = ICustomersProductsDao.getAllCustomerProducts(); // or your actual DAO call
+        } catch (DaoException e) {
+            fail("DaoException occurred: " + e.getMessage());
+        }
+
+        assertNotNull(customerProducts, "Expected a non-null list");
+        assertFalse(customerProducts.isEmpty(), "Expected non-empty list of customer-product relations");
+    }
+
+    @Test
+    void getAllCustomersProductsReturnsExpectedSize() {
+        try {
+            List<CustomersProducts> result = ICustomersProductsDao.getAllCustomerProducts();
+            assertEquals(12, result.size(), "Expected 12 customer-product mappings from seed data");
+        } catch (DaoException e) {
+            fail("DaoException occurred: " + e.getMessage());
+        }
+    }
+
+    // **********************************************************
+
+    // *************** GET CUSTOMERS-PRODUCT BY ID TESTS ********
+
+    @Test
+    void getCustomerProductByIdReturnsValidResult() {
+        int customerId = 10001;
+        String productId = "product6";
+
+        CustomersProducts result = null;
+
+        try {
+            result = ICustomersProductsDao.getCustomersProductsByIds(customerId, productId);
+        } catch (DaoException e) {
+            fail("DaoException occurred: " + e.getMessage());
+        }
+
+        assertNotNull(result, "Expected a matching customer-product entry");
+        assertEquals(customerId, result.getCustomerId());
+        assertEquals(productId, result.getProductId());
+        assertEquals(10, result.getQuantity(), "Expected quantity of 10");
+    }
+
+    @Test
+    void getCustomerProductByIdReturnsNullForInvalidIds() {
+        int invalidCustomerId = 99999;
+        String invalidProductId = "p1";
+
+        CustomersProducts result = null;
+
+        try {
+            result = ICustomersProductsDao.getCustomersProductsByIds(invalidCustomerId, invalidProductId);
+        } catch (DaoException e) {
+            fail("DaoException occurred: " + e.getMessage());
+        }
+
+        assertNull(result, "Expected null for non-existent customer-product combination");
+    }
+
+// ***********************************************************************
+
 }
