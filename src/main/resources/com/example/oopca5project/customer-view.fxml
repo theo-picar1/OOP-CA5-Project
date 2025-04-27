@@ -31,6 +31,7 @@
             <!-- Reference: https://docs.oracle.com/javase/8/javafx/api/javafx/scene/layout/GridPane.html -->
             <!-- Works the same as grid-template-columns in Web Development -->
             <Label fx:id="inputAreaText" text="Corresponding inputs will go here. Please choose an option above!"/>
+            <Label fx:id="errorSuccessMessage"/>
             <GridPane hgap="10" vgap="10">
                 <HBox fx:id="idInputField" spacing="10" alignment="CENTER_LEFT" GridPane.rowIndex="0" GridPane.columnIndex="0">
                     <Label text="ID:" />
@@ -38,17 +39,17 @@
                 </HBox>
 
                 <HBox fx:id="nameInputField" spacing="10" alignment="CENTER_LEFT" GridPane.rowIndex="1" GridPane.columnIndex="0">
-                    <Label text="Description:" />
+                    <Label text="Name:" />
                     <TextField fx:id="nameField"/>
                 </HBox>
 
                 <HBox fx:id="emailInputField" spacing="10" alignment="CENTER_LEFT" GridPane.rowIndex="2" GridPane.columnIndex="0">
-                    <Label text="Size:" />
+                    <Label text="Email:" />
                     <TextField fx:id="emailField"/>
                 </HBox>
 
                 <HBox fx:id="addressInputField" spacing="10" alignment="CENTER_LEFT" GridPane.rowIndex="3" GridPane.columnIndex="0">
-                    <Label text="Price:" />
+                    <Label text="Address:" />
                     <TextField fx:id="addressField"/>
                 </HBox>
             </GridPane>
